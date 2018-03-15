@@ -1,4 +1,4 @@
-# Taklimakan-Aplpha
+# Taklimakan-Alpha
 
 ### Overview
 
