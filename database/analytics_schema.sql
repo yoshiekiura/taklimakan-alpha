@@ -10,6 +10,7 @@ CREATE TABLE analytics_type_dictionary
 CREATE TABLE numerical_analytics
 (
 	dt DATETIME,
+	pair VARCHAR(20),
 	type_id INT(2),
 	value FLOAT
 );
