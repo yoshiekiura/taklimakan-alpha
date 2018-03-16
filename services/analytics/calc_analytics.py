@@ -6,6 +6,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pprint import pprint
 import os
+import time
+from datetime import datetime, timezone
+
+######################################################################
+# Script configuration
+
+# List of pairs to calculate analytics for
+pairs = ["ETH-USD", "BTC-USD"]
+
+# Prices start timestamp (unix epoch seconds) - first date prices are available
+pricesStartDate = "2018-01-01"
+
 
 ######################################################################
 # DB and tables
@@ -32,22 +44,33 @@ print("db_user: " + db_user)
 db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_name)
 print("Connected to DB")
 
-######################################################################
-# List of pairs to calculate analytics for
-
-pairs = ["ETH-USD", "BTC-USD"]
-
 
 ######################################################################
 # Operations with DB
 
-def getPairPriceByDate(table_name, pair, date):
+def getPairPriceByDate(pair, date):
     cursor = db.cursor()
-    query = ("SELECT * FROM " + table_name + " order by transaction_id limit " + str(start) + "," + str(count))
+    query = ("SELECT * FROM " + price_table + " where pair = '" + pair + "' and DATE(dt) = " + date + " order by transaction_id limit " + str(start) + "," + str(count))
     cursor.execute(query)
     retval = cursor.fetchall()
     cursor.close()
     return retval
+
+def saveAnalyticsValue(pair, datetime, type_id, value):
+    cursor = db.cursor()
+    query = "INSERT INTO numerical_analytics (dt, pair, type_id, value) VALUES ('%s', '%s', '%s', '%s')" % (datetime, pair, type_id, value)
+    cursor.execute(query)
+    db.commit()
+    cursor.close()
+
+def getAnalyticsValue(pair, date, type_id):
+    cursor = db.cursor()
+    query = "SELECT * FROM numerical_analytics where pair = '%s' and DATE(dt) = '%s' and type_id = '%s'" % (pair, date, type_id)
+    cursor.execute(query)
+    retval = cursor.fetchall()
+    cursor.close()
+    return retval
+
 
 ######################################################################
 # Math and logic
@@ -73,3 +96,15 @@ def getBeta(asset, index):
 # Analytics calculation
 
 #b = getBeta(ethPrices, btcPrices)
+
+#saveAnalyticsValue("BTC-USD", "2018-03-16 12:00:00", "6", 0.1)
+
+#print(datetime.fromtimestamp(pricesStartDate, timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
+
+#pprint(getAnalyticsValue("BTC-USD", "2018-03-16", "6"))
+
+
+datetime_object = datetime.strptime(pricesStartDate, '%Y-%m-%d')
+
+
+print(time.mktime(datetime_object.timetuple()))
