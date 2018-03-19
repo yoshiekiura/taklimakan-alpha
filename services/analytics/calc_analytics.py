@@ -9,6 +9,10 @@ import os
 import time
 from datetime import datetime, timezone
 
+# sudo pip install sshtunnel
+import sshtunnel
+import sys
+
 ######################################################################
 # Script configuration
 
@@ -21,8 +25,8 @@ pricesStartDate = "2018-01-01"
 
 ######################################################################
 # DB and tables
-db_name = "pricedata"
-price_table = "price"
+db_name = "crypto"
+price_table = "rates"
 analytics_table = "numerical_analytics"
 
 
@@ -30,27 +34,44 @@ analytics_table = "numerical_analytics"
 # DB Connection
 
 if ('DB_HOST' in os.environ.keys()) and ('DB_USER' in os.environ.keys()) and ('DB_PASSWORD' in os.environ.keys()):
-	db_host = os.environ['DB_HOST']
-	db_user = os.environ['DB_USER']
-	db_pass = os.environ['DB_PASSWORD']
+    db_host = os.environ['DB_HOST']
+    db_user = os.environ['DB_USER']
+    db_pass = os.environ['DB_PASSWORD']
+    db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_name)
+    print("Connected to DB (server)")
 else:
-	db_host = 'localhost'
-	db_user = 'root'
-	db_pass = '123'
+    # sudo pip install mysql-connector-python-rf
+    import mysql.connector
+    sys.path.insert(0, '../')
+    from local_config import *
 
-print("db_host: " + db_host)
-print("db_user: " + db_user)
+    sshtunnel.SSH_TIMEOUT = 5.0
+    sshtunnel.TUNNEL_TIMEOUT = 5.0
 
-db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_name)
-print("Connected to DB")
+    server = sshtunnel.SSHTunnelForwarder(
+            (db_ssh_host, db_ssh_port),
+            ssh_username=db_ssh_username,
+            ssh_password=db_ssh_password,
+            remote_bind_address=(db_remote_bind_address, db_remote_mysql_port),
+            local_bind_address=(db_local_bind_address, db_local_mysql_port))
 
+    server.start()
+
+    db = mysql.connector.connect(
+        user=db_user,
+        password=db_pass,
+        host=db_local_bind_address,
+        database=db_name,
+        port=db_local_mysql_port)
+
+    print("Connected to DB (local)")
 
 ######################################################################
 # Operations with DB
 
-def getPairPriceByDate(pair, date):
+def getPairPricesByDate(pair_base, pair_quote, date):
     cursor = db.cursor()
-    query = ("SELECT * FROM " + price_table + " where pair = '" + pair + "' and DATE(dt) = " + date + " order by transaction_id limit " + str(start) + "," + str(count))
+    query = ("SELECT * FROM " + price_table + " where base = '" + pair_base + "' and quote = '" + pair_quote + "' and DATE(date) = '" + date + "';")
     cursor.execute(query)
     retval = cursor.fetchall()
     cursor.close()
@@ -104,7 +125,18 @@ def getBeta(asset, index):
 #pprint(getAnalyticsValue("BTC-USD", "2018-03-16", "6"))
 
 
-datetime_object = datetime.strptime(pricesStartDate, '%Y-%m-%d')
+#datetime_object = datetime.strptime(pricesStartDate, '%Y-%m-%d')
 
 
-print(time.mktime(datetime_object.timetuple()))
+#print(time.mktime(datetime_object.timetuple()))
+
+prices = getPairPricesByDate("ETH", "USD", "2018-03-01")
+pprint(prices)
+
+
+######################################################################
+# Close DB Connection and SSH (for local dev)
+
+db.disconnect()
+if not ('DB_HOST' in os.environ.keys()) and ('DB_USER' in os.environ.keys()) and ('DB_PASSWORD' in os.environ.keys()):
+    server.stop()

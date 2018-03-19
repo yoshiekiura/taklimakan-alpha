@@ -13,3 +13,6 @@
 .env.dist
 /bin
 /config
+
+/services/__pycache__
+/services/local_config.py
