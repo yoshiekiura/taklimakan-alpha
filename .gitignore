@@ -14,5 +14,5 @@
 /bin
 /config
 
-/services/__pycache__
+__pycache__
 /services/local_config.py

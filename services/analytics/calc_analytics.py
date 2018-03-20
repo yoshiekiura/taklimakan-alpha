@@ -2,26 +2,15 @@
 # sudo apt install python3-mysqldb
 import MySQLdb
 import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib.pyplot as plt
 from pprint import pprint
 import os
 import time
 from datetime import datetime, timezone
+import aformulas as af
 
 # sudo pip install sshtunnel
 import sshtunnel
 import sys
-
-######################################################################
-# Script configuration
-
-# List of pairs to calculate analytics for
-pairs = ["ETH-USD", "BTC-USD"]
-
-# Prices start timestamp (unix epoch seconds) - first date prices are available
-pricesStartDate = "2018-01-01"
-
 
 ######################################################################
 # DB and tables
@@ -32,7 +21,6 @@ analytics_table = "numerical_analytics"
 
 ######################################################################
 # DB Connection
-
 if ('DB_HOST' in os.environ.keys()) and ('DB_USER' in os.environ.keys()) and ('DB_PASSWORD' in os.environ.keys()):
     db_host = os.environ['DB_HOST']
     db_user = os.environ['DB_USER']
@@ -92,47 +80,32 @@ def getAnalyticsValue(pair, date, type_id):
     cursor.close()
     return retval
 
-
-######################################################################
-# Math and logic
-
-def cov(a, b):
-    if len(a) != len(b):
-        return
-    a_mean = np.mean(a)
-    b_mean = np.mean(b)
-    sum = 0
-    for i in range(0, len(a)):
-        sum += ((a[i] - a_mean) * (b[i] - b_mean))
-    return sum/(len(a)-1)
-
-def getBeta(asset, index):
-    subasset = asset[-betaLength:]
-    subindex = index[-betaLength:]
-    aiCov = cov(subasset, subindex)
-    iVar = cov(subindex, subindex)
-    return aiCov/iVar
-
 ######################################################################
 # Analytics calculation
 
-#b = getBeta(ethPrices, btcPrices)
+#prices = getPairPricesByDate("ETH", "USD", "2018-03-01")
+#pprint(prices)
+#ethPrices = []
+#btcPrices = []
+#market = []
+
+b = af.getBeta(ethPrices, btcPrices)
+print("Beta: %.2f" % (b))
+
+ev = af.getVolatility(ethPrices)
+print("Volatility: %.2f %%" % (ev*100))
+
+ea = af.getAlpha(ethPrices, btcPrices, market)
+print("Alpha: %.2f" % (ea))
+
+sr = af.getSharpeRatio(ethPrices)
+print("Sharpe ratio: %.2f" % (sr))
 
 #saveAnalyticsValue("BTC-USD", "2018-03-16 12:00:00", "6", 0.1)
-
 #print(datetime.fromtimestamp(pricesStartDate, timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
-
 #pprint(getAnalyticsValue("BTC-USD", "2018-03-16", "6"))
-
-
 #datetime_object = datetime.strptime(pricesStartDate, '%Y-%m-%d')
-
-
 #print(time.mktime(datetime_object.timetuple()))
-
-prices = getPairPricesByDate("ETH", "USD", "2018-03-01")
-pprint(prices)
-
 
 ######################################################################
 # Close DB Connection and SSH (for local dev)
