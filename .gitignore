@@ -13,3 +13,7 @@
 .env.dist
 /bin
 /config
+/temp
+/tmp
+temp
+tmp
