@@ -9,22 +9,22 @@ pairs = [
 ]
 
 # List of analytics formulas (type_id) to calculate for each pair
-formulas = ["1", "2", "3", "4", "5", "6"]
+formulas = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
 # Prices start timestamp (unix epoch seconds) - first date prices are available
-pricesStartDate = "2018-01-01"
+pricesStartDate = "2017-12-01"
 
 # Length of windows for metrics (in days)
-maxWindow = 30 # This should be the greatest one
+maxWindow = 60 # This should be the greatest one
 extraDataDays = 2
 
-betaLength = 30
-volatilityLength = 30
-sharpeLength = 30
+betaLength = 60
+volatilityLength = 60
+sharpeLength = 60
 
 
 # Risk-free daily rate of return (~ Equal to US securities rate)
-riskFreeRate = 0.03 / 365.25
+riskFreeRate = 0.014 / 365.25
 
 # Indexes
 baseCurrency = "USD"

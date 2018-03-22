@@ -189,6 +189,18 @@ def calculateFormulaForPair(pair, formula, date):
     # Sharpe Ratio
     elif formula == "6":
         startDate = stopDate - timedelta(days=sharpeLength+extraDataDays)
+    # Exponentially Weighted Volatility
+    elif formula == "7":
+        startDate = stopDate - timedelta(days=volatilityLength+extraDataDays)
+    # Exponentially Weighted Alpha
+    elif formula == "8":
+        startDate = stopDate - timedelta(days=2+extraDataDays)
+    # Exponentially Weighted Beta
+    elif formula == "9":
+        startDate = stopDate - timedelta(days=betaLength+extraDataDays)
+    # Exponentially Weighted Sharpe Ratio
+    elif formula == "10":
+        startDate = stopDate - timedelta(days=sharpeLength+extraDataDays)
 
     dayCount = (stopDate - startDate).days + 1
 
@@ -216,6 +228,18 @@ def calculateFormulaForPair(pair, formula, date):
         # Sharpe Ratio
         elif formula == "6":
             value = af.getSharpeRatio(assetPrices)
+        # Exponentially Weighted Volatility
+        elif formula == "7":
+            value = af.getWeightedVolatility(assetPrices)
+        # Exponentially Weighted Alpha
+        elif formula == "8":
+            value = af.getWeightedAlpha(assetPrices, index, market)
+        # Exponentially Weighted Beta
+        elif formula == "9":
+            value = af.getWeightedBeta(assetPrices, index)
+        # Exponentially Weighted Sharpe Ratio
+        elif formula == "10":
+            value = af.getWeightedSharpeRatio(assetPrices)
 
         saveAnalyticsValue(pairToStr(pair), date, formula, value)
     else:
@@ -231,10 +255,12 @@ checkAnalyticsTable()
 
 # Calculate weighted average prices and total volumes
 # Iterate pairs
+'''
 for pair in pairs:
     missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
     for date in missingDates:
         calculatePriceAndVolume(pair, date)
+'''
 
 # Calculate the rest of formulas
 for formula in formulas:

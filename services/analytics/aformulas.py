@@ -12,28 +12,77 @@ from config import *
 def cov(a, b):
     return np.cov(a, b)[0][1]
 
+# Weight for weighted mean and covariance
+#
+# Exponent:
+# weightFunc(0) = 1
+# weightFunc(30) = 0.5
+#
+# @param i - number of days back
+def weightFunc(i):
+    return math.exp(math.log(0.5) * i / 30)
+
+def weightedMean(a):
+    sum = 0
+    totalWeight = 0
+    i = 0
+    for value in a:
+        iback = len(a) - 1 - i
+        weight = weightFunc(iback)
+        sum += value * weight
+        totalWeight += weight
+        i += 1
+    return sum / totalWeight
+
+def weightedCov(a, b):
+     if len(a) != len(b):
+         return
+     a_mean = weightedMean(a)
+     b_mean = weightedMean(b)
+     sum = 0
+     totalWeight = 0
+     for i in range(len(a)):
+         iback = len(a) - 1 - i
+         weight = weightFunc(iback)
+         sum += ((a[i] - a_mean) * (b[i] - b_mean) * weight)
+         totalWeight += weight
+     return sum / totalWeight
+
 def getReturns(subasset):
-    original = subasset[0]
-    return [(subasset[i+1] - original)/original for i in range(len(subasset) - 1)]
+    return [(subasset[i+1] - subasset[i])/subasset[i] for i in range(len(subasset) - 1)]
 
 def getBeta(asset, index):
-    subasset = asset[-betaLength:]
-    subindex = index[-betaLength:]
+    subasset = asset[-betaLength-1:]
+    subindex = index[-betaLength-1:]
     assetReturns = getReturns(subasset)
     indexReturns = getReturns(subindex)
     aiCov = cov(assetReturns, indexReturns)
     iVar = cov(indexReturns, indexReturns)
     return aiCov/iVar
 
+def getWeightedBeta(asset, index):
+    subasset = asset[-betaLength-1:]
+    subindex = index[-betaLength-1:]
+    assetReturns = getReturns(subasset)
+    indexReturns = getReturns(subindex)
+    aiCov = weightedCov(assetReturns, indexReturns)
+    iVar = weightedCov(indexReturns, indexReturns)
+    return aiCov/iVar
+
 def getVolatility(asset):
-    subasset = asset[-volatilityLength:]
+    subasset = asset[-volatilityLength-1:]
     returns = getReturns(subasset)
     return math.sqrt(cov(returns, returns))
+
+def getWeightedVolatility(asset):
+    subasset = asset[-volatilityLength-1:]
+    returns = getReturns(subasset)
+    return math.sqrt(weightedCov(returns, returns))
 
 def getAlpha(asset, index, market):
     subasset = asset[-2:]
     subindex = index[-2:]
-    submarket = index[-2:]
+    submarket = market[-2:]
 
     beta = getBeta(asset, index)
     assetReturns = getReturns(subasset)
@@ -41,11 +90,30 @@ def getAlpha(asset, index, market):
 
     return assetReturns[0] - riskFreeRate - beta * (marketReturns[0] - riskFreeRate)
 
+def getWeightedAlpha(asset, index, market):
+    subasset = asset[-2:]
+    subindex = index[-2:]
+    submarket = index[-2:]
+
+    beta = getWeightedBeta(asset, index)
+    assetReturns = getReturns(subasset)
+    marketReturns = getReturns(submarket)
+
+    return assetReturns[0] - riskFreeRate - beta * (marketReturns[0] - riskFreeRate)
+
+
 def getSharpeRatio(asset):
-    subasset = asset[-sharpeLength:]
+    subasset = asset[-sharpeLength-1:]
     assetReturns = getReturns(subasset)
     meanReturn = np.mean(assetReturns)
     stdevReturn = np.std(assetReturns)
+    return (meanReturn - riskFreeRate) / stdevReturn
+
+def getWeightedSharpeRatio(asset):
+    subasset = asset[-sharpeLength-1:]
+    assetReturns = getReturns(subasset)
+    meanReturn = weightedMean(assetReturns)
+    stdevReturn = math.sqrt(weightedCov(assetReturns, assetReturns))
     return (meanReturn - riskFreeRate) / stdevReturn
 
 current = 0

@@ -105,26 +105,40 @@ def saveToFile(fileName, data, startDate):
 ######################################################################
 # Analytics calculation
 
-price  = getAnalyticsValueForDateRange("ETH-USD", "1", "2018-01-01", "2018-03-15")
-volume = getAnalyticsValueForDateRange("ETH-USD", "2", "2018-01-01", "2018-03-15")
+
+price  = getAnalyticsValueForDateRange("ETH-USD", "1", "2017-12-01", "2018-03-15")
+volume = getAnalyticsValueForDateRange("ETH-USD", "2", "2017-12-01", "2018-03-15")
 volatility = getAnalyticsValueForDateRange("ETH-USD", "3", "2018-02-02", "2018-03-15")
 alpha = getAnalyticsValueForDateRange("ETH-USD", "4", "2018-02-02", "2018-03-15")
 beta = getAnalyticsValueForDateRange("ETH-USD", "5", "2018-02-02", "2018-03-15")
 sharpe = getAnalyticsValueForDateRange("ETH-USD", "6", "2018-02-02", "2018-03-15")
 
-saveToFile("price.csv", price, "2018-01-01")
-saveToFile("volume.csv", volume, "2018-01-01")
+ewvolatility = getAnalyticsValueForDateRange("ETH-USD", "7", "2018-02-02", "2018-03-15")
+ewalpha = getAnalyticsValueForDateRange("ETH-USD", "8", "2018-02-02", "2018-03-15")
+ewbeta = getAnalyticsValueForDateRange("ETH-USD", "9", "2018-02-02", "2018-03-15")
+ewsharpe = getAnalyticsValueForDateRange("ETH-USD", "10", "2018-02-02", "2018-03-15")
+
+
+saveToFile("price.csv", price, "2017-12-01")
+saveToFile("volume.csv", volume, "2017-12-01")
 saveToFile("volatility.csv", volatility, "2018-02-02")
 saveToFile("alpha.csv", alpha, "2018-02-02")
 saveToFile("beta.csv", beta, "2018-02-02")
 saveToFile("sharpe.csv", sharpe, "2018-02-02")
+saveToFile("ewvolatility.csv", ewvolatility, "2018-02-02")
+saveToFile("ewalpha.csv", ewalpha, "2018-02-02")
+saveToFile("ewbeta.csv", ewbeta, "2018-02-02")
+saveToFile("ewsharpe.csv", ewsharpe, "2018-02-02")
 
 # save indexes
-index = calculateIndexPrices(baseIndex, "2018-01-01", "2018-03-15")
-market = calculateIndexPrices(marketIndex, "2018-01-01", "2018-03-15")
+index = calculateIndexPrices(baseIndex, "2017-12-01", "2018-03-15")
+market = calculateIndexPrices(marketIndex, "2017-12-01", "2018-03-15")
 
-saveToFile("index.csv", index, "2018-01-01")
-saveToFile("market.csv", market, "2018-01-01")
+saveToFile("index.csv", index, "2017-12-01")
+saveToFile("market.csv", market, "2017-12-01")
 
 
-plotArray(market)
+#weight = [af.weightFunc(i) for i in range(60)]
+
+
+plotArray(alpha)
