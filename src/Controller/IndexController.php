@@ -25,8 +25,13 @@ class IndexController extends Controller
 
         // Top 3 News
         $news = $newsRepo->findBy([], ['id' => 'DESC'], 3);
-
+/*
         return $this->render('news/index.html.twig', [
+            'news' => $news,
+        ]);
+*/
+
+        return $this->render('home/home.html.twig', [
             'news' => $news,
         ]);
 
