@@ -2,18 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\News;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Component\Routing\Annotation\Route;
-//use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Psr\Log\LoggerInterface;
-//use App\GreetingGenerator;
-//use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-
 
 class IndexController extends Controller
 {
@@ -21,17 +18,16 @@ class IndexController extends Controller
     * @Route("/")
     */
 
-	public function index(/*$name,*/ LoggerInterface $logger, /*GreetingGenerator $generator,*/ Request $request) {
+	public function index(LoggerInterface $logger, Request $request) {
 
-        // $greeting = $generator->getRandomGreeting();
-        // $logger->info("Saying $greeting to $name!");
+        $newsRepo = $this->getDoctrine()->getRepository(News::class);
+        // $news = $newsRepo->findAll();
 
+        // Top 3 News
+        $news = $newsRepo->findBy([], ['id' => 'DESC'], 3);
 
-
-//        $logger->info("Saying hello to $name!");
-//		return new Response("Hello $name!");
-        return $this->render('default/index.html.twig', [
-//            'name' => $name,
+        return $this->render('news/index.html.twig', [
+            'news' => $news,
         ]);
 
 	}
