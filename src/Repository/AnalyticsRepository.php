@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\News;
+use App\Entity\Analytics;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method News|null find($id, $lockMode = null, $lockVersion = null)
- * @method News|null findOneBy(array $criteria, array $orderBy = null)
- * @method News[]    findAll()
- * @method News[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Analytics|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Analytics|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Analytics[]    findAll()
+ * @method Analytics[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class NewsRepository extends ServiceEntityRepository
+class AnalyticsRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, News::class);
+        parent::__construct($registry, Analytics::class);
     }
 
     /**
-     * @return News[] Returns an array of News objects NB! WITH LIKES
+     * @return Analytics[] Returns an array of Analytics objects NB! WITH LIKES
      */
-    public function getNews($limit = 0)
+    public function getAnalytics($limit = 0)
     {
         // FIXME We have to have more advanced filter here (limits, ranges, categories, etc)
         // $sql = "SELECT name FROM user WHERE favorite_color = :color";
@@ -30,9 +30,9 @@ class NewsRepository extends ServiceEntityRepository
 
         $sql =
             'SELECT *,
-            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = news.id) AS likes,
-            (SELECT COALESCE(SUM(*), 0) FROM comments WHERE content_type = "news" AND content_id = news.id) AS comments
-            FROM news';
+            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "analytics" AND content_id = analytics.id) AS likes,
+            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "analytics" AND content_id = analytics.id) AS comments
+            FROM analytics';
 
         // $params['color'] = blue;
         $query = $this->getEntityManager()->getConnection()->prepare($sql);
@@ -47,7 +47,7 @@ class NewsRepository extends ServiceEntityRepository
 
 
 //    /**
-//     * @return News[] Returns an array of News objects
+//     * @return Analytics[] Returns an array of Analytics objects
 //     */
     /*
     public function findByExampleField($value)
@@ -64,7 +64,7 @@ class NewsRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?News
+    public function findOneBySomeField($value): ?Analytics
     {
         return $this->createQueryBuilder('n')
             ->andWhere('n.exampleField = :val')

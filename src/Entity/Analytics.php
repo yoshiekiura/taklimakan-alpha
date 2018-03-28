@@ -7,17 +7,15 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use App\Entity\Likes;
+use App\Entity\Comment;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\AnalyticsRepository")
  */
-class News
+class Analytics
 {
 
-    private $em;
-
-    public function __construct($em) {
-        $this->em = $em;
+    public function __construct() {
         $this->date = new \DateTime();
         $this->tags = new ArrayCollection();
     }
@@ -154,34 +152,6 @@ class News
 
     public function getLikes()
     {
-        //$conn = $this->getEntityManager()->getConnection();
-        //$conn = $this->em->getConnection();
-        //$conn = $this->getContainer()->getDoctrine()->getManager()->getConnection();
-
-        $conn = $this->get('doctrine.dbal.connection_factory');
-        var_dump($conn);
-
-        $likes = $conn->fetchColumn(
-            'SELECT SUM(count) FROM likes WHERE content_type = "news" AND content_id = ? ',
-            [ $this->getId() ],
-            0
-        );
-
-        return intval($likes);
-
-/*        $conn = $this->getEntityManager()->getConnection();
-        $likes = $conn->fetchColumn(
-            'SELECT SUM(count) FROM likes WHERE content_type = "news" AND content_id = ? ',
-            [ $this->getId() ],
-            0
-        );
-
-        return intval($likes);
-*/
-/*
-        $likesRepo = $this->getDoctrine()->getRepository(Likes::class);
-        $likes = $likesRepo->getLikes("news", $this-getId());
-        return $likes; */
     }
 
 

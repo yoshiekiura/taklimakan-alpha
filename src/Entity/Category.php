@@ -5,16 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\TagsRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
  */
-class Tags
+class Category
 {
 
-    // Init Tags
-
     public function __construct() {
-        // $this->date = new \DateTime();
-        // $this->comments = new ArrayCollection();
     }
 
     /**
@@ -30,14 +26,14 @@ class Tags
     /**
      * @ORM\Column(type="string", length=32)
      */
-    private $tag;
-    public function getTag()
+    private $name;
+    public function getName()
     {
-        return $this->tag;
+        return $this->name;
     }
-    public function setTag($tag)
+    public function setName($name)
     {
-        $this->tag = $tag;
+        $this->name = $name;
     }
 
     /**
@@ -45,7 +41,7 @@ class Tags
      */
     public function __toString()
     {
-        return (string) $this->getTag();
+        return (string) $this->getName();
     }
 
 }

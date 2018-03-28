@@ -1,58 +1,13 @@
-    {% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-    {% block body %}
+{% block body %}
 
-      <!-- TOP MENU -------------------------------------------------------------- -->
+    {% include 'home/top-menu.html.twig' %}
+    {% include 'home/banner.html.twig' %}
+    {% include 'home/news-block.html.twig' %}
+    {% include 'home/analytics-block.html.twig' %}
+    {% include 'home/education-block.html.twig' %}
+    {% include 'home/subscribe-block.html.twig' %}
+    {% include 'home/links-block.html.twig' %}
 
-      <div class="container-fluid">
-      <div class="ht-md-60 wd-200 wd-md-auto bg-br-primary pd-y-20 pd-md-y-0 d-md-flex align-items-center justify-content-center mg-t-30">
-                  <ul class="nav nav-effect nav-effect-8 tx-uppercase tx-bold tx-spacing-2 flex-column flex-md-row" role="tablist">
-                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">
-                      <span data-hover="Home">Home</span></a></li>
-                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">
-                      <span data-hover="About">About</span></a></li>
-                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">
-                      <span data-hover="Services">Services</span></a></li>
-                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">
-                      <span data-hover="Blog">Blog</span></a></li>
-                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">
-                      <span data-hover="Contact">Contact</span></a></li>
-                  </ul>
-                </div>
-
-        </div>
-
-      <!-- TOP MENU END -------------------------------------------------------------- -->
-
-      <!-- News -->
-
-      <div class="container">
-      <div class="br-pagebody pd-x-20 pd-sm-x-30 mx-wd-1350">
-      <div class="card-deck card-deck-sm mg-x-0">
-
-          {% for i in news %}
-
-              <div class="card shadow-base bd-0 mg-0">
-                <figure class="card-item-img bg-mantle rounded-top"> {# NB! Use different gradients: bg-mantle | bg-dance | bg-transfile #}
-                  <img class="img-fluid rounded-top" src="/img/{{i.image}}" alt="Image">
-                </figure>
-                <div class="card-body pd-25">
-                  <p class="tx-11 tx-uppercase tx-mont tx-medium tx-info">FinTech</p>
-                  <h5 class="tx-normal tx-roboto lh-3 mg-b-15"><a href="" class="tx-inverse hover-info">{{i.title}}</a></h5>
-                  <p class="tx-14 tx-gray-600 mg-b-25">{{i.lead}}</p>
-                  <p class="tx-13 mg-b-0">
-                    <a href="" class="tx-info">12 Likes</a>
-                    <a href="" class="tx-info mg-l-5">23 Comments</a>
-                    <a href="" class="tx-info mg-l-5"><i class="icon ion-more"></i></a>
-                  </p>
-                </div><!-- card-body -->
-              </div><!-- card -->
-
-          {% endfor %}
-
-    </div>
-    </div>
-    </div>
-
-    <!-- ---- -->
-    {% endblock %}
+{% endblock %}
