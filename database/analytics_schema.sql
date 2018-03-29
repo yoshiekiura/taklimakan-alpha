@@ -12,7 +12,8 @@ CREATE TABLE numerical_analytics
 	dt DATETIME,
 	pair VARCHAR(20),
 	type_id INT(2),
-	value FLOAT
+	value FLOAT,
+    PRIMARY KEY (dt, pair, type_id)
 );
 
 INSERT INTO analytics_type_dictionary (id, name) VALUES
@@ -21,4 +22,9 @@ INSERT INTO analytics_type_dictionary (id, name) VALUES
 (3, "Volatility"),
 (4, "Alpha"),
 (5, "Beta"),
-(6, "Sharpe Ratio");
+(6, "Sharpe Ratio"),
+(7, "Exponentially Weighted Volatility"),
+(8, "Exponentially Weighted Alpha"),
+(9, "Exponentially Weighted Beta"),
+(10, "Exponentially Weighted Sharpe Ratio"),
+(11, "Base Index");

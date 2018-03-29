@@ -79,27 +79,25 @@ def getWeightedVolatility(asset):
     returns = getReturns(subasset)
     return math.sqrt(weightedCov(returns, returns))
 
-def getAlpha(asset, index, market):
+def getAlpha(asset, index):
     subasset = asset[-2:]
     subindex = index[-2:]
-    submarket = market[-2:]
 
     beta = getBeta(asset, index)
     assetReturns = getReturns(subasset)
-    marketReturns = getReturns(submarket)
+    indexReturns = getReturns(subindex)
 
-    return assetReturns[0] - riskFreeRate - beta * (marketReturns[0] - riskFreeRate)
+    return assetReturns[0] - riskFreeRate - beta * (indexReturns[0] - riskFreeRate)
 
-def getWeightedAlpha(asset, index, market):
+def getWeightedAlpha(asset, index):
     subasset = asset[-2:]
     subindex = index[-2:]
-    submarket = index[-2:]
 
     beta = getWeightedBeta(asset, index)
     assetReturns = getReturns(subasset)
-    marketReturns = getReturns(submarket)
+    indexReturns = getReturns(subindex)
 
-    return assetReturns[0] - riskFreeRate - beta * (marketReturns[0] - riskFreeRate)
+    return assetReturns[0] - riskFreeRate - beta * (indexReturns[0] - riskFreeRate)
 
 
 def getSharpeRatio(asset):

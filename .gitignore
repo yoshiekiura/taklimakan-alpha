@@ -16,3 +16,6 @@
 
 __pycache__
 /services/local_config.py
+
+*.csv
+*.xlsx

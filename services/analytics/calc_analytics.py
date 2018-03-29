@@ -63,7 +63,7 @@ def pairToStr(pair):
 
 def getPairPricesByDate(pair_base, pair_quote, date):
     cursor = db.cursor()
-    query = ("SELECT * FROM " + price_table + " where base = '" + pair_base + "' and quote = '" + pair_quote + "' and DATE(date) = '" + date + "';")
+    query = "SELECT * FROM %s where base = '%s' and quote = '%s' and DATE(date) = '%s' ORDER BY volume desc LIMIT %d;" % (price_table, pair_base, pair_quote, date, topExchangeCount)
     cursor.execute(query)
     retval = cursor.fetchall()
     cursor.close()
@@ -99,10 +99,13 @@ def getMissingAnalyticsDates(pair, type_id):
 
     # Start date depends on type. Price/volume data can start right away,
     # but lagged analytics can only start after its window
-    if type_id in ["1", "2"]:
-        startDate = datetime.strptime(pricesStartDate, '%Y-%m-%d')
+    if calculateAllDates:
+        if type_id in ["1", "2", "11"]:
+            startDate = datetime.strptime(pricesStartDate, '%Y-%m-%d')
+        else:
+            startDate = datetime.strptime(pricesStartDate, '%Y-%m-%d') + timedelta(days=maxWindow + extraDataDays)
     else:
-        startDate = datetime.strptime(pricesStartDate, '%Y-%m-%d') + timedelta(days=maxWindow + extraDataDays)
+        startDate = datetime.now() - timedelta(days=backDays)
 
     yearAgo = datetime.now() - timedelta(days=365)
     if startDate < yearAgo:
@@ -138,36 +141,57 @@ def checkAnalyticsTable():
 # Analytics calculation
 
 def calculatePriceAndVolume(pair, date):
-    # Get prices and volumes from all exchanges
+    # Get prices and volumes from top 10 exchanges
     rawPrices = getPairPricesByDate(pair[0], pair[1], date)
     totalCost = 0
     totalVol = 0
     for rp in rawPrices:
         price = rp[10]
         volume = rp[12]
-        totalCost += price * volume
+        # average price is unweighted
+        totalCost += price
         totalVol += volume
     if totalVol != 0:
-        averagePrice = totalCost / totalVol
+        averagePrice = totalCost / len(rawPrices)
         saveAnalyticsValue(pairToStr(pair), date, "1", averagePrice)
         saveAnalyticsValue(pairToStr(pair), date, "2", totalVol)
     else:
         print("Total volume is zero for pair %s, date %s" % (pairToStr(pair), date))
 
-def calculateIndexPrices(indexPortfolio, startDate, stopDate):
-    startDateObj = datetime.strptime(startDate, '%Y-%m-%d')
-    stopDateObj = datetime.strptime(stopDate, '%Y-%m-%d')
-    dayCount = (stopDateObj - startDateObj).days + 1
-    pricesSum = [0 for i in range(dayCount)]
+def calculateUSDPrice(pair, date):
+    pairToBaseStr = baseCurrency2 + '-' + baseCurrency  # BTC to USD
+    pairStr = pair[0] + '-' + baseCurrency2             # X to BTC
+    basePrices = getAnalyticsValueForDateRange(pairToBaseStr, "1", date, date)
+    assetPrices = getAnalyticsValueForDateRange(pairStr, "1", date, date)
+
+    if len(basePrices) == 1 and len(assetPrices) == 1:
+        usdPrice = assetPrices[0] * basePrices[0]
+        saveAnalyticsValue(pair[0] + '-' + baseCurrency, date, "1", usdPrice)
+        #print("assetPrices[0] = %.20f" % (assetPrices[0]))
+        #print("basePrices[0] = %.20f" % (basePrices[0]))
+        #print("usdPrice = %.20f on %s" % (usdPrice, date))
+    else:
+        print("WARNING: No price for pair (%s) or (%s) on date %s" % (pairStr, pairToBaseStr, date))
+        pprint(assetPrices)
+        pprint(basePrices)
+
+def calculateIndexPrice(indexPortfolio, date):
+    indexPrice = 0
+    weightCount = 0
 
     for asset in indexPortfolio:
         pairStr = asset[0] + '-' + baseCurrency
         assetWeight = asset[1]
-        assetPrices = getAnalyticsValueForDateRange(pairStr, "1", startDate, stopDate)
-        if len(assetPrices) == dayCount:
-            pricesSum = [pricesSum[i] + assetPrices[i] * assetWeight for i in range(dayCount)]
+        assetPrices = getAnalyticsValueForDateRange(pairStr, "1", date, date)
 
-    return pricesSum
+        if len(assetPrices) == 0:
+            indexPrice += assetPrices[0] * assetWeight
+            weightCount += assetWeight
+        else:
+            print("WARNING: No base currency price for asset (%s) on date %s." % (asset[0], date))
+
+    indexPrice = indexPrice / weightCount
+    saveAnalyticsValue(indexName, date, "11", indexPrice)
 
 # Averate price and volume are calculated in a separate method
 # Calculate rest of formulas that are based on averate price and volume
@@ -210,18 +234,17 @@ def calculateFormulaForPair(pair, formula, date):
     stopDateStr = stopDate.strftime('%Y-%m-%d')
     assetPrices = getAnalyticsValueForDateRange(pairToStr(pair), "1", startDateStr, stopDateStr)
     index = calculateIndexPrices(baseIndex, startDateStr, stopDateStr)
-    market = calculateIndexPrices(marketIndex, startDateStr, stopDateStr)
 
     ##################################################
     # Calculate and save formula for date
 
-    if len(assetPrices) >= dayCount and len(index) >= dayCount and len(market) >= dayCount:
+    if len(assetPrices) >= dayCount and len(index) >= dayCount:
         # Volatility
         if formula == "3":
             value = af.getVolatility(assetPrices)
         # Alpha
         elif formula == "4":
-            value = af.getAlpha(assetPrices, index, market)
+            value = af.getAlpha(assetPrices, index)
         # Beta
         elif formula == "5":
             value = af.getBeta(assetPrices, index)
@@ -233,7 +256,7 @@ def calculateFormulaForPair(pair, formula, date):
             value = af.getWeightedVolatility(assetPrices)
         # Exponentially Weighted Alpha
         elif formula == "8":
-            value = af.getWeightedAlpha(assetPrices, index, market)
+            value = af.getWeightedAlpha(assetPrices, index)
         # Exponentially Weighted Beta
         elif formula == "9":
             value = af.getWeightedBeta(assetPrices, index)
@@ -244,17 +267,47 @@ def calculateFormulaForPair(pair, formula, date):
         saveAnalyticsValue(pairToStr(pair), date, formula, value)
     else:
         print("WARNING: No data for date " + date)
-        print("Data lengths: %d, %d, %d, (of %d)" % (len(assetPrices), len(index), len(market), dayCount))
+        print("Data lengths: %d, %d, (of %d)" % (len(assetPrices), len(index), dayCount))
 
 
 #def calculateFormulaForIndex(index, formula, date):
 
-
+timeStart = int(round(time.time()))
+print(timeStart)
 
 checkAnalyticsTable()
 
-# Calculate weighted average prices and total volumes
-# Iterate pairs
+################################################################################
+# Prepare data for index
+
+# Calculate prices for pairs used in index
+
+for asset in baseIndex:
+    pair1 = (asset[0], baseCurrency)
+    pair2 = (asset[0], baseCurrency2)
+    missingDates1 = getMissingAnalyticsDates(pairToStr(pair1), "1")
+    for date in missingDates1:
+        calculatePriceAndVolume(pair1, date)
+    missingDates2 = getMissingAnalyticsDates(pairToStr(pair2), "1")
+    for date in missingDates2:
+        calculatePriceAndVolume(pair2, date)
+
+# Calculate USD prices for pairs used in index based on their BTC prices
+
+for asset in baseIndex:
+    pair = (asset[0], baseCurrency)
+    missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
+    for date in missingDates:
+        calculateUSDPrice(pair, date)
+
+# Check data: Which index assets are still missing USD prices?
+for asset in baseIndex:
+    pair = (asset[0], baseCurrency)
+    missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
+    for date in missingDates:
+        print("ERROR: Missing USD price after all calculations for %s on %s" % (asset[0], date))
+
+# Calculate average prices and total volumes for important pairs (not necessarily used in idex)
 '''
 for pair in pairs:
     missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
@@ -262,7 +315,18 @@ for pair in pairs:
         calculatePriceAndVolume(pair, date)
 '''
 
+# Calculate index price
+'''
+missingDates = getMissingAnalyticsDates(indexName, "11")
+for date in missingDates:
+    calculateIndexPrice(baseIndex, date)
+'''
+
+################################################################################
+
+
 # Calculate the rest of formulas
+'''
 for formula in formulas:
     for pair in pairs:
         if formula not in ["1", "2"]:
@@ -270,6 +334,7 @@ for formula in formulas:
             for date in missingDates:
                 print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
                 calculateFormulaForPair(pair, formula, date)
+'''
 
 #saveAnalyticsValue("BTC-USD", "2018-03-16 12:00:00", "6", 0.2)
 #print(datetime.fromtimestamp(pricesStartDate, timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
@@ -285,3 +350,6 @@ if not ('DB_HOST' in os.environ.keys()) and ('DB_USER' in os.environ.keys()) and
     server.stop()
 
 print("done")
+timeStop = int(round(time.time()))
+duration = timeStop - timeStart
+print("Duration = %s s" % (str(duration)))
