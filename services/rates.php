@@ -1,37 +1,23 @@
 <?php
 
-//foreach ($argv as )
-
-// --sync allows to get latest feed for 24H, and --max gets all historic data
-if (in_array("--sync", $argv))
-    $mode = "sync";
-else
-    if (in_array("--max", $argv))
-        $mode = "max";
-    else
-        die("[ERROR] Please use --sync or --max flags!");
-
-// $mode = in_array("--sync", $argv) ? "sync" : "max";
-
-// 1 = two days vs. 3650 = 10 years
-// We'll get yesterday and one day before info with limit = 2
-$limit = $mode == "sync" ? 1 : 3650;
-
-// date_default_timezone_set("Europe/Moscow");
-// All data have to be stored in UTC time
-date_default_timezone_set("UTC");
+date_default_timezone_set("UTC"); // All data have to be stored in UTC time vs date_default_timezone_set("Europe/Moscow");
 
 $db = new PDO("mysql:host=localhost;dbname=crypto", "root", "usbw");
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // We have to see ERRORS
 if (!$db) die("\n[ERROR] Can't connect to DB!");
 
+// --sync allows to get latest feed for 24H, and --max gets all historic data
+if (in_array("--sync", $argv)) $mode = "sync";
+else if (in_array("--max", $argv)) $mode = "max";
+else die("[ERROR] Please use --sync or --max flags!");
+
+// 1 = two days vs. 3650 = 10 years = We'll get yesterday and one day before info with limit = 2
+$limit = $mode == "sync" ? 1 : 3650;
+
 $query = $db->prepare("INSERT IGNORE INTO rates (exchange, source, base, quote, period, date, price, open, high, low, close, quantity, volume, trades)
     VALUES (:exchange, :source, :base, :quote, :period, :date, :price, :open, :high, :low, :close, :quantity, :volume, :trades )");
 
 logger("rates", "--- Starting Rates Task ---");
-
-// Get most used crypto symbols from CryptoCompare
-// $crypto = getTopSymbols();
 
 // There are total 2325 symbols as of March 2018
 $crypto = getSymbols();
@@ -42,8 +28,13 @@ $fiats = ["USD", "CNY", "EUR", "JPY", "GBP", "RUB", "CAD", "SGD", "AUD", "CHF"];
 
 // Combine together
 $symbols = array_merge($crypto, $fiats);
-$exchanges = array_merge(getExchanges(), ["All" => "ALL"]);
+//$exchanges = array_merge(["All" => "ALL"], getExchanges());
+$exchanges = getExchanges(); // And there are CCCAGG as ALL
 $markets = getMarkets();
+
+// Get most used crypto symbols from CryptoCompare
+// ETH / XMR / ETC / ZEC / WAVES / BCH / DASH / BTC / XRP / LTC
+$topCoins = getTopSymbols();
 
 // !OPINIONATED Most popular crypto exchanges
 // Please see 24H trade volume and marketshare
@@ -57,9 +48,55 @@ $topex = ["Binance" => "Binance", "Huobi" => "Huobi", "Bitfinex" => "Bitfinex",
 $exchanges = array_merge($topex, ["All" => "ALL"]);
 */
 
+
+// -----------------------------------------------------------------------------------------------
+// NB! Very special case for aggregated data - TOP Cryptos for TOP Fiats
+// -----------------------------------------------------------------------------------------------
+
+    $ex = "CCCAGG";
+
+    foreach ($topCoins as $base) {
+        foreach ($fiats as $quote) {
+
+            logger("rates", "$ex :: $base/$quote");
+            $yesterday = (new DateTime("-1 day"))->format("Y-m-d");
+            $rates = getRates($base, $quote, $yesterday, "DAY", $ex, $limit);
+            if (!is_array($rates)) continue;
+
+            try {
+            $db->beginTransaction();
+                foreach ($rates as $row) {
+                    if (!$row->open && !$row->close) continue;
+                    if (!$row->volumeto || !$row->volumefrom) continue;
+                    $date = DateTime::createFromFormat("U", $row->time);
+                    $date = $date->format("Y-m-d H:i:s");
+                    $price = $row->volumeto / $row->volumefrom;
+                    $query->execute([
+                        "exchange" => "ALL", "source" => "CRYPTOCOMPARE", "base" => strtoupper($base), "quote" => strtoupper($quote),
+                        "period" => "DAY", "date" => $date, "price" => $price, "open" => $row->open, "high" => $row->high, "low" => $row->low, "close" => $row->close,
+                        "quantity" => $row->volumefrom, "volume" => $row->volumeto, "trades" => null
+                    ]);
+                }
+                $db->commit();
+            } catch(Exception $e) {
+                if (strpos($e->getMessage(), "SQLSTATE[23000]") != false) {
+                    echo $e->getMessage();
+                    logger("rates", $e->getMessage());
+                }
+                $db->commit();
+            }
+        }
+    }
+
+
+// ----------------------------------------------------------------------------------------------------------------------------------------
+
 foreach ($exchanges as $ex) {
 
     $ex = strtoupper($ex);
+
+    // We already gathered all information for CCCAGG earlier
+    if ($ex == "CCCAGG") continue;
 
     foreach ($symbols as $base) {
         foreach ($symbols as $quote) {
