@@ -3,19 +3,30 @@
 //foreach ($argv as )
 
 // --sync allows to get latest feed for 24H, and --max gets all historic data
-$mode = in_array("--sync", $argv) ? "sync" : "max";
+if (in_array("--sync", $argv))
+    $mode = "sync";
+else
+    if (in_array("--max", $argv))
+        $mode = "max";
+    else
+        die("[ERROR] Please use --sync or --max flags!");
 
-// 1 = one day vs. 3650 = 10 years
+// $mode = in_array("--sync", $argv) ? "sync" : "max";
+
+// 1 = two days vs. 3650 = 10 years
+// We'll get yesterday and one day before info with limit = 2
 $limit = $mode == "sync" ? 1 : 3650;
 
 // date_default_timezone_set("Europe/Moscow");
 // All data have to be stored in UTC time
 date_default_timezone_set("UTC");
 
-$db = connect2db();
-$query = insertQuery($db);
-
+$db = new PDO("mysql:host=localhost;dbname=crypto", "root", "usbw");
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // We have to see ERRORS
 if (!$db) die("\n[ERROR] Can't connect to DB!");
+
+$query = $db->prepare("INSERT IGNORE INTO rates (exchange, source, base, quote, period, date, price, open, high, low, close, quantity, volume, trades)
+    VALUES (:exchange, :source, :base, :quote, :period, :date, :price, :open, :high, :low, :close, :quantity, :volume, :trades )");
 
 logger("rates", "--- Starting Rates Task ---");
 
@@ -245,36 +256,8 @@ function getRates($base, $quote, $date, $period = "DAY", $exchange = "ALL", $lim
 
 }
 
-function connect2db() {
-
-    $host = "localhost";
-    $name = "crypto";
-    $user = "root";
-    //$pass = "usbw";
-    $pass = "pan01MAT1";
-
-    $db = new PDO("mysql:host=$host;dbname=$name","$user","$pass");
-
-    // We have to see ERRORS
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    return $db;
-}
-
 function insertQuery($db) {
 
-    return $db->prepare("
-    insert into rates
-        (exchange, source,
-        base, quote, period, date,
-        price, open, high, low, close,
-        quantity, volume, trades)
-    values
-        (:exchange, :source,
-        :base, :quote, :period, :date,
-        :price, :open, :high, :low, :close,
-        :quantity, :volume, :trades
-        )");
 
 }
 
