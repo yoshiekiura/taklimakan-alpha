@@ -256,11 +256,6 @@ function getRates($base, $quote, $date, $period = "DAY", $exchange = "ALL", $lim
 
 }
 
-function insertQuery($db) {
-
-
-}
-
 // Log working progress
 // C:\Users\SGOTSU~1\AppData\Local\Temp\rates.log
 function logger($file, $string) {
