@@ -21,6 +21,13 @@ def plotArray(y):
     plt.plot(x, y)
     plt.show()
 
+def plotArray2(y1, y2):
+    x = [i for i in range(len(y1))]
+    plt.plot(x, y1)
+    plt.plot(x, y2)
+    plt.show()
+
+
 ######################################################################
 # DB and tables
 db_name = "crypto"
@@ -105,7 +112,7 @@ def saveToFile(fileName, data, startDate):
 ######################################################################
 # Analytics calculation
 
-
+'''
 price  = getAnalyticsValueForDateRange("ETH-USD", "1", "2017-12-01", "2018-03-15")
 volume = getAnalyticsValueForDateRange("ETH-USD", "2", "2017-12-01", "2018-03-15")
 volatility = getAnalyticsValueForDateRange("ETH-USD", "3", "2018-02-02", "2018-03-15")
@@ -129,16 +136,17 @@ saveToFile("ewvolatility.csv", ewvolatility, "2018-02-02")
 saveToFile("ewalpha.csv", ewalpha, "2018-02-02")
 saveToFile("ewbeta.csv", ewbeta, "2018-02-02")
 saveToFile("ewsharpe.csv", ewsharpe, "2018-02-02")
+'''
 
-# save indexes
+# save index
+price  = getAnalyticsValueForDateRange("ETH-USD", "1", "2017-12-01", "2018-03-15")
 index = calculateIndexPrices(baseIndex, "2017-12-01", "2018-03-15")
-market = calculateIndexPrices(marketIndex, "2017-12-01", "2018-03-15")
-
 saveToFile("index.csv", index, "2017-12-01")
-saveToFile("market.csv", market, "2017-12-01")
 
 
 #weight = [af.weightFunc(i) for i in range(60)]
 
 
-plotArray(alpha)
+#plotArray(index)
+price = [price[i] * index[0]/price[0] for i in range(len(price))]
+plotArray2(index, price)
