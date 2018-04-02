@@ -1,8 +1,18 @@
 <?php
 
+// CRONTAB: 0 17    * * *   root    php /var/www/services/rates.php --sync &
+// CLI RUN: php /var/www/services/rates.php --sync &
+
 date_default_timezone_set("UTC"); // All data have to be stored in UTC time vs date_default_timezone_set("Europe/Moscow");
 
-$db = new PDO("mysql:host=localhost;dbname=crypto", "root", "usbw");
+// There are different field set between Ubuntu and Windows 10
+// Ubuntu 17 : ["USER"] => "tkln" vs Windows 10 : ["USERNAME"] => "sgotsulyak"
+
+if(isset($_SERVER['USERNAME']) && $_SERVER['USERNAME'] == 'sgotsulyak')
+    $db = new PDO("mysql:host=localhost;dbname=crypto", "root", "usbw");
+else
+    $db = new PDO("mysql:host=localhost;dbname=crypto", "root", "pan01MAT1");
+
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // We have to see ERRORS
 if (!$db) die("\n[ERROR] Can't connect to DB!");
 
@@ -48,6 +58,9 @@ $topex = ["Binance" => "Binance", "Huobi" => "Huobi", "Bitfinex" => "Bitfinex",
 $exchanges = array_merge($topex, ["All" => "ALL"]);
 */
 
+// Some exchanges do not alive for long time. Do not waste time on --sync
+// select exchange, max(date) from rates group by exchange / Not Yet Dead : BIT2C HUOBI LUNO
+$dead = ['BTC38', 'BTCE', 'BTER', 'CCEDK', 'CHBTC', 'COINSE', 'COINSETTER', 'CRYPTSY', 'JUBI', 'MONETAGO' ,'NOVAEXCHANGE', 'VIABTC', 'YACUNA', 'YUNBI'];
 
 // -----------------------------------------------------------------------------------------------
 // NB! Very special case for aggregated data - TOP Cryptos for TOP Fiats
@@ -94,6 +107,9 @@ $exchanges = array_merge($topex, ["All" => "ALL"]);
 foreach ($exchanges as $ex) {
 
     $ex = strtoupper($ex);
+
+    // Does exchange alive and there fresh datd on CryptoCompare ?
+    if ($mode == 'sync' && in_array($dead, $ex)) continue;
 
     // We already gathered all information for CCCAGG earlier
     if ($ex == "CCCAGG") continue;
@@ -270,7 +286,6 @@ function getSymbols() {
 
     return $symbols;
 }
-
 
 // Get rates for crypto pair
 // Limit of 3650 is useful to get daily historical data for the last 10 years since the Bitcoin appeared
