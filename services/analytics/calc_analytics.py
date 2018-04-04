@@ -136,7 +136,7 @@ def getMissingAnalyticsDates(pair, type_id):
     # "Invert" present dates to get missing dates
     missingDatesStr = []
     curDate = startDate
-    while curDate <= datetime.now():
+    while curDate <= datetime.now() - timedelta(days=1):
         if curDate.strftime('%Y-%m-%d') not in datesStr:
             missingDatesStr.append(curDate.strftime('%Y-%m-%d'))
         curDate += timedelta(days=1)
