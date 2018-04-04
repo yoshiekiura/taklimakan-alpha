@@ -176,6 +176,8 @@ def calculatePriceAndVolume(pair, date):
 def calculatePriceAndVolumeRange(pair, dateList):
     # Get all prices and volumes for given dates
     pprint(pair)
+    if len(dateList) == 0:
+        return []
     rawPrices = getPairPricesByDateRange(pair[0], pair[1], dateList)
 
     # structurize data into days
