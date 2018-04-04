@@ -309,7 +309,7 @@ def calculateFormulaForPair(pair, formula, date):
     startDateStr = startDate.strftime('%Y-%m-%d')
     stopDateStr = stopDate.strftime('%Y-%m-%d')
     assetPrices = getAnalyticsValueForDateRange(pairToStr(pair), "1", startDateStr, stopDateStr)
-    index = calculateIndexPrices(baseIndex, startDateStr, stopDateStr)
+    index = getAnalyticsValueForDateRange(pairToStr(pair), "11", startDateStr, stopDateStr)
 
     ##################################################
     # Calculate and save formula for date
