@@ -188,7 +188,7 @@ def calculatePriceAndVolumeRange(pair, dateList):
         exchange = rp[5]
 
         # Arrange data by date buckets
-        if date in totalVol.keys():
+        if date in volumes.keys():
             prices[date][exchange] = price
             volumes[date][exchange] = volume
         else:
@@ -198,7 +198,7 @@ def calculatePriceAndVolumeRange(pair, dateList):
             volumes[date][exchange] = volume
 
     # For each day select top 10 exchanges
-    for date in totalVol.keys():
+    for date in volumes.keys():
         volumes[date] = sorted(volumes[date], key=volumes[date].get, reverse=True)[:10]
         prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() }
         pprint("Top 10 volues: ")
