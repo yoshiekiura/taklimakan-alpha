@@ -1,0 +1,41 @@
+
+        var data11 = {{ crypto_index|json_encode|raw }};
+        var dataTable11 = anychart.data.table();
+        dataTable11.addData(data11);
+        var chart11 = anychart.stock();
+
+        //chart11.title("Index Crypto 100");
+
+        var credits11 = chart11.credits();
+        credits11.enabled(false);
+
+        var plot11 = chart11.plot(0);
+        plot11.line()
+        //plot.column()
+            .data(dataTable11.mapAs({'value': 1}))
+            .name('Index Crypto 100')
+            //.fill('#1976d2 0.65')
+            //.stroke('1.75 #1976d2')
+            //.stroke('1.75 #564fd9')
+            .stroke('2 #564fd9')
+            //.tooltip(false)
+            ;
+
+        chart11.container('index-chart');
+        chart11.draw();
+
+        var rangeSelector11 = anychart.ui.rangeSelector();
+
+                    var ranges = [
+                        { 'type' : 'unit', 'unit' : 'day', 'count' : 7, 'text' : 'Week' },
+                        { 'type' : 'unit', 'unit' : 'month', 'count' : 1, 'text' : 'Month' },
+                        { 'type' : 'unit', 'unit' : 'month', 'count' : 3, 'text' : 'Quarter' },
+                        { 'type' : 'unit', 'unit' : 'year', 'count' : 1, 'text' : 'Year' },
+                        { 'type': 'max', 'text': 'All' },
+                    ];
+
+
+
+    rangeSelector11.ranges(ranges);
+    rangeSelector11.target(chart11);
+    rangeSelector11.render(document.getElementById("index-range-selector"));
