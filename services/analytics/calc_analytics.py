@@ -8,6 +8,7 @@ import time
 from datetime import datetime, timezone, timedelta
 import aformulas as af
 from config import *
+import operator
 
 # sudo pip install sshtunnel
 import sshtunnel
