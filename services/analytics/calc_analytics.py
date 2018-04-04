@@ -221,7 +221,7 @@ def calculatePriceAndVolumeRange(pair, dateList):
     # Check if we got all prices
     result = True
     for date in dateList:
-        if date not in totalVol.keys() or totalVol[date] == 0:
+        if date not in volumes.keys():
             print("Total volume is zero for pair %s, date %s" % (pairToStr(pair), date))
             result = False
     return result
