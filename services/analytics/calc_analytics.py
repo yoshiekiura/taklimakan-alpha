@@ -75,7 +75,6 @@ def getPairPricesByDateRange(pair_base, pair_quote, dateList):
     dateList = ["'" + date + "'" for date in dateList]
     dateListStr = ','.join(dateList)
     query = "SELECT base, quote, DATE(date) as dt, close, volume, exchange FROM %s where base = '%s' and quote = '%s' and DATE(date) in (%s);" % (price_table, pair_base, pair_quote, dateListStr)
-    print(query)
     cursor.execute(query)
     retval = cursor.fetchall()
     cursor.close()
@@ -202,10 +201,17 @@ def calculatePriceAndVolumeRange(pair, dateList):
     for date in totalVol.keys():
         volumes[date] = sorted(volumes[date], key=volumes[date].get, reverse=True)[:10]
         prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() }
+        pprint("Top 10 volues: ")
+        pprint(volumes)
+        pprint("Top 10 prices: ")
+        pprint(prices)
 
         # Aggregate average price for each day
         averagePrice = float(sum(prices[date].values())) / len(prices[date])
         totalVolume = float(sum(volumes[date].values()))
+        print("averagePrice = " + str(averagePrice))
+        print("totalVolume = " + str(totalVolume))
+
         saveAnalyticsValue(pairToStr(pair), date, "1", averagePrice)
         saveAnalyticsValue(pairToStr(pair), date, "2", totalVolume)
 
