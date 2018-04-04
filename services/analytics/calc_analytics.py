@@ -234,24 +234,32 @@ def calculateUSDPrice(pair, date):
         pprint(assetPrices)
         pprint(basePrices)
 
-lastPrice = {}
+def getExtrapolatedAssetPrice(pairStr, date):
+    # Create date range
+    dateEnd = datetime.strptime(date, '%Y-%m-%d')
+    dateStart = dateEnd - timedelta(days=8)
+    dateStartStr = datetime.fromtimestamp(dateStart, timezone.utc).strftime('%Y-%m-%d')
+    for i in range(8):
+        dtObj = dateEnd - timedelta(days=i)
+        dtStr = datetime.fromtimestamp(dtObj, timezone.utc).strftime('%Y-%m-%d')
+        assetPrices = getAnalyticsValueForDateRange(pairStr, "1", dtStr, dtStr)
+        if len(assetPrices) != 0:
+            if (i != 0):
+                print("WARNING: No base currency price for asset (%s) on date %s. Using extrapolation." % (pairStr, date))
+            return assetPrices
+    return []
+
 def calculateIndexPrice(indexPortfolio, date):
-    global lastPrice
     indexPrice = 0
     weightCount = 0
 
     for asset in indexPortfolio:
         pairStr = asset[0] + '-' + baseCurrency
         assetWeight = asset[1]
-        assetPrices = getAnalyticsValueForDateRange(pairStr, "1", date, date)
+        assetPrices = getExtrapolatedAssetPrice(pairStr, date)
 
         if len(assetPrices) != 0:
             indexPrice += assetPrices[0] * assetWeight
-            weightCount += assetWeight
-            lastPrice[asset[0]] = assetPrices[0]
-        elif asset[0] in lastPrice.keys():
-            print("WARNING: No base currency price for asset (%s) on date %s. Using extrapolation." % (asset[0], date))
-            indexPrice += lastPrice[asset[0]] * assetWeight
             weightCount += assetWeight
         else:
             print("WARNING: No base currency price for asset (%s) on date %s." % (asset[0], date))
