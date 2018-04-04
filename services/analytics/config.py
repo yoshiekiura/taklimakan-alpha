@@ -41,7 +41,10 @@ riskFreeRate = 0.014 / 365.25
 baseCurrency = "USD"
 baseCurrency2 = "BTC"
 indexName = "INDEX001"
+
 baseIndex = [
+    ("BTC", 0.01),
+
     #("QSP", 0.01), # There is data, but this is extra asset
     #("AGI", 0.01),
     ("GAME", 0.01),
@@ -170,6 +173,5 @@ baseIndex = [
     ("LTC", 0.01),
     ("BCH", 0.01),
     ("XRP", 0.01),
-    ("ETH", 0.01),
-    ("BTC", 0.01)
+    ("ETH", 0.01)
 ]
