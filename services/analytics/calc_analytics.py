@@ -378,7 +378,7 @@ for asset in baseIndex:
     for i in range(len(missingDates) - 1):
         prevDateObj = datetime.strptime(missingDates[i], '%Y-%m-%d')
         dateObj = datetime.strptime(missingDates[i+1], '%Y-%m-%d')
-        cutOff = datetime.strptime("2018-03-16", '%Y-%m-%d')
+        cutOff = datetime.strptime("2018-04-02", '%Y-%m-%d')
 
         if (dateObj < cutOff):
             if (prevDateObj + timedelta(days=1)) == dateObj:
@@ -402,11 +402,11 @@ for pair in pairs:
 '''
 
 # Calculate index price
-
+'''
 missingDates = getMissingAnalyticsDates(indexName, "11")
 for date in missingDates:
     calculateIndexPrice(baseIndex, date)
-
+'''
 
 ################################################################################
 

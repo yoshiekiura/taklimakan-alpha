@@ -139,14 +139,15 @@ saveToFile("ewsharpe.csv", ewsharpe, "2018-02-02")
 '''
 
 # save index
-price  = getAnalyticsValueForDateRange("ETH-USD", "1", "2017-12-01", "2018-03-15")
+btcprice  = getAnalyticsValueForDateRange("BTC-USD", "1", "2017-12-01", "2018-03-15")
 index = calculateIndexPrices(baseIndex, "2017-12-01", "2018-03-15")
 saveToFile("index.csv", index, "2017-12-01")
+saveToFile("bt_price.csv", btcprice, "2017-12-01")
 
 
 #weight = [af.weightFunc(i) for i in range(60)]
 
 
 #plotArray(index)
-price = [price[i] * index[0]/price[0] for i in range(len(price))]
+price = [btcprice[i] * index[0]/btcprice[0] for i in range(len(btcprice))]
 plotArray2(index, price)
