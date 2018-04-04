@@ -202,19 +202,10 @@ def calculatePriceAndVolumeRange(pair, dateList):
     for date in volumes.keys():
         volumes[date] = dict(sorted(volumes[date].items(), key=operator.itemgetter(1), reverse=True)[:min(10, len(volumes[date]))])
         prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() }
-        pprint("Date:")
-        pprint(date)
-        pprint("Top 10 volues: ")
-        pprint(volumes[date])
-        pprint("Top 10 prices: ")
-        pprint(prices[date])
 
         # Aggregate average price for each day
         averagePrice = float(sum(prices[date].values())) / len(prices[date])
         totalVolume = float(sum(volumes[date].values()))
-        print("averagePrice = " + str(averagePrice))
-        print("totalVolume = " + str(totalVolume))
-
         saveAnalyticsValue(pairToStr(pair), date, "1", averagePrice)
         saveAnalyticsValue(pairToStr(pair), date, "2", totalVolume)
 
@@ -222,7 +213,7 @@ def calculatePriceAndVolumeRange(pair, dateList):
     result = True
     for date in dateList:
         if date not in volumes.keys():
-            print("Total volume is zero for pair %s, date %s" % (pairToStr(pair), date))
+            #print("Total volume is zero for pair %s, date %s" % (pairToStr(pair), date))
             result = False
     return result
 
