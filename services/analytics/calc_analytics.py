@@ -74,11 +74,7 @@ def getPairPricesByDateRange(pair_base, pair_quote, dateList):
     cursor = db.cursor()
     dateList = ["'" + date + "'" for date in dateList]
     dateListStr = ','.join(dateList)
-    limit = topExchangeCount * len(dateList)
-
-    #select DATE(date) as dt, AVG(close) from rates where base = 'MNX' and quote = 'USD' and exchange in (select distinct(exchange) from rates order by volume ) group by date;
-
-    query = "SELECT base, quote, DATE(date) as dt, close, volume FROM %s where base = '%s' and quote = '%s' and DATE(date) in (%s) ORDER BY volume desc LIMIT %d;" % (price_table, pair_base, pair_quote, dateListStr, limit)
+    query = "SELECT base, quote, DATE(date) as dt, close, volume, exchange FROM %s where base = '%s' and quote = '%s' and DATE(date) in (%s);" % (price_table, pair_base, pair_quote, dateListStr)
     print(query)
     cursor.execute(query)
     retval = cursor.fetchall()
@@ -178,37 +174,45 @@ def calculatePriceAndVolume(pair, date):
     return False
 
 def calculatePriceAndVolumeRange(pair, dateList):
-    # Get prices and volumes from top 10 exchanges
+    # Get all prices and volumes for given dates
     pprint(pair)
     rawPrices = getPairPricesByDateRange(pair[0], pair[1], dateList)
-    pprint(rawPrices)
-    totalCost = {}
-    totalVol = {}
-    priceCount = {}
+
+    # structurize data into days
+    prices = {}
+    volumes = {}
     for rp in rawPrices:
         # base, quote, DATE(date) as dt, price, volume
         price = rp[3]
         volume = rp[4]
         date = rp[2]
+        exchange = rp[5]
 
         # Arrange data by date buckets
         if date in totalVol.keys():
-            totalCost[date] += price
-            totalVol[date] += volume
-            priceCount[date] += 1
+            prices[date][exchange] = price
+            volumes[date][exchange] = volume
         else:
-            totalCost[date] = price
-            totalVol[date] = volume
-            priceCount[date] = 1
+            prices[date] = {}
+            volumes[date] = {}
+            prices[date][exchange] = price
+            volumes[date][exchange] = volume
 
+    # For each day select top 10 exchanges
+    for date in totalVol.keys():
+        volumes[date] = sorted(volumes[date], key=volumes[date].get, reverse=True)[:10]
+        prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() }
+
+        # Aggregate average price for each day
+        averagePrice = float(sum(prices[date].values())) / len(prices[date])
+        totalVolume = float(sum(volumes[date].values()))
+        saveAnalyticsValue(pairToStr(pair), date, "1", averagePrice)
+        saveAnalyticsValue(pairToStr(pair), date, "2", totalVolume)
+
+    # Check if we got all prices
     result = True
     for date in dateList:
-        if date in totalVol.keys() and totalVol[date] != 0:
-            # average price is unweighted
-            averagePrice = totalCost[date] / priceCount[date]
-            saveAnalyticsValue(pairToStr(pair), date, "1", averagePrice)
-            saveAnalyticsValue(pairToStr(pair), date, "2", totalVol[date])
-        else:
+        if date not in totalVol.keys() or totalVol[date] == 0:
             print("Total volume is zero for pair %s, date %s" % (pairToStr(pair), date))
             result = False
     return result
@@ -355,21 +359,22 @@ for asset in baseIndex:
             calculateUSDPrice(pair1, date)
 '''
 
-'''
+
 for asset in baseIndex:
     pair1 = (asset[0], baseCurrency)
     pair2 = (asset[0], baseCurrency2)
     missingDates1 = getMissingAnalyticsDates(pairToStr(pair1), "1")
     if not calculatePriceAndVolumeRange(pair1, missingDates1):
         # Calculate USD prices for pairs used in index based on their BTC prices
-        calculatePriceAndVolumeRange(pair2, missingDates1)
-    for date in missingDates1:
-        calculateUSDPrice(pair1, date)
-'''
+        missingDates2 = getMissingAnalyticsDates(pairToStr(pair1), "1")
+        calculatePriceAndVolumeRange(pair2, missingDates2)
+        for date in missingDates2:
+            calculateUSDPrice(pair1, date)
+
 
 # Check data: Which index assets are still missing USD prices more than maxDataGap?
 print("Index length = ", len(baseIndex))
-
+'''
 for asset in baseIndex:
     pair = (asset[0], baseCurrency)
     missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
@@ -391,7 +396,7 @@ for asset in baseIndex:
         #print("ERROR: Missing USD price after all calculations for %s (more than maxDataGap days in a row)" % (asset[0]))
         print(asset[0])
         #pprint(missingDates)
-
+'''
 
 # Calculate average prices and total volumes for important pairs (not necessarily used in idex)
 '''
