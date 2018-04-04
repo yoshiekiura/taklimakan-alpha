@@ -239,11 +239,10 @@ def calculateUSDPrice(pair, date):
 def getExtrapolatedAssetPrice(pairStr, date):
     # Create date range
     dateEnd = datetime.strptime(date, '%Y-%m-%d')
-    dateStart = dateEnd - timedelta(days=8)
-    dateStartStr = datetime.fromtimestamp(dateStart, timezone.utc).strftime('%Y-%m-%d')
     for i in range(8):
         dtObj = dateEnd - timedelta(days=i)
-        dtStr = datetime.fromtimestamp(dtObj, timezone.utc).strftime('%Y-%m-%d')
+        dtTs = time.mktime(dtObj.timetuple())
+        dtStr = datetime.fromtimestamp(dtTs, timezone.utc).strftime('%Y-%m-%d')
         assetPrices = getAnalyticsValueForDateRange(pairStr, "1", dtStr, dtStr)
         if len(assetPrices) != 0:
             if (i != 0):
@@ -350,6 +349,7 @@ def calculateFormulaForPair(pair, formula, date):
 
 timeStart = int(round(time.time()))
 print(timeStart)
+
 
 checkAnalyticsTable()
 
