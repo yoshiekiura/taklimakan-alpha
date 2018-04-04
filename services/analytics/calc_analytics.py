@@ -407,20 +407,19 @@ for asset in baseIndex:
         #pprint(missingDates)
 
 
-# Calculate average prices and total volumes for important pairs (not necessarily used in idex)
-
-for pair in pairs:
-    missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
-    for date in missingDates:
-        calculatePriceAndVolume(pair, date)
-
-
 # Calculate index price
 
 missingDates = getMissingAnalyticsDates(indexName, "11")
 for date in missingDates:
     calculateIndexPrice(baseIndex, date)
 
+
+# Calculate average prices and total volumes for important pairs (not necessarily used in idex)
+
+for pair in pairs:
+    missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
+    for date in missingDates:
+        calculatePriceAndVolume(pair, date)
 
 ################################################################################
 

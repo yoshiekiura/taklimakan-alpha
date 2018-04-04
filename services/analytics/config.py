@@ -17,7 +17,7 @@ pricesStartDate = "2017-12-01"
 # If set, it will calculate analytics for all dates starting from pricesStartDate
 # plus data windows. Otherwise, it will calculate only starting from backDays
 # back from now
-calculateAllDates = False
+calculateAllDates = True
 backDays = 3
 
 # Maximum number of days price data is extrapolated
