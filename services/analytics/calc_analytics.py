@@ -199,7 +199,7 @@ def calculatePriceAndVolumeRange(pair, dateList):
 
     # For each day select top 10 exchanges
     for date in volumes.keys():
-        volumes[date] = dict(sorted(volumes[date], key=volumes[date].get, reverse=True)[:min(10, len(volumes[date]))])
+        volumes[date] = dict(sorted(volumes[date].items(), key=operator.itemgetter(1), reverse=True)[:min(10, len(volumes[date]))])
         prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() }
         pprint("Top 10 volues: ")
         pprint(volumes)
