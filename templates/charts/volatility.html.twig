@@ -1,0 +1,30 @@
+
+        var data2 = {{ volatility|json_encode|raw }};
+        var dataTable2 = anychart.data.table();
+        dataTable2.addData(data2);
+        var chart2 = anychart.stock();
+
+        //chart2.title("Bitcoin Volatility");
+
+        var credits2 = chart2.credits();
+        credits2.enabled(false);
+
+        var plot2 = chart2.plot(0);
+        plot2.line()
+        //plot.column()
+            .data(dataTable2.mapAs({'value': 1}))
+            .name('Volatility')
+            //.fill('#1976d2 0.65')
+            //.stroke('1.75 #1976d2')
+            //.tooltip(false)
+            .stroke('2 #564fd9')
+            ;
+
+        chart2.container('volatility-chart');
+        chart2.draw();
+
+        var rangeSelector2 = anychart.ui.rangeSelector();
+
+    rangeSelector2.ranges(ranges);
+    rangeSelector2.target(chart2);
+    rangeSelector2.render(document.getElementById("volatility-range-selector"));

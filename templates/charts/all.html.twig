@@ -1,0 +1,158 @@
+{% extends 'charts/charts.html.twig' %}
+
+{% block chart %}
+
+
+<div class="container">
+   <div class="row">
+       <div class="col-xl-12">
+           <div class="news-header">
+                <h2>Analytics</h2>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="#">Taklimakan</a></li>
+                    <li class="list-inline-item">/</li>
+                    <li class="list-inline-item">Analytics</li>
+                </ul>
+                <p>This is the Analytics section. In this section, we have selected for you the most delicious suggestions to explore. Only the most recent material from professional authors you will find here</p>
+            </div>
+       </div>
+       <div class="col-xl-2 d-sm">
+       </div>
+   </div>
+</div>
+
+
+<style>
+.btn-custom-group .btn-secondary {
+    background-color: #5833ed;
+    border-color: #5833ed;
+}
+
+.btn-custom-group .btn-secondary:not(:disabled):not(.disabled).active,
+.btn-custom-group .btn-secondary:not(:disabled):not(.disabled):active,
+.btn-custom-group .show>.btn-secondary.dropdown-toggle {
+    box-shadow: 0 0 0 0.2rem rgba(130, 16, 227, 0.5);
+    background-color: #4b29d4;
+    border-color: #4b29d4;
+}
+
+.btn-secondary.focus,
+.btn-secondary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(130, 16, 227, 0.5);
+}
+
+.btn-custom-group .btn-secondary:not(:disabled):not(.disabled).active:focus,
+.btn-custom-group .btn-secondary:not(:disabled):not(.disabled):active:focus,
+.btn-custom-group .show>.btn-secondary.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.2rem rgba(130, 16, 227, 0.5);
+}
+</style>
+
+<div class="container">
+<div class="row">
+            <div class="col-xl-12 text-center">
+                <div class="btn-group btn-custom-group" role="group" aria-label="Basic example">
+                  <button type="button" class="btn btn-secondary" onclick="location.href='?symbol=BTC';">&nbsp;BTC&nbsp;</button>
+                  <button type="button" class="btn btn-secondary" onclick="location.href='?symbol=ETH';">&nbsp;ETH&nbsp;</button>
+                  <button type="button" class="btn btn-secondary" onclick="location.href='?symbol=LTC';">&nbsp;LTC&nbsp;</button>
+                </div>
+            </div>
+</div>
+</div>
+
+<div class="container">
+
+
+    <style>
+        #price-chart { width: 100%; height: 600px; }
+        #volatility-chart, #alpha-chart, #beta-chart, #index-chart, #sharpe-chart { width: 100%; height: 500px; }
+        #range-selector, #volatility-range-selector, #alpha-range-selector, #beta-range-selector,
+        #index-range-selector, #sharpe-range-selector { text-align: right; padding: 20px 20px 0px 0px; }
+    </style>
+
+    <h1 style="margin-top: 50px">Price</h1>
+
+    <div id="price-chart">
+        <div id="range-selector"></div>
+    </div>
+
+
+    <h1 style="margin-top: 100px;">Index Crypto 100</h1>
+
+    <div id="index-chart">
+        <div id="index-range-selector"></div>
+    </div>
+
+
+    <div style="clear: both">
+    <h1 style="margin-top: 100px;">Volatility</h1>
+    </div>
+
+    <div id="volatility-chart">
+        <div id="volatility-range-selector"></div>
+    </div>
+
+    <h1 style="margin-top: 100px;">Alpha</h1>
+
+    <div id="alpha-chart">
+        <div id="alpha-range-selector"></div>
+    </div>
+
+    <h1 style="margin-top: 100px;">Beta</h1>
+
+    <div id="beta-chart">
+        <div id="beta-range-selector"></div>
+    </div>
+
+
+    <h1 style="margin-top: 100px;">Sharpe Ratio</h1>
+
+    <div id="sharpe-chart">
+        <div id="sharpe-range-selector"></div>
+    </div>
+
+
+
+
+    <script>
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        anychart.licenseKey('lar.fm-99e7e246-4b5d8f8b');
+
+    // $( document ).ready(function() {
+    //alert('OK!');
+
+    anychart.onDocumentReady(function () {
+
+        //anychart.theme('lightGlamour');
+
+        // The data used in this sample can be obtained from the CDN
+        // https://cdn.anychart.com/csv-data/msft-daily-short.js
+        // https://cdn.anychart.com/csv-data/orcl-daily-short.js
+        // https://cdn.anychart.com/csv-data/csco-daily-short.js
+        // https://cdn.anychart.com/csv-data/ibm-daily-short.js
+
+        var ranges = [
+            { 'type' : 'unit', 'unit' : 'day', 'count' : 7, 'text' : 'Week' },
+            { 'type' : 'unit', 'unit' : 'month', 'count' : 1, 'text' : 'Month' },
+            { 'type' : 'unit', 'unit' : 'month', 'count' : 3, 'text' : 'Quarter' },
+            { 'type' : 'unit', 'unit' : 'year', 'count' : 1, 'text' : 'Year' },
+            { 'type': 'max', 'text': 'All' },
+        ];
+
+        {% include '/charts/price.html.twig' %}
+        {% include '/charts/crypto-index.html.twig' %}
+        {% include '/charts/volatility.html.twig' %}
+        {% include '/charts/alpha.html.twig' %}
+        {% include '/charts/beta.html.twig' %}
+        {% include '/charts/sharpe.html.twig' %}
+
+    }); // jQuery or DOMContentLoaded
+
+    </script>
+
+</div>
+
+{% endblock %}

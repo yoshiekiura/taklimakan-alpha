@@ -1,0 +1,31 @@
+
+        var data6 = {{ sharpe|json_encode|raw }};
+        var dataTable6 = anychart.data.table();
+        dataTable6.addData(data6);
+        var chart6 = anychart.stock();
+
+        //chart6.title("Sharpe Ratio");
+
+        var credits6 = chart6.credits();
+        credits6.enabled(false);
+
+        var plot6 = chart6.plot(0);
+        plot6.line()
+        //plot.column()
+            .data(dataTable6.mapAs({'value': 1}))
+            .name('Sharpe Ratio')
+            //.fill('#1976d2 0.65')
+            //.stroke('1.75 #1976d2')
+            //.stroke('1.75 #564fd9')
+            .stroke('2 #564fd9')
+            //.tooltip(false)
+            ;
+
+        chart6.container('sharpe-chart');
+        chart6.draw();
+
+        var rangeSelector6 = anychart.ui.rangeSelector();
+
+    rangeSelector6.ranges(ranges);
+    rangeSelector6.target(chart6);
+    rangeSelector6.render(document.getElementById("sharpe-range-selector"));

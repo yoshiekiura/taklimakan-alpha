@@ -1,21 +1,22 @@
-
 ###> symfony/framework-bundle ###
+###> symfony/web-server-bundle ###
+
 .env
+.env.dist
+.web-server-pid
+
 /public/bundles/
 /var/
 /vendor/
-###< symfony/framework-bundle ###
-
-###> symfony/web-server-bundle ###
-.web-server-pid
-###< symfony/web-server-bundle ###
-
-.env.dist
 /bin
 /config
+/services/local_config.py
+/temp
+/tmp
 
 __pycache__
-/services/local_config.py
 
 *.csv
 *.xlsx
+temp
+tmp
