@@ -11,9 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use App\Entity\News;
 use App\Entity\Tags;
-//use Symfony\Component\Form\AbstractType;
-//use Symfony\Component\Form\FormBuilderInterface;
-//use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NewsController extends Controller
 {
@@ -22,29 +19,58 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-        $tagsFilter = explode(',', $request->query->get('tags'));
+        $filter = [];
+
+        if ($request->query->get('tags'))
+            $filter['tags'] = explode(',', $request->query->get('tags'));
 
         $newsRepo = $this->getDoctrine()->getRepository(News::class);
-        if (count($tagsFilter))
-            $news = $newsRepo->getNewsByFilter($tagsFilter);        
-        else
-            $news = $newsRepo->findAll();
+
+        // Для запроса новостей и тегов проходит несколько SQL-вызовов. Первый дергает все новости из таблицы, последующие дергают теги для КАЖДОЙ из новостей
+        // Parameters: [   ] SELECT t0.id AS id_1, t0.title AS title_2, t0.lead AS lead_3, t0.text AS text_4, t0.source AS source_5, t0.image AS image_6, t0.date AS date_7, t0.active AS active_8, t0.category_id AS category_id_9 FROM news t0
+        // Parameters: [ 1 ] SELECT t0.id AS id_1, t0.tag AS tag_2 FROM tags t0 INNER JOIN news_tags ON t0.id = news_tags.tags_id WHERE news_tags.news_id = ?
+
+        //$news = $newsRepo->findAll();
+        $news = $newsRepo->getNews($filter);
 
         $tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
         $tags = $tagsRepo->findAll();
 
-//var_dump($tags);
-//die();
-        // $greeting = $generator->getRandomGreeting();
-        // $logger->info("Saying $greeting to $name!");
-
-        //        $logger->info("Saying hello to $name!");
-        //		return new Response("Hello $name!");
-
         return $this->render('news/index.html.twig', [
-            //'controller_name' => 'NewsController',
             'news' => $news,
             'tags' => $tags,
         ]);
     }
+
+    /**
+     * @Route("/news/{id}", name="news_show")
+     */
+    public function show($id, Request $request)
+    {
+//die("FULL");
+//        $filter = [];
+
+//        if ($request->query->get('tags'))
+//            $filter['tags'] = explode(',', $request->query->get('tags'));
+
+        $newsRepo = $this->getDoctrine()->getRepository(News::class);
+
+        // Для запроса новостей и тегов проходит несколько SQL-вызовов. Первый дергает все новости из таблицы, последующие дергают теги для КАЖДОЙ из новостей
+        // Parameters: [] SELECT t0.id AS id_1, t0.title AS title_2, t0.lead AS lead_3, t0.text AS text_4, t0.source AS source_5, t0.image AS image_6, t0.date AS date_7, t0.active AS active_8, t0.category_id AS category_id_9 FROM news t0
+        // Parameters: [ 1 ] SELECT t0.id AS id_1, t0.tag AS tag_2 FROM tags t0 INNER JOIN news_tags ON t0.id = news_tags.tags_id WHERE news_tags.news_id = ?
+
+        //$news = $newsRepo->findAll();
+        // $news = $newsRepo->getNews($filter);
+
+        $news = $newsRepo->findOneBy([ 'id' => $id ]);
+
+        $tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
+        $tags = $tagsRepo->findAll();
+//var_dump($tags);die();
+        return $this->render('news/show.html.twig', [
+            'news' => $news,
+            'tags' => $tags,
+        ]);
+    }
+
 }
