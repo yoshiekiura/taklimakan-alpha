@@ -2,32 +2,36 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 use Symfony\Component\Routing\Annotation\Route;
 //use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Psr\Log\LoggerInterface;
-use App\GreetingGenerator;
-//use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\HttpFoundation\Request;
 
-class DefaultController extends Controller
+use Psr\Log\LoggerInterface;
+//use App\GreetingGenerator;
+//use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+
+class IndexController extends Controller
 {
     /**
-    * @Route("/hello/{name}")
+    * @Route("/")
     */
 
-	public function index($name, LoggerInterface $logger, GreetingGenerator $generator, Request $request) {
+	public function index(/*$name,*/ LoggerInterface $logger, /*GreetingGenerator $generator,*/ Request $request) {
 
-        $greeting = $generator->getRandomGreeting();
-        $logger->info("Saying $greeting to $name!");
+        // $greeting = $generator->getRandomGreeting();
+        // $logger->info("Saying $greeting to $name!");
 
 
 
 //        $logger->info("Saying hello to $name!");
 //		return new Response("Hello $name!");
         return $this->render('default/index.html.twig', [
-            'name' => $name,
+//            'name' => $name,
         ]);
 
 	}
@@ -36,7 +40,7 @@ class DefaultController extends Controller
 
     /**
     * @Route("/api/hello/{namer}", name="api_hello")
-    * 
+    *
     */
     public function apiHello($namer)
     {
@@ -48,8 +52,8 @@ class DefaultController extends Controller
         $url = $this->generateUrl(
             "api_hello",
             [
-//            'slug' => 'it-works' , 
-//            'slug' => 'it-works' , 
+//            'slug' => 'it-works' ,
+//            'slug' => 'it-works' ,
             /*'namer' => "why-do-you-need-the-name?" */
             'namer' => $namer
             ]
@@ -83,4 +87,3 @@ class DefaultController extends Controller
 
 
 }
-

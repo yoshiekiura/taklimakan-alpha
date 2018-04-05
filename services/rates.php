@@ -248,7 +248,8 @@ function connect2db() {
     $host = "localhost";
     $name = "crypto";
     $user = "root";
-    $pass = "usbw";
+    //$pass = "usbw";
+    $pass = "pan01MAT1";
 
     $db = new PDO("mysql:host=$host;dbname=$name","$user","$pass");
 
