@@ -17,6 +17,13 @@ class Likes
         // $this->comments = new ArrayCollection();
     }
 
+    // Complex Keys
+    // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/composite-primary-keys.html
+    // * * @ORM\Id @ORM\Column(type="string") * /
+    // private $name;
+    // * * @ORM\Id @ORM\Column(type="integer") * /
+    // private $year;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

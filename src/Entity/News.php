@@ -125,6 +125,21 @@ class News
         $this->tags = $tags;
     }
 
+
+//    / * *
+//     * @ORM\OneToMany(targetEntity="Likes", mappedBy="content_id")
+//     * /
+//    private $likes;
+//    public function getLikes()
+//    {
+//        return $this->likes;
+//    }
+//    public function setLikes($likes)
+//    {
+//        $this->likes = $likes;
+//    }
+
+
     /**
      * @ORM\ManyToOne(targetEntity="Category")
      */
@@ -152,6 +167,33 @@ class News
         $this->active = $flag;
     }
 
+/*
+    private $virt;
+    public function getVirt()
+    {
+        return "[VIRT]";
+    }
+
+    private $Likes;
+    public function getLikes()
+    {
+        $conn = $this->get('doctrine.dbal.connection_factory');
+        var_dump($conn);
+
+        $likes = $conn->fetchColumn(
+            'SELECT SUM(count) FROM likes WHERE content_type = "news" AND content_id = ? ',
+            [ $this->getId() ],
+            0
+        );
+
+        return intval($likes);
+
+        return "[LIKES]";
+    }
+*/
+
+/*
+    private $likes;
     public function getLikes()
     {
         //$conn = $this->getEntityManager()->getConnection();
@@ -169,20 +211,22 @@ class News
 
         return intval($likes);
 
-/*        $conn = $this->getEntityManager()->getConnection();
-        $likes = $conn->fetchColumn(
-            'SELECT SUM(count) FROM likes WHERE content_type = "news" AND content_id = ? ',
-            [ $this->getId() ],
-            0
-        );
+//        $conn = $this->getEntityManager()->getConnection();
+//        $likes = $conn->fetchColumn(
+//            'SELECT SUM(count) FROM likes WHERE content_type = "news" AND content_id = ? ',
+//            [ $this->getId() ],
+//            0
+//        );
 
-        return intval($likes);
+//        return intval($likes);
+
+
+//        $likesRepo = $this->getDoctrine()->getRepository(Likes::class);
+//        $likes = $likesRepo->getLikes("news", $this-getId());
+//        return $likes;
 */
-/*
-        $likesRepo = $this->getDoctrine()->getRepository(Likes::class);
-        $likes = $likesRepo->getLikes("news", $this-getId());
-        return $likes; */
-    }
+
+//    }
 
 
     /**

@@ -3,8 +3,16 @@
 namespace App\Repository;
 
 use App\Entity\News;
+use App\Entity\Tags;
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+
+use Doctrine\ORM\PersistentCollection;
+//use Doctrine\ORM\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
+
+
 
 /**
  * @method News|null find($id, $lockMode = null, $lockVersion = null)
@@ -22,6 +30,7 @@ class NewsRepository extends ServiceEntityRepository
     /**
      * @return News[] Returns an array of News objects NB! WITH LIKES
      */
+/*
     public function getNews($limit = 0)
     {
         // FIXME We have to have more advanced filter here (limits, ranges, categories, etc)
@@ -30,10 +39,10 @@ class NewsRepository extends ServiceEntityRepository
 
         $sql =
             'SELECT *,
-            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = news.id) AS likes,
+            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = news.id) AS likes_count,
             (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = news.id) AS comments
             FROM news';
-
+//echo $sql; die();
         // $params['color'] = blue;
         $query = $this->getEntityManager()->getConnection()->prepare($sql);
         // $query->execute($params);
@@ -41,7 +50,64 @@ class NewsRepository extends ServiceEntityRepository
 
         return $query->fetchAll();
     }
+*/
+    /**
+     * @return News[] Returns an array of News objects NB! WITH LIKES
+     */
+    public function getNews($filter)
+    {
+        $em = $this->getEntityManager();
+        $conn = $em->getConnection();
 
+        $filterTags = isset($filter['tags']) ? $filter['tags'] : [];
+
+        // Get News by Filter including Tags and count of Likes & Comments
+
+        $sql =
+            'SELECT *,
+            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = n.id) AS likes_count,
+            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = n.id) AS comments_count
+            FROM news n';
+
+        if (count($filterTags))
+            $sql .=
+                ' JOIN news_tags nt on nt.news_id = n.id
+                JOIN tags t on t.id = nt.tags_id
+                WHERE t.tag in (:tags)
+                GROUP BY n.id';
+
+        // $sql .= ' GROUP BY n.id';
+//echo $sql; die();
+
+        $query = $conn->prepare($sql);
+        $query->execute([
+            'tags' => implode(', ', $filterTags),
+        ]);
+
+        // $tagsCollection = new PersistentCollection($em, Tags::class, []);
+        $tagsCollection = new ArrayCollection(); // $em, Tags::class, []
+
+        $rows = $query->fetchAll();
+
+        $sql =
+            'SELECT tag
+            FROM tags t
+            INNER JOIN news_tags nt on nt.tags_id = t.id
+            WHERE nt.news_id = :news_id';
+
+        foreach ($rows as &$row) {
+echo " | " . $row['id'];
+            $query = $conn->prepare($sql);
+            $query->execute([
+                'news_id' => $row['id'],
+            ]);
+            $tags = $query->fetchAll();
+//var_dump($tags);die();
+            $row['tags'] = $tags;
+        }
+
+        return $rows;
+    }
 
 
 

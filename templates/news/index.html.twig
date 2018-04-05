@@ -1,33 +1,36 @@
-{% extends 'base.html.twig' %}
+{% extends 'john-base.html.twig' %}
 
-{#
-
-{ % block title % }Hello { { controller_name } }!{ % endblock % }
-
-{ % block body % }
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
+{% block title %}
+    Hello {{ controller_name }}!
+{% endblock %}
 
 
-    { % for i in news % }
-        <h1>{{ i.title }}</h1>
-        <h2>{{ i.lead }}</h2>
-        <p>{{ i.text }}</p>
-        </br></br>
-    { % endfor % }
+{% block body %}
+
+    {% include 'john-top-menu.html.twig' %}
+
+    {% include 'news/breadcrumbs.html.twig' %}
+
+    {% include 'news/filters.html.twig' %}
 
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>src/Controller/NewsController.php</code></li>
-        <li>Your template at <code>templates/news/index.html.twig</code></li>
-    </ul>
-</div>
+    <div class="container">
+        <div class="news-box">
 
-{ % endblock % }
+    <div class="tab-content" id="pills-tabContent">
+    <!-- Cards -->
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
-#}
+
+
+
+    <div class="row">
+    {% for el in news %}
+            {% include 'news/news-box.html.twig' %}    
+    {% endfor %}
+    </div>
+
+    </div></div>
+    </div></div>
+
+{% endblock %}

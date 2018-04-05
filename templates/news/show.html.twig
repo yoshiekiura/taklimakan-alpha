@@ -1,0 +1,83 @@
+{% extends 'john-base.html.twig' %}
+
+{% block title %}
+    Hello {{ controller_name }}!
+{% endblock %}
+
+
+{% block body %}
+
+    {% include 'john-top-menu.html.twig' %}
+
+    {# % include 'news/breadcrumbs.html.twig' % #}
+
+    {# % include 'news/filters.html.twig' % #}
+
+
+    <div class="container">
+        <div class="news-box">
+
+    <div class="tab-content" id="pills-tabContent">
+    <!-- Cards -->
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+
+
+    <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="news-header">
+                        <h2>{{news.title}}</h2>
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><a href="\">Taklimakan</a></li>
+                            <li class="list-inline-item">/</li>
+                            <li class="list-inline-item"><a href="\news">News</a></li>
+                            <li class="list-inline-item">/</li>
+                            <li class="list-inline-item">{{news.title}}</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="container">
+                <div class="news-box">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="news-include">
+                                <div class="news-img news-img-include">
+                                    <img src="/img/{{news.image}}" alt="">
+                                    <a class="news-date" href="#">{{ news.date|date("F jS \\a\\t g:ia") }}</a>
+                                </div>
+                                <div class="news-body news-body-include">
+                                    <ul class="list-inline">
+                                        <li class="list-inline-item"><a href="/" class="news-source">Source: Taklimakan</a></li>
+                                        <li class="list-inline-item"><a href="#">Subscribe</a></li>
+                                    </ul>
+
+                                    <div class="p-content">
+                                        {{news.text|raw}}
+                                    </div>
+                                    <ul class="list-inline news-tags mb-40">
+                                        <li class="list-inline-item">Tags:</li>
+                                        {% for tag in tags %}
+                                            <li class="list-inline-item"><a href="/news?tags={{tag.tag}}">{{tag.tag}}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                    <ul class="list-inline news-likes news-likes-include">
+                                        <li class="list-inline-item"><a href="#"><img src="images/i/like.svg" alt=""> 10 likes</a></li>
+                                        <li class="list-inline-item"><a href="#"><img src="images/i/share.svg" alt=""> Share</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+    </div></div>
+    </div></div>
+
+{% endblock %}
