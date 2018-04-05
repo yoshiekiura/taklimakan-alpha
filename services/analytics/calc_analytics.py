@@ -62,20 +62,11 @@ else:
 def pairToStr(pair):
     return pair[0] + '-' + pair[1]
 
-def getPairPricesByDate(pair_base, pair_quote, date):
-    cursor = db.cursor()
-    query = "SELECT * FROM %s where base = '%s' and quote = '%s' and DATE(date) = '%s' ORDER BY volume desc LIMIT %d;" % (price_table, pair_base, pair_quote, date, topExchangeCount)
-    cursor.execute(query)
-    retval = cursor.fetchall()
-    cursor.close()
-    return retval
-
-
 def getPairPricesByDateRange(pair_base, pair_quote, dateList):
     cursor = db.cursor()
     dateList = ["'" + date + "'" for date in dateList]
     dateListStr = ','.join(dateList)
-    query = "SELECT base, quote, DATE(date) as dt, close, volume, exchange FROM %s where base = '%s' and quote = '%s' and DATE(date) in (%s);" % (price_table, pair_base, pair_quote, dateListStr)
+    query = "SELECT base, quote, DATE(date) as dt, close, quantity, exchange FROM %s where base = '%s' and quote = '%s' and DATE(date) in (%s);" % (price_table, pair_base, pair_quote, dateListStr)
     cursor.execute(query)
     retval = cursor.fetchall()
     cursor.close()
@@ -152,26 +143,6 @@ def checkAnalyticsTable():
 
 ######################################################################
 # Analytics calculation
-
-def calculatePriceAndVolume(pair, date):
-    # Get prices and volumes from top 10 exchanges
-    rawPrices = getPairPricesByDate(pair[0], pair[1], date)
-    totalCost = 0
-    totalVol = 0
-    for rp in rawPrices:
-        price = rp[10]
-        volume = rp[12]
-        # average price is unweighted
-        totalCost += price
-        totalVol += volume
-    if totalVol != 0:
-        averagePrice = totalCost / len(rawPrices)
-        saveAnalyticsValue(pairToStr(pair), date, "1", averagePrice)
-        saveAnalyticsValue(pairToStr(pair), date, "2", totalVol)
-        return True
-    else:
-        print("Total volume is zero for pair %s, date %s" % (pairToStr(pair), date))
-    return False
 
 def calculatePriceAndVolumeRange(pair, dateList):
     # Get all prices and volumes for given dates
@@ -357,17 +328,6 @@ checkAnalyticsTable()
 # Prepare data for index
 
 # Calculate prices for pairs used in index
-'''
-for asset in baseIndex:
-    pair1 = (asset[0], baseCurrency)
-    pair2 = (asset[0], baseCurrency2)
-    missingDates1 = getMissingAnalyticsDates(pairToStr(pair1), "1")
-    for date in missingDates1:
-        if not calculatePriceAndVolume(pair1, date):
-            # Calculate USD prices for pairs used in index based on their BTC prices
-            calculatePriceAndVolume(pair2, date)
-            calculateUSDPrice(pair1, date)
-'''
 
 for asset in baseIndex:
     pair1 = (asset[0], baseCurrency)
@@ -417,9 +377,16 @@ for date in missingDates:
 # Calculate average prices and total volumes for important pairs (not necessarily used in idex)
 
 for pair in pairs:
-    missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
-    for date in missingDates:
-        calculatePriceAndVolume(pair, date)
+    pair1 = (pair[0], baseCurrency1)
+    pair2 = (pair[0], baseCurrency2)
+    missingDates1 = getMissingAnalyticsDates(pairToStr(pair1), "1")
+    if not calculatePriceAndVolumeRange(pair1, missingDates1):
+        # Calculate USD prices for pairs used in index based on their BTC prices
+        missingDates2 = getMissingAnalyticsDates(pairToStr(pair1), "1")
+        calculatePriceAndVolumeRange(pair2, missingDates2)
+        for date in missingDates2:
+            calculateUSDPrice(pair1, date)
+
 
 ################################################################################
 

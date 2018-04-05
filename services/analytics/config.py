@@ -11,8 +11,8 @@ pairs = [
 # List of analytics formulas (type_id) to calculate for each pair
 formulas = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
-# Prices start timestamp (unix epoch seconds) - first date prices are available
-pricesStartDate = "2017-12-01"
+# Prices start timestamp  - first date prices are available
+pricesStartDate = "2017-01-01"
 
 # If set, it will calculate analytics for all dates starting from pricesStartDate
 # plus data windows. Otherwise, it will calculate only starting from backDays
