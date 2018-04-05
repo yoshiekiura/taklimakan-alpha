@@ -1,5 +1,7 @@
 <?php
 
+//foreach ($argv as )
+
 // --sync allows to get latest feed for 24H, and --max gets all historic data
 $mode = in_array("--sync", $argv) ? "sync" : "max";
 
