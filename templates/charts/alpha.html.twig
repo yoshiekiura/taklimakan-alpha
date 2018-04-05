@@ -4,7 +4,7 @@
         dataTable3.addData(data3);
         var chart3 = anychart.stock();
 
-        chart3.title("Alpha");
+        //chart3.title("Alpha");
 
         var credits3 = chart3.credits();
         credits3.enabled(false);
@@ -15,7 +15,8 @@
             .data(dataTable3.mapAs({'value': 1}))
             .name('Alpha')
             //.fill('#1976d2 0.65')
-            .stroke('1.75 #1976d2')
+            //.stroke('1.75 #1976d2')
+            .stroke('2 #564fd9')
             //.tooltip(false)
             ;
 
@@ -24,13 +25,6 @@
 
         var rangeSelector3 = anychart.ui.rangeSelector();
 
-    var ranges3 = [
-        { 'type' : 'unit', 'unit' : 'day', 'count' : 7, 'text' : 'Week' },
-        { 'type' : 'unit', 'unit' : 'month', 'count' : 1, 'text' : 'Month' },
-        { 'type' : 'unit', 'unit' : 'month', 'count' : 3, 'text' : 'Quarter' },
-        { 'type' : 'unit', 'unit' : 'year', 'count' : 1, 'text' : 'Year' },
-    ];
-
-    rangeSelector3.ranges(ranges3);
+    rangeSelector3.ranges(ranges);
     rangeSelector3.target(chart3);
     rangeSelector3.render(document.getElementById("alpha-range-selector"));

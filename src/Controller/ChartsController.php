@@ -37,10 +37,13 @@ class ChartsController extends Controller
         ]);
     }
 
+    /* @ Route("api/charts/{type}", name="api_charts")
+    public function getData($type, Request $request) */
+
     /**
-     * @Route("api/charts/{type}", name="api_charts")
+     * @Route("api/charts/all", name="api_charts")
      */
-    public function getData($type, Request $request)
+    public function getData(Request $request)
     {
         $symbol = $request->query->get('symbol');
 
@@ -101,7 +104,11 @@ class ChartsController extends Controller
      */
     public function showChart($type, Request $request)
     {
+        $allowedSymbols = ['BTC', 'ETH', 'LTC'];
         $symbol = $request->query->get('symbol');
+        if (!in_array($symbol, $allowedSymbols))
+            $symbol = "BTC";
+        $pair = "$symbol-USD";
 
         $params['symbol'] = $symbol;
 
@@ -119,36 +126,104 @@ class ChartsController extends Controller
 
         $data = file_get_contents('http://localhost/api/charts/price?symbol=BTC');
 */
-        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "3" AND pair = "BTC-USD"';
+
+        // --- Price 1 -------------------------------------------------
+
+        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "1" AND pair = "' . $pair . '"';
         $query = $this->getDoctrine()->getConnection()->prepare($sql);
         $query->execute();
-
         $rows = $query->fetchAll();
 
-        $data = [];
-        foreach ($rows as $row)
-//            $data[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
-        //$data[] = [ substr($row['dt'], 0, 10), floatval($row['value']), floatval($row['value']) * 0.8, floatval($row['value']) * 1.2, floatval($row['value']), /*floatval($row['value']) * 1000*/ 100000 ];
-//        $data[] = [ substr($row['dt'], 0, 10), floatval($row['value']), 1000, 1000, 1000, 100000 ];
-        //$data[] = [ substr($row['dt'], 0, 10), 1000, 1000, 1000, floatval($row['value']), 100000 ];
-        $data[] = [ substr($row['dt'], 0, 10), floatval($row['value']), rand(0, 10) ];
+        // --- Volume 2 -------------------------------------------------
 
-        return $this->render('charts/price.html.twig', [
+        $sql = 'select * from numerical_analytics where type_id="2" and pair="' . $pair . '"';
+        $query = $this->getDoctrine()->getConnection()->prepare($sql);
+        $query->execute();
+        $volumeRows = $query->fetchAll();
+
+        // --- Data = Price + Volume -------------------------------------------------
+
+        $data = [];
+        foreach ($rows as $row) {
+            $date = substr($row['dt'], 0, 10);
+            $price = floatval($row['value']);
+            $volume = 0;
+            foreach ($volumeRows as $vol)
+                if ($date == substr($vol['dt'], 0, 10)) {
+                    $volume = $vol['value'];
+                    break;
+                }
+            $data[] = [ $date, $price, $volume ];
+        }
+
+        // --- Volatility 3 -------------------------------------------------
+
+        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "3" AND pair = "' . $pair . '"';
+        $query = $this->getDoctrine()->getConnection()->prepare($sql);
+        $query->execute();
+        $rows = $query->fetchAll();
+        $volatility = [];
+        foreach ($rows as $row)
+            $volatility[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
+
+        // --- Alpha 4 and 8 -------------------------------------------------
+
+        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "4" AND pair = "' . $pair . '"';
+        $query = $this->getDoctrine()->getConnection()->prepare($sql);
+        $query->execute();
+        $rows = $query->fetchAll();
+        $alpha = [];
+        foreach ($rows as $row)
+            $alpha[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
+
+        // --- Beta 5 and 9 -------------------------------------------------
+
+        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "5" AND pair = "' . $pair . '"';
+        $query = $this->getDoctrine()->getConnection()->prepare($sql);
+        $query->execute();
+        $rows = $query->fetchAll();
+        $beta = [];
+        foreach ($rows as $row)
+            $beta[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
+
+        // --------------------------------------------------------
+
+        // --- Sharpe 6 -------------------------------------------------
+
+        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "6" AND pair = "' . $pair . '"';
+        $query = $this->getDoctrine()->getConnection()->prepare($sql);
+        $query->execute();
+        $rows = $query->fetchAll();
+        $sharpe = [];
+        foreach ($rows as $row)
+            $sharpe[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
+
+        // --------------------------------------------------------
+
+        // --- Index 11 -------------------------------------------------
+
+        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "11" AND pair = "INDEX001"';
+        $query = $this->getDoctrine()->getConnection()->prepare($sql);
+        $query->execute();
+        $rows = $query->fetchAll();
+        $crypto_index = [];
+        foreach ($rows as $row)
+            $crypto_index[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
+
+        // --------------------------------------------------------
+
+        return $this->render('charts/all.html.twig', [
             'params' => $params,
             'data' => $data,
+            'volatility' => $volatility,
+            'alpha' => $alpha,
+            'beta' => $beta,
+            'sharpe' => $sharpe,
+            'crypto_index' => $crypto_index,
         ]);
 
 //var_dump($data);
 //die();
-
-//        $response = new JsonResponse(json_encode($data));
-
-//        return $response;
-
-
-//var_dump($data);
-//die();
-
 
     }
 
