@@ -31,7 +31,7 @@ class NewsRepository extends ServiceEntityRepository
         $sql =
             'SELECT *,
             (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = news.id) AS likes,
-            (SELECT COALESCE(SUM(*), 0) FROM comments WHERE content_type = "news" AND content_id = news.id) AS comments
+            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = news.id) AS comments
             FROM news';
 
         // $params['color'] = blue;
