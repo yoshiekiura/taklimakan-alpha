@@ -19,6 +19,33 @@ class NewsRepository extends ServiceEntityRepository
         parent::__construct($registry, News::class);
     }
 
+    /**
+     * @return News[] Returns an array of News objects NB! WITH LIKES
+     */
+    public function getNews($limit = 0)
+    {
+        // FIXME We have to have more advanced filter here (limits, ranges, categories, etc)
+        // $sql = "SELECT name FROM user WHERE favorite_color = :color";
+        //  ORDER BY date DESC LIMIT
+
+        $sql =
+            'SELECT *,
+            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = news.id) AS likes,
+            (SELECT COALESCE(SUM(*), 0) FROM comments WHERE content_type = "news" AND content_id = news.id) AS comments
+            FROM news';
+
+        // $params['color'] = blue;
+        $query = $this->getEntityManager()->getConnection()->prepare($sql);
+        // $query->execute($params);
+        $query->execute();
+
+        return $query->fetchAll();
+    }
+
+
+
+
+
 //    /**
 //     * @return News[] Returns an array of News objects
 //     */

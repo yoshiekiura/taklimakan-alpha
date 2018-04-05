@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\News;
+use App\Entity\Likes;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -21,12 +22,27 @@ class IndexController extends Controller
 	public function index(LoggerInterface $logger, Request $request) {
 
         $newsRepo = $this->getDoctrine()->getRepository(News::class);
+        $likesRepo = $this->getDoctrine()->getRepository(Likes::class);
+
         // $news = $newsRepo->findAll();
 
         // Top 3 News
-        $news = $newsRepo->findBy([], ['id' => 'DESC'], 3);
+//        $news = $newsRepo->findBy([], ['id' => 'DESC'], 3);
+        $news = $newsRepo->getNews();
+//        $comments = $commentsRepo->findAllBy(['content_type' => 'news', 'content_id'] );
+//var_dump($news);
+//die();
+        // $likesRepo->like("news", 1, 66);
+        // $likesRepo->dislike("news", 1, 66);
+        // $likes = $likesRepo->getLikes("news", 1);
 
+/*
         return $this->render('news/index.html.twig', [
+            'news' => $news,
+        ]);
+*/
+
+        return $this->render('home/home.html.twig', [
             'news' => $news,
         ]);
 

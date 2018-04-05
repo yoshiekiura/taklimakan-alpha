@@ -28,7 +28,7 @@ class Tags
     }
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=32)
      */
     private $tag;
     public function getTag()

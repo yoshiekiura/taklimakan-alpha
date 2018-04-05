@@ -6,15 +6,18 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+use App\Entity\Likes;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
  */
 class News
 {
 
-    // Init News
+    private $em;
 
-    public function __construct() {
+    public function __construct($em) {
+        $this->em = $em;
         $this->date = new \DateTime();
         $this->tags = new ArrayCollection();
     }
@@ -70,7 +73,21 @@ class News
     }
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $source;
+    public function getSource()
+    {
+        return $this->source;
+    }
+    public function setSource($source)
+    {
+        $this->source = $source;
+    }
+
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $image;
     public function getImage()
@@ -109,7 +126,21 @@ class News
     }
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\ManyToOne(targetEntity="Category")
+     */
+    private $category;
+    public function getCategory()
+    {
+        return $this->category;
+    }
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+
+    /**
+     * @ORM\Column(type="boolean", options={"default": false})
      */
     private $active;
     public function getActive()
@@ -119,6 +150,38 @@ class News
     public function setActive($flag)
     {
         $this->active = $flag;
+    }
+
+    public function getLikes()
+    {
+        //$conn = $this->getEntityManager()->getConnection();
+        //$conn = $this->em->getConnection();
+        //$conn = $this->getContainer()->getDoctrine()->getManager()->getConnection();
+
+        $conn = $this->get('doctrine.dbal.connection_factory');
+        var_dump($conn);
+
+        $likes = $conn->fetchColumn(
+            'SELECT SUM(count) FROM likes WHERE content_type = "news" AND content_id = ? ',
+            [ $this->getId() ],
+            0
+        );
+
+        return intval($likes);
+
+/*        $conn = $this->getEntityManager()->getConnection();
+        $likes = $conn->fetchColumn(
+            'SELECT SUM(count) FROM likes WHERE content_type = "news" AND content_id = ? ',
+            [ $this->getId() ],
+            0
+        );
+
+        return intval($likes);
+*/
+/*
+        $likesRepo = $this->getDoctrine()->getRepository(Likes::class);
+        $likes = $likesRepo->getLikes("news", $this-getId());
+        return $likes; */
     }
 
 
