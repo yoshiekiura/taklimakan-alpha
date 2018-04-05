@@ -42,6 +42,33 @@ class NewsRepository extends ServiceEntityRepository
         return $query->fetchAll();
     }
 
+    /**
+     * @return News[] Returns an array of News objects NB! WITH LIKES
+     */
+    public function getNewsByFilter($tags = [])
+    {
+        //            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = news.id) AS likes,
+        //            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = news.id) AS comments
+        // WHERE ';
+
+        $sql =
+            'SELECT *
+            FROM news n
+            JOIN news_tags nt on nt.news_id = n.id
+            JOIN tags t on t.id = nt.tags_id';
+        if (count($tags))
+            $sql .= ' WHERE tag in (:tags)';
+        $sql .= ' GROUP BY n.id';
+//echo $sql; die();
+        // $params['color'] = blue;
+        $query = $this->getEntityManager()->getConnection()->prepare($sql);
+        // $query->execute($params);
+        $query->execute([
+            'tags' => implode(', ', $tags),
+        ]);
+
+        return $query->fetchAll();
+    }
 
 
 

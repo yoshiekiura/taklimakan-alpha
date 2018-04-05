@@ -1,0 +1,24 @@
+
+     <div class="col-xl-4 col-lg-4 col-md-6">
+         <div class="news-item">
+             <div class="news-img">
+                 <img src="/img/{{ el.image }}" alt="">
+                 <a class="news-date" href="#">{{ el.date|date("F jS \\a\\t g:ia") }}</a>
+                 <a class="news-source" href="#">Source: <span>{{ el.source }}</span></a>
+             </div>
+             <div class="news-body">
+                 <a href="#"><h3>{{ el.title|truncate(50,true) }}</h3></a>
+                 <p>{{ el.lead|truncate(300,true) }}</p>
+                 <ul class="list-inline news-likes">
+                     <li class="list-inline-item"><a href="#"><img src="images/i/bubble.svg" alt=""> { { el.comments } } comments</a></li>
+                     <li class="list-inline-item"><a href="#"><img src="images/i/like.svg" alt=""> { { el.likes } } likes</a></li>
+                 </ul>
+                 <ul class="list-inline news-tags">
+                     <li class="list-inline-item">Tags:</li>
+                     <li class="list-inline-item"><a href="#">BTC</a></li>
+                     <li class="list-inline-item"><a href="#">Cryptocurrency</a></li>
+                     <li class="list-inline-item"><a href="#">Trading</a></li>
+                 </ul>
+             </div>
+         </div>
+     </div>
