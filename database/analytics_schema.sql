@@ -28,3 +28,8 @@ INSERT INTO analytics_type_dictionary (id, name) VALUES
 (9, "Exponentially Weighted Beta"),
 (10, "Exponentially Weighted Sharpe Ratio"),
 (11, "Base Index");
+
+
+create table pair_set ( id INT(2), name VARCHAR(256), data TEXT);
+
+insert into pair_set (id, name, data) values (1, 'Assets of Interest', '["BTC", "GAME", "RLC", "BTX", "SMART", "DTR", "CVC", "BLOCK", "MNX", "MANA", "ANT", "VTC", "BTCD", "SKY", "CS", "PLR", "NXS", "ICN", "ENJ", "PART", "STORJ", "CND", "NULS", "MTL", "BNT", "PAY", "DCN", "POWR", "GBYTE", "MAID", "ENG", "LINK", "EMC", "NXT", "RDD", "NEBL", "SALT", "REQ", "XZC", "SUB", "KNC", "ETN", "R", "SYS", "FUN", "GAS", "GNT", "MONA", "FCT", "QASH", "DGB", "LRC", "BAT", "PIVX", "CNX", "ARK", "ARDR", "HSR", "KMD", "SNT", "ZRX", "WTC", "DCR", "VERI", "REP", "AE", "DOGE", "BTM", "BTS", "BCD", "WAVES", "STEEM", "BCN", "STRAT", "SC", "PPT", "DGD", "XVG", "ZEC", "BTG", "OMG", "LSK", "ICX", "BNB", "QTUM", "VEN", "ETC", "XEM", "USDT", "TRX", "XMR", "DASH", "NEO", "XLM", "ADA", "EOS", "LTC", "BCH", "XRP", "ETH"]');

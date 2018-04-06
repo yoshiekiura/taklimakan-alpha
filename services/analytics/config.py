@@ -12,7 +12,7 @@ pairs = [
 formulas = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
 # Prices start timestamp  - first date prices are available
-pricesStartDate = "2017-01-01"
+startDateByType = {"1": "2017-01-01", "2": "2017-01-01", "3": "2017-03-03", "4": "2018-02-01", "5": "2018-02-01", "6": "2017-03-03", "7": "2017-03-03", "8": "2018-02-01", "9": "2018-02-01", "10": "2017-03-03", "11": "2017-12-01"}
 
 # If set, it will calculate analytics for all dates starting from pricesStartDate
 # plus data windows. Otherwise, it will calculate only starting from backDays

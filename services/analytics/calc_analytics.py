@@ -22,6 +22,21 @@ analytics_table = "numerical_analytics"
 
 
 ######################################################################
+# Working with YYYY-MM-DD string dates
+
+def dateAddDays(date, days):
+    dateObj = datetime.strptime(date, '%Y-%m-%d')
+    if days > 0:
+        dateObj = dateObj + timedelta(days=days)
+    elif days < 0:
+        dateObj = dateObj - timedelta(days=days)
+    return dateObj.strftime('%Y-%m-%d')
+
+
+######################################################################
+
+
+######################################################################
 # DB Connection
 if ('DB_HOST' in os.environ.keys()) and ('DB_USER' in os.environ.keys()) and ('DB_PASSWORD' in os.environ.keys()):
     db_host = os.environ['DB_HOST']
@@ -97,23 +112,19 @@ def getAnalyticsValueForDateRange(pair, type_id, start_date, stop_date):
     values = [r[0] for r in results]
     return values
 
-# Get list of dates that are missing in analytics starting at pricesStartDate, but not earlier
-# than 1 year ago
+# Get list of dates that are missing in analytics starting at pricesStartDate
 def getMissingAnalyticsDates(pair, type_id):
 
     # Start date depends on type. Price/volume data can start right away,
     # but lagged analytics can only start after its window
     if calculateAllDates:
         if type_id in ["1", "2", "11"]:
-            startDate = datetime.strptime(pricesStartDate, '%Y-%m-%d')
+            startDate = datetime.strptime(startDateByType[type_id], '%Y-%m-%d')
         else:
-            startDate = datetime.strptime(pricesStartDate, '%Y-%m-%d') + timedelta(days=maxWindow + extraDataDays)
+            startDate = datetime.strptime(startDateByType[type_id], '%Y-%m-%d') + timedelta(days=extraDataDays)
     else:
         startDate = datetime.now() - timedelta(days=backDays)
 
-    yearAgo = datetime.now() - timedelta(days=365)
-    if startDate < yearAgo:
-        startDate = yearAgo
     startDateStr = startDate.strftime('%Y-%m-%d')
 
     # Get all dates that are present in DB as string array
@@ -208,17 +219,14 @@ def calculateUSDPrice(pair, date):
         pprint(basePrices)
 
 def getExtrapolatedAssetPrice(pairStr, date):
-    # Create date range
-    dateEnd = datetime.strptime(date, '%Y-%m-%d')
-    for i in range(8):
-        dtObj = dateEnd - timedelta(days=i)
-        dtTs = time.mktime(dtObj.timetuple())
-        dtStr = datetime.fromtimestamp(dtTs, timezone.utc).strftime('%Y-%m-%d')
+    for i in range(maxDataGap):
+        dtStr = dateAddDays(date, -i)
         assetPrices = getAnalyticsValueForDateRange(pairStr, "1", dtStr, dtStr)
         if len(assetPrices) != 0:
             if (i != 0):
                 print("WARNING: No base currency price for asset (%s) on date %s. Using extrapolation." % (pairStr, date))
             return assetPrices
+    print("ERROR: No base currency price for asset (%s) on date %s. No extrapolation available." % (pairStr, date))
     return []
 
 def calculateIndexPrice(indexPortfolio, date):
@@ -236,8 +244,12 @@ def calculateIndexPrice(indexPortfolio, date):
         else:
             print("WARNING: No base currency price for asset (%s) on date %s." % (asset[0], date))
 
-    indexPrice = indexPrice / weightCount
-    saveAnalyticsValue(indexName, date, "11", indexPrice)
+    if (weightCount != 0):
+        indexPrice = indexPrice / weightCount
+        saveAnalyticsValue(indexName, date, "11", indexPrice)
+    else:
+        indexPrice = 0
+        print("ERROR: No data for index at all on %s" % (date))
 
 # Averate price and volume are calculated in a separate method
 # Calculate rest of formulas that are based on averate price and volume
@@ -252,7 +264,7 @@ def calculateFormulaForPair(pair, formula, date):
         startDate = stopDate - timedelta(days=volatilityLength+extraDataDays)
     # Alpha
     elif formula == "4":
-        startDate = stopDate - timedelta(days=2+extraDataDays)
+        startDate = stopDate - timedelta(days=betaLength+extraDataDays)
     # Beta
     elif formula == "5":
         startDate = stopDate - timedelta(days=betaLength+extraDataDays)
@@ -264,7 +276,7 @@ def calculateFormulaForPair(pair, formula, date):
         startDate = stopDate - timedelta(days=volatilityLength+extraDataDays)
     # Exponentially Weighted Alpha
     elif formula == "8":
-        startDate = stopDate - timedelta(days=2+extraDataDays)
+        startDate = stopDate - timedelta(days=betaLength+extraDataDays)
     # Exponentially Weighted Beta
     elif formula == "9":
         startDate = stopDate - timedelta(days=betaLength+extraDataDays)
@@ -282,9 +294,27 @@ def calculateFormulaForPair(pair, formula, date):
     index = getAnalyticsValueForDateRange(indexName, "11", startDateStr, stopDateStr)
 
     ##################################################
+    # Get required data lengths for formula
+    assetDataRequired = dayCount
+    indexDataRequired = 0
+
+    # Alpha
+    if formula == "4":
+        indexDataRequired = dayCount
+    # Beta
+    elif formula == "5":
+        indexDataRequired = dayCount
+    # Exponentially Weighted Alpha
+    elif formula == "8":
+        indexDataRequired = dayCount
+    # Exponentially Weighted Beta
+    elif formula == "9":
+        indexDataRequired = dayCount
+
+    ##################################################
     # Calculate and save formula for date
 
-    if len(assetPrices) >= dayCount and len(index) >= dayCount:
+    if len(assetPrices) >= assetDataRequired and len(index) >= indexDataRequired:
         # Volatility
         if formula == "3":
             value = af.getVolatility(assetPrices)
@@ -321,6 +351,16 @@ def calculateFormulaForPair(pair, formula, date):
 timeStart = int(round(time.time()))
 print(timeStart)
 
+# output index json
+'''
+json = "["
+for asset in baseIndex:
+    json += "\""
+    json += asset[0]
+    json += "\", "
+json += "]"
+print(json)
+'''
 
 checkAnalyticsTable()
 
@@ -343,7 +383,7 @@ for asset in baseIndex:
 
 # Check data: Which index assets are still missing USD prices more than maxDataGap?
 print("Index length = ", len(baseIndex))
-
+'''
 for asset in baseIndex:
     pair = (asset[0], baseCurrency)
     missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
@@ -365,7 +405,7 @@ for asset in baseIndex:
         #print("ERROR: Missing USD price after all calculations for %s (more than maxDataGap days in a row)" % (asset[0]))
         print(asset[0])
         #pprint(missingDates)
-
+'''
 
 # Calculate index price
 
@@ -375,9 +415,9 @@ for date in missingDates:
 
 
 # Calculate average prices and total volumes for important pairs (not necessarily used in idex)
-
+'''
 for pair in pairs:
-    pair1 = (pair[0], baseCurrency1)
+    pair1 = (pair[0], baseCurrency)
     pair2 = (pair[0], baseCurrency2)
     missingDates1 = getMissingAnalyticsDates(pairToStr(pair1), "1")
     if not calculatePriceAndVolumeRange(pair1, missingDates1):
@@ -386,7 +426,7 @@ for pair in pairs:
         calculatePriceAndVolumeRange(pair2, missingDates2)
         for date in missingDates2:
             calculateUSDPrice(pair1, date)
-
+'''
 
 ################################################################################
 
