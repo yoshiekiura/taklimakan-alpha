@@ -1,0 +1,36 @@
+{% extends 'john-base.html.twig' %}
+
+{% block title %}
+    Hello {{ controller_name }}!
+{% endblock %}
+
+
+{% block body %}
+
+    {% include 'john-top-menu.html.twig' %}
+
+    {% include 'news/breadcrumbs.html.twig' %}
+
+    {% include 'news/filters.html.twig' %}
+
+
+    <div class="container">
+        <div class="news-box">
+
+    <div class="tab-content" id="pills-tabContent">
+    <!-- Cards -->
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+
+
+
+    <div class="row">
+    {% for el in news %}
+            {% include 'news/news-box.html.twig' %}    
+    {% endfor %}
+    </div>
+
+    </div></div>
+    </div></div>
+
+{% endblock %}
