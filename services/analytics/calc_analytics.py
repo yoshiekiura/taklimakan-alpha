@@ -26,10 +26,12 @@ analytics_table = "numerical_analytics"
 
 def dateAddDays(date, days):
     dateObj = datetime.strptime(date, '%Y-%m-%d')
-    if days > 0:
-        dateObj = dateObj + timedelta(days=days)
-    elif days < 0:
-        dateObj = dateObj - timedelta(days=days)
+    dateObj = dateObj + timedelta(days=days)
+    return dateObj.strftime('%Y-%m-%d')
+
+def dateSubDays(date, days):
+    dateObj = datetime.strptime(date, '%Y-%m-%d')
+    dateObj = dateObj - timedelta(days=days)
     return dateObj.strftime('%Y-%m-%d')
 
 
@@ -220,11 +222,13 @@ def calculateUSDPrice(pair, date):
 
 def getExtrapolatedAssetPrice(pairStr, date):
     for i in range(maxDataGap):
-        dtStr = dateAddDays(date, -i)
+        dtStr = dateSubDays(date, i)
         assetPrices = getAnalyticsValueForDateRange(pairStr, "1", dtStr, dtStr)
         if len(assetPrices) != 0:
             if (i != 0):
                 print("WARNING: No base currency price for asset (%s) on date %s. Using extrapolation." % (pairStr, date))
+                if saveExtrapolatedPrices:
+                    saveAnalyticsValue(pairStr, date, "1", assetPrices[0])
             return assetPrices
     print("ERROR: No base currency price for asset (%s) on date %s. No extrapolation available." % (pairStr, date))
     return []
@@ -354,12 +358,35 @@ print(timeStart)
 # output index json
 '''
 json = "["
+pyarray = ""
 for asset in baseIndex:
+    pair = (asset[0], baseCurrency)
+    pair2 = (asset[0], baseCurrency2)
+
+    assetVolumesUsd = getAnalyticsValueForDateRange(pairToStr(pair), "2", dateSubDays("2018-04-05", 30), "2018-04-05")
+    assetVolumesBtc = getAnalyticsValueForDateRange(pairToStr(pair2), "2", dateSubDays("2018-04-05", 30), "2018-04-05")
+
     json += "\""
     json += asset[0]
+    pyarray += '('
+    pyarray += "\""
+    pyarray += asset[0]
+    pyarray += "\""
+    pyarray += ', '
+    pyarray += "\""
+    if len(assetVolumesUsd) != 0:
+        json += "-USD"
+        pyarray += "USD"
+    else:
+        json += "-BTC"
+        pyarray += "BTC"
     json += "\", "
+    pyarray += "\""
+    pyarray += '),\n'
+
 json += "]"
 print(json)
+print(pyarray)
 '''
 
 checkAnalyticsTable()
@@ -368,7 +395,7 @@ checkAnalyticsTable()
 # Prepare data for index
 
 # Calculate prices for pairs used in index
-
+'''
 for asset in baseIndex:
     pair1 = (asset[0], baseCurrency)
     pair2 = (asset[0], baseCurrency2)
@@ -379,7 +406,7 @@ for asset in baseIndex:
         calculatePriceAndVolumeRange(pair2, missingDates2)
         for date in missingDates2:
             calculateUSDPrice(pair1, date)
-
+'''
 
 # Check data: Which index assets are still missing USD prices more than maxDataGap?
 print("Index length = ", len(baseIndex))
@@ -406,6 +433,8 @@ for asset in baseIndex:
         print(asset[0])
         #pprint(missingDates)
 '''
+
+
 
 # Calculate index price
 
