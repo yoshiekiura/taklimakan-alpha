@@ -395,7 +395,7 @@ checkAnalyticsTable()
 # Prepare data for index
 
 # Calculate prices for pairs used in index
-'''
+
 for asset in baseIndex:
     pair1 = (asset[0], baseCurrency)
     pair2 = (asset[0], baseCurrency2)
@@ -406,7 +406,7 @@ for asset in baseIndex:
         calculatePriceAndVolumeRange(pair2, missingDates2)
         for date in missingDates2:
             calculateUSDPrice(pair1, date)
-'''
+
 
 # Check data: Which index assets are still missing USD prices more than maxDataGap?
 print("Index length = ", len(baseIndex))
