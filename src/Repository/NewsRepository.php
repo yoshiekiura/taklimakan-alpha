@@ -68,11 +68,17 @@ class NewsRepository extends ServiceEntityRepository
             FROM news n';
 
         if (count($filterTags)) {
+/*
             $sql .=
                 ' JOIN news_tags nt on nt.news_id = n.id
                 JOIN tags t on t.id = nt.tags_id
                 WHERE t.tag in (:tags)
                 GROUP BY n.id';
+*/
+            $sql .=
+                ' JOIN news_tags nt on nt.news_id = n.id
+                JOIN tags t on t.id = nt.tags_id
+                WHERE t.tag in (:tags)';                
         }
 
         if ($filterLimit)
