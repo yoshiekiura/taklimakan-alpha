@@ -1,34 +1,14 @@
 
-
                 var data = {{ data|json_encode|raw }};
-                //var data = http://localhost/api/charts/price?symbol=BTC
-
-                // create data tables on loaded data
                 var dataTable = anychart.data.table();
-                //msftDataTable.addData(get_msft_daily_short_data());
                 dataTable.addData(data);
-
-                //var orclDataTable = anychart.data.table();
-                //orclDataTable.addData(get_orcl_daily_short_data());
-
-                //var cscoDataTable = anychart.data.table();
-                //cscoDataTable.addData(get_csco_daily_short_data());
-
-                //var ibmDataTable = anychart.data.table();
-                //ibmDataTable.addData(get_ibm_daily_short_data());
-
-                // create stock chart
                 var chart = anychart.stock();
-
-                //chart.title("Bitcoin Price in USD");
 
             var credits = chart.credits();
             credits.enabled(false);
 
-                // create first plot on the chart with column series
                 var plot = chart.plot(0);
                 plot.height("75%");
-                // create line series on the first plot
                 plot.line()
                 //plot.column()
                     .data(dataTable.mapAs({'value': 1}))
@@ -39,7 +19,6 @@
                     //.tooltip(false)
                     ;
 
-
                 var volumePlot = chart.plot(1);
                 //volumePlot.height("25%");
                 volumePlot.column()
@@ -49,92 +28,11 @@
                     //.stroke('1.25 #564fd9')
                     ;
 
-                //chart.height("50%");
-
-        //        var firstPlot = chart.plot(0);
-        //        firstPlot.column(mapping);
-
-        /*
-                // create second plot on the chart
-                var plot = chart.plot(0);
-                // create spline line series on the second plot
-                plot.spline()
-                    .data(dataTable.mapAs({'value': 1}))
-                    .name('ORCL')
-                    .fill('#1976d2 0.65')
-                    .stroke('1.5 #1976d2');
-        */
-
-        /*
-               // create third plot
-                var plot = chart.plot(0);
-                // create step line series on the third plot
-                plot.stepLine()
-                        .data(dataTable.mapAs({'value': 1}))
-                        .name('CSCO')
-                        .fill('#ef6c00 0.65')
-                        .stroke('1.5 #ef6c00');
-
-
-
-                // create forth plot
-                var plot = chart.plot(0);
-                // create step line series on the forth plot
-                plot.line()
-                        .data(dataTable.mapAs({'value': 1}))
-                        .name('BTC Price, $')
-                        .tooltip(false);
-                plot.spline()
-                        .data(dataTable.mapAs({'value': 1}))
-                        .name('ORCL')
-                        .tooltip(false);
-                plot.stepLine()
-                        .data(dataTable.mapAs({'value': 1}))
-                        .name('CSCO')
-                        .tooltip(false);
-        */
-                // create scroller series with mapped data
-                //chart.scroller().line(dataTable.mapAs({'value': 2}));
-
-
-                // set chart selected date/time range
-        //        chart.selectRange('2005-01-03', '2005-11-20');
-
-                // set container id for the chart
                 chart.container('price-chart');
-                // initiate chart drawing
                 chart.draw();
 
-                // create range picker
-                //var rangePicker = anychart.ui.rangePicker();
-
-                // init range picker
-                //rangePicker.render(chart);
-
-/*
-            var ranges = [
-                { 'type' : 'unit', 'unit' : 'day', 'count' : 7, 'text' : 'Week' },
-                { 'type' : 'unit', 'unit' : 'month', 'count' : 1, 'text' : 'Month' },
-                { 'type' : 'unit', 'unit' : 'month', 'count' : 3, 'text' : 'Quarter' },
-                { 'type' : 'unit', 'unit' : 'year', 'count' : 1, 'text' : 'Year' },
-                { 'type': 'max', 'text': 'All' },
-            ];
-*/
-
-            var rangeSelector = anychart.ui.rangeSelector();
-            rangeSelector.ranges(ranges);
-
-            // create range selector
-        //rangeSelector.height("20px");
-
-            rangeSelector.target(chart);
-
-                // init range selector
-                // rangeSelector.render(chart);
-
+                var rangeSelector = anychart.ui.rangeSelector();
+                rangeSelector.ranges(ranges);
+                rangeSelector.target(chart);
                 rangeSelector.render(document.getElementById("range-selector"));
             });
-
-            // Render the range selection controls into containers on a page
-
-            //rangePicker.render(document.getElementById("rangepickerContainer"));
