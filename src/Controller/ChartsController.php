@@ -236,6 +236,7 @@ class ChartsController extends Controller
             'beta' => $beta,
             'sharpe' => $sharpe,
             'crypto_index' => $crypto_index,
+            'show_charts' => true,
         ]);
 
 //var_dump($data);
