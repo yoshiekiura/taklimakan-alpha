@@ -1,9 +1,6 @@
 {% extends 'john-base.html.twig' %}
 
-{% block title %}
-    Hello {{ controller_name }}!
-{% endblock %}
-
+{% block title %}{{news.title}} - Taklimakan News{% endblock %}
 
 {% block body %}
 
@@ -12,7 +9,6 @@
     {# % include 'news/breadcrumbs.html.twig' % #}
 
     {# % include 'news/filters.html.twig' % #}
-
 
     <div class="container">
         <div class="news-box">
@@ -67,10 +63,12 @@
                                             <li class="list-inline-item"><a href="/news?tags={{tag.tag}}">{{tag.tag}}</a></li>
                                         {% endfor %}
                                     </ul>
+{# FIXME Hide Shares and Likes while they are not working properly
                                     <ul class="list-inline news-likes news-likes-include">
                                         <li class="list-inline-item"><a href="#"><img src="images/i/like.svg" alt=""> 10 likes</a></li>
                                         <li class="list-inline-item"><a href="#"><img src="images/i/share.svg" alt=""> Share</a></li>
                                     </ul>
+#}                                    
                                 </div>
                             </div>
                         </div>

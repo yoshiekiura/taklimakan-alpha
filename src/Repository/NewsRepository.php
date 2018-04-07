@@ -96,7 +96,7 @@ class NewsRepository extends ServiceEntityRepository
             WHERE nt.news_id = :news_id';
 
         foreach ($rows as &$row) {
-echo " | " . $row['id'];
+//echo " | " . $row['id'];
             $query = $conn->prepare($sql);
             $query->execute([
                 'news_id' => $row['id'],
