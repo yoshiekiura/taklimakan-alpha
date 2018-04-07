@@ -28,7 +28,7 @@ class IndexController extends Controller
 
         // Top 3 News
 //        $news = $newsRepo->findBy([], ['id' => 'DESC'], 3);
-        $news = $newsRepo->getNews();
+        $news = $newsRepo->getNews([]);
 //        $comments = $commentsRepo->findAllBy(['content_type' => 'news', 'content_id'] );
 //var_dump($news);
 //die();

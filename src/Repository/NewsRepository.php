@@ -27,9 +27,6 @@ class NewsRepository extends ServiceEntityRepository
         parent::__construct($registry, News::class);
     }
 
-    /**
-     * @return News[] Returns an array of News objects NB! WITH LIKES
-     */
 /*
     public function getNews($limit = 0)
     {

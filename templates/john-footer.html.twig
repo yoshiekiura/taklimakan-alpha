@@ -59,7 +59,7 @@
     <script src="https://cdn.anychart.com/releases/8.2.0/themes/light_glamour.min.js"></script> #}
     <script src="https://cdn.anychart.com/releases/8.2.0/themes/light_glamour.min.js"></script>
 
-{% endif %}    
+{% endif %}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -67,6 +67,35 @@
     <script src="/john/js/jquery-3.2.1.slim.min.js"></script>
     <script src="/john/js/popper.min.js"></script>
     <script src="/john/js/bootstrap.min.js"></script>
+    <script src="/john/js/owl.carousel.min.js"></script>
+
+    <script>
+    $('.owl-carousel').owlCarousel({
+    loop:true,
+    margin:10,
+    responsiveClass:true,
+    responsive:{
+        0:{
+            items:1,
+            nav:true
+        },
+
+        320:{
+            items:2,
+            nav:true
+        },
+
+        600:{
+            items:3,
+            nav:false
+        },
+        1000:{
+            items:5,
+            nav:true,
+            loop:false
+        }
+    }
+    })</script>
 
     <!-- Custom JS -->
     {% block javascripts %}{% endblock %}
