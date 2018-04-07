@@ -33,6 +33,7 @@ class ChartsController extends Controller
 
         return $this->render('charts/index.html.twig', [
             //'controller_name' => 'ChartsController',
+            'menu' => 'charts',
             'charts' => $charts,
         ]);
     }
@@ -227,6 +228,7 @@ class ChartsController extends Controller
         // --------------------------------------------------------
 
         return $this->render('charts/all.html.twig', [
+            'menu' => 'charts',
             'params' => $params,
             'allowed' => $allowed,
             'pair' => $pair,

@@ -57,6 +57,7 @@ class NewsRepository extends ServiceEntityRepository
         $conn = $em->getConnection();
 
         $filterTags = isset($filter['tags']) ? $filter['tags'] : [];
+        $filterLimit = isset($filter['limit']) ? intval($filter['limit']) : null;
 
         // Get News by Filter including Tags and count of Likes & Comments
 
@@ -66,20 +67,32 @@ class NewsRepository extends ServiceEntityRepository
             (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = n.id) AS comments_count
             FROM news n';
 
-        if (count($filterTags))
+        if (count($filterTags)) {
             $sql .=
                 ' JOIN news_tags nt on nt.news_id = n.id
                 JOIN tags t on t.id = nt.tags_id
                 WHERE t.tag in (:tags)
                 GROUP BY n.id';
+        }
+
+        if ($filterLimit)
+            $sql .= " LIMIT $filterLimit";
 
         // $sql .= ' GROUP BY n.id';
 //echo $sql; die();
 
         $query = $conn->prepare($sql);
-        $query->execute([
-            'tags' => implode(', ', $filterTags),
-        ]);
+
+        $params = [];
+
+//        if (count($filterTags) && $filterLimit)
+//            $params = [ 'tags' => implode(', ', $filterTags), 'limit' => $filterLimit ];
+        if (count($filterTags))
+            $params = [ 'tags' => implode(', ', $filterTags) ];
+//        else if ($filterLimit)
+//            $params = [ 'limit' => intval($filterLimit) ];
+
+        $query->execute($params);
 
         // $tagsCollection = new PersistentCollection($em, Tags::class, []);
         $tagsCollection = new ArrayCollection(); // $em, Tags::class, []

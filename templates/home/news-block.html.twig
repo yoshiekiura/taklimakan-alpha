@@ -1,31 +1,58 @@
-
 <!-- News -->
 
 <div class="container">
-<div class="br-pagebody pd-x-20 pd-sm-x-30 mx-wd-1350">
-<div class="card-deck card-deck-sm mg-x-0">
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="news-header">
+                <h2>News</h2>
+                <p>Be aware of all the new cryptocurrency and blockchain world. Our platform will help you to keep you up to date with all the events in the world</p>
+            </div>
+        </div>
+    </div>
 
-    {% for el in news %}
+    <div class="news-box news-box-index">
+        <div class="row">
 
-        <div class="card shadow-base bd-0 mg-0">
-          <figure class="card-item-img bg-mantle rounded-top"> {# NB! Use different gradients: bg-mantle | bg-dance | bg-transfile #}
-            <img class="img-fluid rounded-top" src="/img/{{el.image}}" alt="Image">
-          </figure>
-          <div class="card-body pd-25">
-            <p class="tx-11 tx-uppercase tx-mont tx-medium tx-info">FinTech</p>
-            <h5 class="tx-normal tx-roboto lh-3 mg-b-15"><a href="" class="tx-inverse hover-info">{{el.title}}</a></h5>
-            <p class="tx-14 tx-gray-600 mg-b-25">{{el.lead}}</p>
-            <p class="tx-13 mg-b-0">
-              <a href="" class="tx-info">{{el.likes_count}} Likes</a>
-              {# <a href="" class="tx-info mg-l-5">23 Comments</a> #}
-              <a href="" class="tx-info mg-l-5"> {{el.comments_count}} Comments</a>
-              <a href="" class="tx-info mg-l-5"><i class="icon ion-more"></i></a>
-            </p>
-          </div><!-- card-body -->
-        </div><!-- card -->
+            {% for el in news %}
 
-    {% endfor %}
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+                <div class="news-item">
+                    <div class="news-img">
+                        <img src="/upload/news/{{el.image}}" alt="">
+                        <a class="news-date" href="#">{{ el.date|date("F jS \\a\\t g:ia") }}</a>
+                        <a class="news-source" href="#">Source: <span>Taklimakan</span></a>
+                    </div>
+                    <div class="news-body">
+                        <a href="/news/{{el.id}}">
+                            <h3>{{ el.title|truncate(50,true) }}</h3>
+                        </a>
+                        <p>{{ el.lead|truncate(300,true) }}</p>
+                        <ul class="list-inline news-likes">
+                            <li class="list-inline-item"><a href="#"><img src="/images/i/bubble.svg" alt=""> {{el.comments_count}} comments</a></li>
+                            <li class="list-inline-item"><a href="#"><img src="/images/i/like.svg" alt=""> {{el.likes_count}} likes</a></li>
+                        </ul>
+                        <ul class="list-inline news-tags">
+                            <li class="list-inline-item">Tags:</li>
+                            {% for tag in el.tags %}
+                                <li class="list-inline-item"><a href="/news?tags={{tag.tag}}">{{tag.tag}}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-</div>
-</div>
-</div>
+            {% endfor %}
+
+        </div>
+
+        <div class="row">
+            <div class="col-xl-6 offset-xl-3 col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-6 offset-sm-3">
+                <a href="/news" class="btn btn-success btn-block btn-load">See all news</a>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+
+    <!--/.News Box-->

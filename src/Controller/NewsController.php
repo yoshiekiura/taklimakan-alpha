@@ -37,6 +37,7 @@ class NewsController extends Controller
         $tags = $tagsRepo->findAll();
 
         return $this->render('news/index.html.twig', [
+            'menu' => 'news',
             'news' => $news,
             'tags' => $tags,
         ]);
@@ -68,6 +69,7 @@ class NewsController extends Controller
         $tags = $tagsRepo->findAll();
 //var_dump($tags);die();
         return $this->render('news/show.html.twig', [
+            'menu' => 'news',            
             'news' => $news,
             'tags' => $tags,
         ]);

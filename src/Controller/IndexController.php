@@ -28,7 +28,7 @@ class IndexController extends Controller
 
         // Top 3 News
 //        $news = $newsRepo->findBy([], ['id' => 'DESC'], 3);
-        $news = $newsRepo->getNews([]);
+        $news = $newsRepo->getNews(['limit' => 3]);
 //        $comments = $commentsRepo->findAllBy(['content_type' => 'news', 'content_id'] );
 //var_dump($news);
 //die();
@@ -43,17 +43,19 @@ class IndexController extends Controller
 */
 
         return $this->render('home/home.html.twig', [
+            'menu' => 'home',
             'news' => $news,
         ]);
 
 	}
 
+/*
     // @Route("/blog/{page}", name="blog_list", requirements={"page"="\d+"})
 
-    /**
+    / **
     * @Route("/api/hello/{namer}", name="api_hello")
     *
-    */
+    * /
     public function apiHello($namer)
     {
 
@@ -64,38 +66,17 @@ class IndexController extends Controller
         $url = $this->generateUrl(
             "api_hello",
             [
-//            'slug' => 'it-works' ,
-//            'slug' => 'it-works' ,
-            /*'namer' => "why-do-you-need-the-name?" */
             'namer' => $namer
             ]
         );
 
-  //      $url2 = $this->router->generate('blog', array(
-    //        'page' => 2,
-      //      'category' => 'Symfony',
-//        ));
-
-//        $abs_url = $this->generateUrl('api_hello', array('slug' => 'my-blog-post', 'name' => $name), UrlGeneratorInterface::ABSOLUTE_URL);
-
-
         return $this->json([
-            //'name' => $name,
             'url' => $url,
-//            'url2' => $url2,
-//            'abs_url' => $abs_url,
             'symfony' => 'rocks',
         ]);
 
 
     }
-
-    /** @Route("/simplicity") */
-
-    public function simple()
-    {
-        return new Response('Simple! Easy! Great!');
-    }
-
+*/
 
 }
