@@ -3,6 +3,9 @@
 
 # List of pairs to calculate analytics for
 
+pairs = [("RLC", "USD")]
+
+'''
 pairs = [
 ("BTC", "USD"),
 ("ETH", "USD"),
@@ -107,11 +110,11 @@ pairs = [
 ("VEN", "USD")
 
 ]
-
+'''
 
 # List of analytics formulas (type_id) to calculate for each pair
 #formulas = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-formulas = ["4", "5", "6", "7", "8", "9", "10"]
+formulas = ["3", "4", "5", "6"]
 
 # Prices start timestamp  - first date prices are available
 startDateByType = {"1": "2017-01-01", "2": "2017-01-01", "3": "2017-03-03", "4": "2018-02-01", "5": "2018-02-01", "6": "2017-03-03", "7": "2017-03-03", "8": "2018-02-01", "9": "2018-02-01", "10": "2017-03-03", "11": "2017-12-01"}

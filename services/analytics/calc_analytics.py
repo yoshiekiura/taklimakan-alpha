@@ -83,7 +83,7 @@ def getPairPricesByDateRange(pair_base, pair_quote, dateList):
     cursor = db.cursor()
     dateList = ["'" + date + "'" for date in dateList]
     dateListStr = ','.join(dateList)
-    query = "SELECT base, quote, DATE(date) as dt, close, quantity, exchange FROM %s where base = '%s' and quote = '%s' and DATE(date) in (%s);" % (price_table, pair_base, pair_quote, dateListStr)
+    query = "SELECT base, quote, DATE(date) as dt, close, quantity, exchange FROM %s where base = '%s' and quote = '%s' and DATE(date) in (%s) and exchange != 'ALL';" % (price_table, pair_base, pair_quote, dateListStr)
     cursor.execute(query)
     retval = cursor.fetchall()
     cursor.close()
@@ -95,7 +95,7 @@ def getPairPricesByDateRange2(pair_base, pair_quoteList, dateList):
     dateListStr = ','.join(dateList)
     pair_quoteList = ["'" + pair_quote + "'" for pair_quote in pair_quoteList]
     pair_quoteListStr = ','.join(pair_quoteList)
-    query = "SELECT base, quote, DATE(date) as dt, close, quantity, exchange FROM %s where base = '%s' and quote in (%s) and DATE(date) in (%s);" % (price_table, pair_base, pair_quoteListStr, dateListStr)
+    query = "SELECT base, quote, DATE(date) as dt, close, quantity, exchange FROM %s where base = '%s' and quote in (%s) and DATE(date) in (%s) and exchange != 'ALL';" % (price_table, pair_base, pair_quoteListStr, dateListStr)
     cursor.execute(query)
     retval = cursor.fetchall()
     cursor.close()
@@ -227,7 +227,17 @@ def calculatePriceAndVolumeRange(pair, dateList):
     # For each day select top 10 exchanges
     for date in volumes.keys():
         volumes[date] = dict(sorted(volumes[date].items(), key=operator.itemgetter(1), reverse=True)[:min(10, len(volumes[date]))])
-        prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() }
+
+        # Calculate weighted average to filter out bad exchanges
+        totalCost = 0
+        totalWeight = 0
+        for exchange in volumes[date].keys()
+            totalCost += prices[date][exchange] * volumes[date][exchange]
+            totalWeight += volumes[date][exchange]
+        weightedAveragePrice = totalCost / totalWeight
+
+        # Take only exchanges that are within 15% of weighted average price
+        prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() if abs(prices[date][exchange] - weightedAveragePrice)/weightedAveragePrice <= 0.15 }
 
         # Aggregate average price for each day
         averagePrice = float(sum(prices[date].values())) / len(prices[date])
