@@ -589,7 +589,9 @@ for formula in formulas:
                 # initialize price buffers
                 today = datetime.now()
                 todayStr = today.strftime('%Y-%m-%d')
-                getAnalyticsValueForDateRangeBuffered(pairToStr(pair), "1", "2017-03-01", todayStr)
+                #getAnalyticsValueForDateRangeBuffered(pairToStr(pair), "1", "2017-03-01", todayStr)
+                getAnalyticsValueForDateRangeBuffered(pairToStr(pair), "1", min(missingDates), max(missingDates))
+
 
                 for date in missingDates:
                     print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
