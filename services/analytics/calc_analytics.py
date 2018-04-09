@@ -229,6 +229,8 @@ def calculatePriceAndVolumeRange2(pair, dateList):
     prices = {}
     volumes = {}
     for rp in rawPrices:
+        priceFound = False
+
         # base, quote, DATE(date) as dt, price, volume
         date = rp[2]
         print(date)
@@ -236,15 +238,18 @@ def calculatePriceAndVolumeRange2(pair, dateList):
         # Price may be in main pair currency (pair[1]) or in second currency (USD or BTC, whatever is not main)
         if (rp[1] == pair[1]):
             price = rp[3]
+            priceFound = True
         else:
             basePrices = getAnalyticsValueForDateRange(pairToBaseStr, "1", date, date)
-            usdPerBtc = basePrices[0]
-            if rp[1] == "BTC":
-                # We need price in USD/X, but rp[3] is price in BTC/X
-                price = rp[3] * usdPerBtc
-            else:
-                # We need price in BTC/X, but rp[3] is price in USD/X
-                price = rp[3] / usdPerBtc
+            if len(basePrices) > 0:
+                usdPerBtc = basePrices[0]
+                if rp[1] == "BTC":
+                    # We need price in USD/X, but rp[3] is price in BTC/X
+                    price = rp[3] * usdPerBtc
+                else:
+                    # We need price in BTC/X, but rp[3] is price in USD/X
+                    price = rp[3] / usdPerBtc
+                priceFound = True
         volume = rp[4]
         exchange = rp[5]
 
@@ -252,14 +257,15 @@ def calculatePriceAndVolumeRange2(pair, dateList):
         print(price)
 
         # Arrange data by date buckets
-        if date in volumes.keys():
-            prices[date][exchange] = price
-            volumes[date][exchange] = volume
-        else:
-            prices[date] = {}
-            volumes[date] = {}
-            prices[date][exchange] = price
-            volumes[date][exchange] = volume
+        if priceFound:
+            if date in volumes.keys():
+                prices[date][exchange] = price
+                volumes[date][exchange] = volume
+            else:
+                prices[date] = {}
+                volumes[date] = {}
+                prices[date][exchange] = price
+                volumes[date][exchange] = volume
 
     # For each day select top 10 exchanges
     for date in volumes.keys():
