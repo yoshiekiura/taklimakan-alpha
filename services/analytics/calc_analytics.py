@@ -96,7 +96,6 @@ def getPairPricesByDateRange2(pair_base, pair_quoteList, dateList):
     pair_quoteList = ["'" + pair_quote + "'" for pair_quote in pair_quoteList]
     pair_quoteListStr = ','.join(pair_quoteList)
     query = "SELECT base, quote, DATE(date) as dt, close, quantity, exchange FROM %s where base = '%s' and quote in (%s) and DATE(date) in (%s);" % (price_table, pair_base, pair_quoteListStr, dateListStr)
-    print(query)
     cursor.execute(query)
     retval = cursor.fetchall()
     cursor.close()
@@ -225,13 +224,15 @@ def calculatePriceAndVolumeRange2(pair, dateList):
 
     # structurize data into days
     pairToBaseStr = baseCurrency2 + '-' + baseCurrency  # BTC to USD
-    print("pairToBaseStr has " + str(len(pairToBaseStr)))
+    print("pairToBaseStr has " + str(len(rawPrices)))
 
     prices = {}
     volumes = {}
     for rp in rawPrices:
         # base, quote, DATE(date) as dt, price, volume
         date = rp[2]
+        print(date)
+
         # Price may be in main pair currency (pair[1]) or in second currency (USD or BTC, whatever is not main)
         if (rp[1] == pair[1]):
             price = rp[3]
@@ -244,9 +245,11 @@ def calculatePriceAndVolumeRange2(pair, dateList):
             else:
                 # We need price in BTC/X, but rp[3] is price in USD/X
                 price = rp[3] / usdPerBtc
-
         volume = rp[4]
         exchange = rp[5]
+
+
+        print(price)
 
         # Arrange data by date buckets
         if date in volumes.keys():
