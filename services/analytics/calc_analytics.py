@@ -233,8 +233,6 @@ def calculatePriceAndVolumeRange2(pair, dateList):
 
         # base, quote, DATE(date) as dt, price, volume
         date = rp[2]
-        print(date)
-
         # Price may be in main pair currency (pair[1]) or in second currency (USD or BTC, whatever is not main)
         if (rp[1] == pair[1]):
             price = rp[3]
@@ -252,9 +250,6 @@ def calculatePriceAndVolumeRange2(pair, dateList):
                 priceFound = True
         volume = rp[4]
         exchange = rp[5]
-
-
-        print(price)
 
         # Arrange data by date buckets
         if priceFound:

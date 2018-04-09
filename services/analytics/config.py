@@ -146,7 +146,26 @@ baseCurrency2 = "BTC"
 indexName = "INDEX001"
 
 
-baseIndex = [("ADA", 0.01)]
+baseIndex = ["RLC-USD"
+, "BTX-BTC"
+, "ANT-USD"
+, "BTCD-BTC"
+, "CS-USD"
+, "PLR-USD"
+, "ICN-BTC"
+, "STORJ-USD"
+, "MTL-USD"
+, "BNT-USD"
+, "PAY-USD"
+, "FUN-USD"
+, "BAT-USD"
+, "PIVX-USD"
+, "REP-USD"
+, "DGD-USD"
+, "QTUM-USD"
+, "NEO-USD"]
+
+
 '''
 baseIndex = [
     ("BTC", 0.01),
