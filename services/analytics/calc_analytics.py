@@ -224,6 +224,7 @@ def calculatePriceAndVolumeRange2(pair, dateList):
 
     # structurize data into days
     pairToBaseStr = baseCurrency2 + '-' + baseCurrency  # BTC to USD
+    console.log("pairToBaseStr has " + str(len(pairToBaseStr)))
 
     prices = {}
     volumes = {}
@@ -485,6 +486,8 @@ for asset in baseIndex:
     missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
     calculatePriceAndVolumeRange2(pair, missingDates)
 
+
+
 # Check data: Which index assets are still missing USD prices more than maxDataGap?
 print("Index length = ", len(baseIndex))
 '''
@@ -514,11 +517,11 @@ for asset in baseIndex:
 
 
 # Calculate index price
-
+'''
 missingDates = getMissingAnalyticsDates(indexName, "11")
 for date in missingDates:
     calculateIndexPrice(baseIndex, date)
-
+'''
 
 # Calculate average prices and total volumes for important pairs (not necessarily used in idex)
 '''
@@ -538,7 +541,7 @@ for pair in pairs:
 
 
 # Calculate the rest of formulas
-
+'''
 for formula in formulas:
     for pair in pairs:
         if formula not in ["1", "2", "11"]:
@@ -546,7 +549,7 @@ for formula in formulas:
             for date in missingDates:
                 print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
                 calculateFormulaForPair(pair, formula, date)
-
+'''
 
 #saveAnalyticsValue("BTC-USD", "2018-03-16 12:00:00", "6", 0.2)
 #print(datetime.fromtimestamp(pricesStartDate, timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))
