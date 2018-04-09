@@ -146,24 +146,26 @@ baseCurrency2 = "BTC"
 indexName = "INDEX001"
 
 
-baseIndex = ["RLC-USD"
-, "BTX-BTC"
-, "ANT-USD"
-, "BTCD-BTC"
-, "CS-USD"
-, "PLR-USD"
-, "ICN-BTC"
-, "STORJ-USD"
-, "MTL-USD"
-, "BNT-USD"
-, "PAY-USD"
-, "FUN-USD"
-, "BAT-USD"
-, "PIVX-USD"
-, "REP-USD"
-, "DGD-USD"
-, "QTUM-USD"
-, "NEO-USD"]
+baseIndex = [
+    ("RLC", 0.01),
+    ("BTX", 0.01),
+    ("ANT", 0.01),
+    ("BTCD", 0.01),
+    ("CS", 0.01),
+    ("PLR", 0.01),
+    ("ICN", 0.01),
+    ("STORJ", 0.01),
+    ("MTL", 0.01),
+    ("BNT", 0.01),
+    ("PAY", 0.01),
+    ("FUN", 0.01),
+    ("BAT", 0.01),
+    ("PIVX", 0.01),
+    ("REP", 0.01),
+    ("DGD", 0.01),
+    ("QTUM", 0.01),
+    ("NEO", 0.01)
+]
 
 
 '''
