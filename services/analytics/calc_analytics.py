@@ -580,13 +580,13 @@ for formula in formulas:
     for pair in pairs:
         if formula not in ["1", "2", "11"]:
             missingDates = getMissingAnalyticsDates(pairToStr(pair), formula)
+            if len(missingDates) > 0:
+                # initialize price buffers
+                getAnalyticsValueForDateRange(pairToStr(pair), "1", min(missingDates), max(missingDates))
 
-            # initialize price buffers
-            getAnalyticsValueForDateRange(pairToStr(pair), "1", min(missingDates), max(missingDates))
-
-            for date in missingDates:
-                print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
-                calculateFormulaForPair(pair, formula, date)
+                for date in missingDates:
+                    print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
+                    calculateFormulaForPair(pair, formula, date)
 
 
 #saveAnalyticsValue("BTC-USD", "2018-03-16 12:00:00", "6", 0.2)
