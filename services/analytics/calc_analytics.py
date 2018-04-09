@@ -224,7 +224,7 @@ def calculatePriceAndVolumeRange2(pair, dateList):
 
     # structurize data into days
     pairToBaseStr = baseCurrency2 + '-' + baseCurrency  # BTC to USD
-    console.log("pairToBaseStr has " + str(len(pairToBaseStr)))
+    print("pairToBaseStr has " + str(len(pairToBaseStr)))
 
     prices = {}
     volumes = {}
