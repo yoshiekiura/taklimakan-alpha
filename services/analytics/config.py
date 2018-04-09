@@ -3,11 +3,22 @@
 
 # List of pairs to calculate analytics for
 
-pairs = [("BTC", "USD")]
-
-'''
 pairs = [
 ("BTC", "USD"),
+("ETH", "USD"),
+("XRP", "USD"),
+("ETC", "USD"),
+("XEM", "USD"),
+("USDT", "USD"),
+("TRX", "USD"),
+("XMR", "USD"),
+("DASH", "USD"),
+("NEO", "USD"),
+("XLM", "USD"),
+("ADA", "USD"),
+("EOS", "USD"),
+("LTC", "USD"),
+("BCH", "USD"),
 ("GAME", "USD"),
 ("RLC", "USD"),
 ("BTX", "BTC"),
@@ -92,23 +103,10 @@ pairs = [
 ("ICX", "USD"),
 ("BNB", "BTC"),
 ("QTUM", "USD"),
-("VEN", "USD"),
-("ETC", "USD"),
-("XEM", "USD"),
-("USDT", "USD"),
-("TRX", "USD"),
-("XMR", "USD"),
-("DASH", "USD"),
-("NEO", "USD"),
-("XLM", "USD"),
-("ADA", "USD"),
-("EOS", "USD"),
-("LTC", "USD"),
-("BCH", "USD"),
-("XRP", "USD"),
-("ETH", "USD")
+("VEN", "USD")
+
 ]
-'''
+
 
 # List of analytics formulas (type_id) to calculate for each pair
 formulas = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
