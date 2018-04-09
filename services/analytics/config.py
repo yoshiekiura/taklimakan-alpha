@@ -189,7 +189,7 @@ baseIndex = [
 ]
 '''
 
-baseIndex = [("RLC", 0.01)
+baseIndex = [("RLC", 0.01),
 ("RLC", 0.01),
 ("BTX",0.01),
 ("ANT",0.01),
