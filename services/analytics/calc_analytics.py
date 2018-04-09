@@ -117,13 +117,36 @@ def getAnalyticsValue(pair, date, type_id):
     cursor.close()
     return retval
 
-def getAnalyticsValueForDateRange(pair, type_id, start_date, stop_date):
+def getAnalyticsValueForDateRangeDB(pair, type_id, start_date, stop_date):
     cursor = db.cursor()
     query = "SELECT value FROM numerical_analytics where pair = '%s' and type_id = '%s' and DATE(dt) >= '%s' and DATE(dt) <= '%s'" % (pair, type_id, start_date, stop_date)
     cursor.execute(query)
     results = cursor.fetchall()
     cursor.close()
     values = [r[0] for r in results]
+    return values
+
+analyticsValueBuffer = {}
+def getAnalyticsValueForDateRange(pair, type_id, start_date, stop_date):
+    global analyticsValueBuffer
+    values = []
+
+    currentDate = start_date
+    dateAfterStop = dateAddDays(stop_date, 1)
+    while (currentDate != dateAfterStop):
+        if pair not in analyticsValueBuffer.keys():
+            analyticsValueBuffer[pair] = {}
+
+        if type_id not in analyticsValueBuffer[pair].keys():
+            analyticsValueBuffer[pair][type_id] = {}
+
+        if currentDate in analyticsValueBuffer[pair][type_id].keys():
+            v = getAnalyticsValueForDateRangeDB(pair, type_id, currentDate, currentDate)
+            analyticsValueBuffer[pair][type_id][currentDate] = v[0]
+
+        values.append(analyticsValueBuffer[pair][type_id][currentDate])
+        currentDate = dateAddDays(currentDate, 1)
+
     return values
 
 # Get list of dates that are missing in analytics starting at pricesStartDate
@@ -557,6 +580,10 @@ for formula in formulas:
     for pair in pairs:
         if formula not in ["1", "2", "11"]:
             missingDates = getMissingAnalyticsDates(pairToStr(pair), formula)
+
+            # initialize price buffers
+            getAnalyticsValueForDateRange(pairToStr(pair), "1", min(missingDates), max(missingDates))
+
             for date in missingDates:
                 print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
                 calculateFormulaForPair(pair, formula, date)
