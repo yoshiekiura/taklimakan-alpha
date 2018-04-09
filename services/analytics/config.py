@@ -2,8 +2,11 @@
 # Script configuration
 
 # List of pairs to calculate analytics for
-pairs = [
+
+pairs = [("ADA", "USD")]
+
 '''
+pairs = [
 ("BTC", "USD"),
 ("GAME", "USD"),
 ("RLC", "USD"),
@@ -104,11 +107,8 @@ pairs = [
 ("BCH", "USD"),
 ("XRP", "USD"),
 ("ETH", "USD")
-'''
-
-("ADA", "USD")
-
 ]
+'''
 
 # List of analytics formulas (type_id) to calculate for each pair
 formulas = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
