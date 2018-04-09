@@ -140,7 +140,7 @@ def getAnalyticsValueForDateRange(pair, type_id, start_date, stop_date):
         if type_id not in analyticsValueBuffer[pair].keys():
             analyticsValueBuffer[pair][type_id] = {}
 
-        if currentDate in analyticsValueBuffer[pair][type_id].keys():
+        if currentDate not in analyticsValueBuffer[pair][type_id].keys():
             v = getAnalyticsValueForDateRangeDB(pair, type_id, currentDate, currentDate)
             analyticsValueBuffer[pair][type_id][currentDate] = v[0]
 
