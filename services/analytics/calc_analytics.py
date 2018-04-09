@@ -482,8 +482,8 @@ for asset in baseIndex:
 
 for asset in baseIndex:
     pair = (asset[0], baseCurrency)
-    missingDates1 = getMissingAnalyticsDates2(pairToStr(pair), "1")
-
+    missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
+    calculatePriceAndVolumeRange2(pair, missingDates)
 
 # Check data: Which index assets are still missing USD prices more than maxDataGap?
 print("Index length = ", len(baseIndex))
