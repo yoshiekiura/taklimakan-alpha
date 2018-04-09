@@ -231,7 +231,7 @@ def calculatePriceAndVolumeRange(pair, dateList):
         # Calculate weighted average to filter out bad exchanges
         totalCost = 0
         totalWeight = 0
-        for exchange in volumes[date].keys()
+        for exchange in volumes[date].keys():
             totalCost += prices[date][exchange] * volumes[date][exchange]
             totalWeight += volumes[date][exchange]
         weightedAveragePrice = totalCost / totalWeight
