@@ -1,0 +1,38 @@
+{% extends 'john-base.html.twig' %}
+
+{% block title %}Taklimakan Education{% endblock %}
+
+{% block body %}
+
+    {% include 'john-top-menu.html.twig' %}
+
+    {% include 'edu/breadcrumbs.html.twig' %}
+
+    <div class="container">
+
+        {# https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php #}
+
+        <style>
+            .videoWrapper {
+        	    position: relative;
+            	padding-bottom: 56.25%; /* 16:9 */
+            	padding-top: 25px;
+            	height: 0;
+            }
+            .videoWrapper iframe {
+        	    position: absolute;
+            	top: 0;
+            	left: 0;
+            	width: 100%;
+        	    height: 100%;
+            }
+        </style>
+
+        <div class="videoWrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/g6iDZspbRMg?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+
+
+    </div>
+
+{% endblock %}
