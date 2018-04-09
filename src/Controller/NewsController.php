@@ -65,11 +65,21 @@ class NewsController extends Controller
 
         $news = $newsRepo->findOneBy([ 'id' => $id ]);
 
-        $tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
-        $tags = $tagsRepo->findAll();
+        // FIXME! По быстрому дергаем теги - потом архитектура изменится, переделать
+
+        $conn = $this->getDoctrine()->getEntityManager()->getConnection();
+        $sql = 'SELECT tag FROM tags t JOIN news_tags nt ON nt.tags_id = t.id WHERE nt.news_id = :id';
+        $query = $conn->prepare($sql);
+        $query->execute([ 'id' => $id ]);
+        $tags = $query->fetchAll();
+
+//        $tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
+        //$tags = $tagsRepo->findAll();
+
 //var_dump($tags);die();
+
         return $this->render('news/show.html.twig', [
-            'menu' => 'news',            
+            'menu' => 'news',
             'news' => $news,
             'tags' => $tags,
         ]);

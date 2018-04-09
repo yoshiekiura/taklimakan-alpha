@@ -53,6 +53,9 @@ class NewsRepository extends ServiceEntityRepository
      */
     public function getNews($filter)
     {
+
+        // Select NEWS with default filter ACTIVE = TRUE and sorting by DATE = DESC
+
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
 
@@ -64,16 +67,27 @@ class NewsRepository extends ServiceEntityRepository
         $sql =
             'SELECT *,
             (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = n.id) AS likes_count,
-            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = n.id) AS comments_count
+            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = n.id) AS comments_count,
+            n.id as id
             FROM news n';
 
         if (count($filterTags)) {
+/*
             $sql .=
                 ' JOIN news_tags nt on nt.news_id = n.id
                 JOIN tags t on t.id = nt.tags_id
                 WHERE t.tag in (:tags)
                 GROUP BY n.id';
-        }
+*/
+            $sql .=
+                ' JOIN news_tags nt on nt.news_id = n.id
+                JOIN tags t on t.id = nt.tags_id
+                WHERE t.tag in (:tags)
+                AND active = true
+                ORDER BY date DESC';
+        } else
+            $sql .= ' WHERE active = true
+            ORDER BY date DESC';
 
         if ($filterLimit)
             $sql .= " LIMIT $filterLimit";
