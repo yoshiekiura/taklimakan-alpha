@@ -33,6 +33,7 @@ class ChartsController extends Controller
 
         return $this->render('charts/index.html.twig', [
             //'controller_name' => 'ChartsController',
+            'menu' => 'charts',
             'charts' => $charts,
         ]);
     }
@@ -104,13 +105,27 @@ class ChartsController extends Controller
      */
     public function showChart($type, Request $request)
     {
-        $allowedSymbols = ['BTC', 'ETH', 'LTC'];
+        $conn = $this->getDoctrine()->getConnection();
+
+        $sql = 'SELECT data FROM pair_set WHERE id = "1"';
+        $query = $conn->prepare($sql);
+        $query->execute();
+        $json = $query->fetchColumn();
+        $allowed = json_decode($json);
+//var_dump($allowed);
+//die();
+
+/*
         $symbol = $request->query->get('symbol');
         if (!in_array($symbol, $allowedSymbols))
             $symbol = "BTC";
         $pair = "$symbol-USD";
+*/
+        $pair = $request->query->get('pair');
+        if (!in_array($pair, $allowed))
+            $pair = "BTC-USD";
 
-        $params['symbol'] = $symbol;
+        $params['pair'] = $pair;
 
 //        function get_msft_daily_short_data() {
 //          return [
@@ -130,14 +145,14 @@ class ChartsController extends Controller
         // --- Price 1 -------------------------------------------------
 
         $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "1" AND pair = "' . $pair . '"';
-        $query = $this->getDoctrine()->getConnection()->prepare($sql);
+        $query = $conn->prepare($sql);
         $query->execute();
         $rows = $query->fetchAll();
 
         // --- Volume 2 -------------------------------------------------
 
         $sql = 'select * from numerical_analytics where type_id="2" and pair="' . $pair . '"';
-        $query = $this->getDoctrine()->getConnection()->prepare($sql);
+        $query = $conn->prepare($sql);
         $query->execute();
         $volumeRows = $query->fetchAll();
 
@@ -213,13 +228,17 @@ class ChartsController extends Controller
         // --------------------------------------------------------
 
         return $this->render('charts/all.html.twig', [
+            'menu' => 'charts',
             'params' => $params,
+            'allowed' => $allowed,
+            'pair' => $pair,
             'data' => $data,
             'volatility' => $volatility,
             'alpha' => $alpha,
             'beta' => $beta,
             'sharpe' => $sharpe,
             'crypto_index' => $crypto_index,
+            'show_charts' => true,
         ]);
 
 //var_dump($data);

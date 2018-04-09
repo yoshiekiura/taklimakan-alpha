@@ -2,7 +2,6 @@
 
 {% block chart %}
 
-
 <div class="container">
    <div class="row">
        <div class="col-xl-12">
@@ -21,6 +20,7 @@
    </div>
 </div>
 
+{# FIXME! THE FIRST VERSION OF SELECTOR
 
 <style>
 .btn-custom-group .btn-secondary {
@@ -60,8 +60,67 @@
 </div>
 </div>
 
+#}
+
+
+{# --- Crypto Selector --- #}
+
+{# % include 'charts/selector.html.twig' % #}
+
+<style>
+    .dropdown { margin: 20px; }
+    .dropdown-menu { max-height: 20rem; overflow-y: auto; }
+</style>
+
+ <!-- class="w-25 p-3" style="background-color: #fee;" -->
+
+<div class="container">
+<div class="row">
+<div class="col-md-12 text-center">
+<div class="row"><div class="col"></div><div class="col">
+<div class="dropdown">
+    <label>Choose Trading Pair</label>
+    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="dropdown_coins" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #564fd9 !important;">
+        {{pair}}
+    </button>
+    <div id="menu" class="dropdown-menu" aria-labelledby="dropdown_coins">
+        <form class="px-4 py-2">
+            <input type="search" class="form-control" id="searchCoin" placeholder="BTC" autofocus="autofocus">
+        </form>
+        <div id="menuItems"></div>
+        <div id="empty" class="dropdown-header">No pairs found</div>
+    </div>
+</div>
+</div><div class="col"></div></div>
+</div></div></div>
+
+
 <div class="container">
 
+    {# Read More https://codepen.io/joserick/pen/ooVPwR #}
+
+    <style>
+        /* #summary {  font-size: 14px; line-height: 1.5; } */
+        #summary p.collapse:not(.show) { height: 36px !important; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        #summary p.collapsing { min-height: 36px !important; }
+        #summary a.collapsed:after  { content: '+ Read More'; }
+        #summary a:not(.collapsed):after { content: '- Read Less'; }
+
+        #alpha-summary p.collapse:not(.show) { height: 36px !important; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        #alpha-summary p.collapsing { min-height: 36px !important; }
+        #alpha-summary a.collapsed:after { content: '+ Read More'; }
+        #alpha-summary a:not(.collapsed):after { content: '- Read Less'; }
+
+        #beta-summary p.collapse:not(.show) { height: 36px !important; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        #beta-summary p.collapsing { min-height: 36px !important; }
+        #beta-summary a.collapsed:after  { content: '+ Read More'; }
+        #beta-summary a:not(.collapsed):after { content: '- Read Less'; }
+
+        #sharpe-summary p.collapse:not(.show) { height: 36px !important; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        #sharpe-summary p.collapsing { min-height: 36px !important; }
+        #sharpe-summary a.collapsed:after  { content: '+ Read More'; }
+        #sharpe-summary a:not(.collapsed):after { content: '- Read Less'; }
+    </style>
 
     <style>
         #price-chart { width: 100%; height: 600px; }
@@ -70,52 +129,69 @@
         #index-range-selector, #sharpe-range-selector { text-align: right; padding: 20px 20px 0px 0px; }
     </style>
 
-    <h1 style="margin-top: 50px">Price</h1>
+    <div class="news-header" style="margin: 30px 0 0 0"><h2>Price</h2></div>
+    <p>Prices are calculated daily. To calculate price for a given cryptocurrency, we select top 10 global exchanges by volume in USD, that are trading this cryptocurrency. If cryptocurrency was not traded for USD, we use trading data for BTC and convert the price using USD/BTC price for that date. From top 10 selected exchanges we take close price for each exchange and calculate mean which is then the Price that we display.</p>
+    <div id="price-chart"><div id="range-selector"></div></div>
 
-    <div id="price-chart">
-        <div id="range-selector"></div>
+
+    <div class="news-header" style="margin: 80px 0 0 0"><h2>Market Index</h2></div>
+    <div id="summary">
+        <p class="collapse" id="collapseSummary"><strong>Market Index</strong>, it is composed of the 100 of the largest cryptocurrencies by market capitalization. By creating an index with 100 components we aim to represent the movement of the broader market and at the same time create a benchmark, ie a reference point, that we could measure investment performance, volatility, etc. against.</br></br>
+        At the same time we have created a Market Return parameter which is derived from the return from the TN Crypto 100 Market Index that we can use for analytical values calculation.</br></br>
+        <strong>Rebalancing</strong> of the index is currently done every two weeks, when we check if there's a change in composition of the 100 largest Market Capitalization crypto currencies; if there is, we change the components to reflect that by selecting the "new largest 100".</br></br>
+        If any of the components goes missing between the two rebalancing periods, lasting two weeks, either for the reason of missing data or currency disappearing for any reason, it is replaced by the 101st member of the previously selected Market Capitalization currency from the list. The same would happen for any additional changes with replacement by further 102nd, etc.</p>
+        <a class="collapsed" data-toggle="collapse" href="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary"></a>
     </div>
+    <div id="index-chart"><div id="index-range-selector"></div></div>
 
 
-    <h1 style="margin-top: 100px;">Index Crypto 100</h1>
+    <div class="news-header" style="margin: 80px 0 0 0" ><h2>Volatility</h2></div>
+    <p>Volatility is a statistical measure of the dispersion of returns for a given cryptocurrency. It is calculated as a square root of variance of returns.</p>
+    <div id="volatility-chart"><div id="volatility-range-selector"></div></div>
 
-    <div id="index-chart">
-        <div id="index-range-selector"></div>
+
+    <div class="news-header" style="margin: 80px 0 0 0" ><h2>Alpha</h2></div>
+    <div id="alpha-summary">
+        <p class="collapse" id="alpha-collapseSummary">Alpha measures how well an investment performed compared to its benchmark (Market Index). It means how better or worse an investment is relative to the market or by how much is over performing or underperforming the market.</br></br>
+        For Clarity Difference: Beta is the volatility and Alpha is the excess return when compared to market (Market Index = BT Crypto 100).</br></br>
+        If we assume that we could buy index BT Crypto 100 (be a passive investor), than as an investor we want to exceed that. Alpha is going to help us measure us by how much we have exceeded that.</br></br>
+        α = Rp – [Rf + (Rm – Rf) β]</br></br>
+        Rp = Realized return of portfolio or cryptocurrency</br></br>
+        Rm = Market return (return of the BT Crypto 100)</br></br>
+        Rf = risk-free rate as defined by the Central Bank</br></br>
+        A positive alpha means that the investments performed better than Market Index - BT Crypto 100 than he or she would have if they just bought the index. A negative alphameans that the investor underperformed the market ie Market Index - TN Crypto 100.</p>
+        <a class="collapsed" data-toggle="collapse" href="#alpha-collapseSummary" aria-expanded="false" aria-controls="alpha-collapseSummary"></a>
     </div>
+    <div id="alpha-chart" ><div id="alpha-range-selector"></div></div>
 
 
-    <div style="clear: both">
-    <h1 style="margin-top: 100px;">Volatility</h1>
+    <div class="news-header" style="margin: 80px 0 0 0" ><h2>Beta</h2></div>
+    <div id="beta-summary">
+        <p class="collapse" id="beta-collapseSummary">Beta is a measure of the volatility, or systematic risk, of a security or an investment portfolio in comparison to the market as a whole. In our case we use TN Crypto 100 to measure market as a whole.</br></br>
+        Therefore, Beta is measuring volatility of any particular cryptocurrency against the the Market Index BT Crypto 100. In simple terms the Beta will be telling us if any currency is more or less volatile than the index.</br></br>
+        Beta is calculated wih regression analysis. A crypto's beta is calculated by dividing the covariance the security's returns and the TN Crypto 100 index returns by the varianceof the TN Crypto 100 index returns over a 60 day period. We also exponentially weight the time series with recent days having the higher significance to the one further back in time from now.</br></br>
+        A Beta of 1 indicates that the crypto's price moves with the market (Market Index). A beta of less than 1 means that the crypto is theoretically less volatile than the market. A beta of greater than 1 indicates that the crypto's price is theoretically more volatile than the market.</br></br>
+        If a crypto's beta is 1.3, it's theoretically 30% more volatile than the market (Market Index). But, if a crypto's beta is 0.55, it is theoretically 45% less volatile than the market, etc. So every cryptocurrency and any portfolio will have a beta number calculated so the investor knows where it's volatility is when compared to the market.</p>
+        <a class="collapsed" data-toggle="collapse" href="#beta-collapseSummary" aria-expanded="false" aria-controls="beta-collapseSummary"></a>
     </div>
+    <div id="beta-chart"><div id="beta-range-selector"></div></div>
 
-    <div id="volatility-chart">
-        <div id="volatility-range-selector"></div>
+
+    <div class="news-header" style="margin: 80px 0 0 0" ><h2>Sharpe Ratio</h2></div>
+    <div id="sharpe-summary">
+        <p class="collapse" id="sharpe-collapseSummary">The Sharpe ratio is the average return in excess of the risk-free rate per unit of volatility.</br></br>
+        Sharpe ratio and Alpha are both excess returns measures. Sharpe is extra return over risk free interest rate (ie the one set by the central banks), while Alpha is extra return over the general crypto market (Market Index, BT Crypto 100).</br></br>
+        Subtracting the risk-free rate from the mean return, the performance associated with risk-taking activities can be isolated. Volatility is a measure of total risk.</br></br>
+        Sharpe ratio = (Mean (i.e. Expected) portfolio return − Risk-free rate)/Standard deviation of portfolio return</br></br>
+        Where,</br></br>
+        = Expected portfolio return</br></br>
+        rf  = Risk free rate</br></br>
+        𝜎p = Portfolio standard deviation</p>
+        <a class="collapsed" data-toggle="collapse" href="#sharpe-collapseSummary" aria-expanded="false" aria-controls="sharpe-collapseSummary"></a>
     </div>
-
-    <h1 style="margin-top: 100px;">Alpha</h1>
-
-    <div id="alpha-chart">
-        <div id="alpha-range-selector"></div>
-    </div>
-
-    <h1 style="margin-top: 100px;">Beta</h1>
-
-    <div id="beta-chart">
-        <div id="beta-range-selector"></div>
-    </div>
-
-
-    <h1 style="margin-top: 100px;">Sharpe Ratio</h1>
-
-    <div id="sharpe-chart">
-        <div id="sharpe-range-selector"></div>
-    </div>
-
-
-
+    <div id="sharpe-chart"><div id="sharpe-range-selector"></div></div>
 
     <script>
-
 
     document.addEventListener('DOMContentLoaded', function() {
 
