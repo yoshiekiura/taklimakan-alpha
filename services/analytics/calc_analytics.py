@@ -96,6 +96,7 @@ def getPairPricesByDateRange2(pair_base, pair_quoteList, dateList):
     pair_quoteList = ["'" + pair_quote + "'" for pair_quote in pair_quoteList]
     pair_quoteListStr = ','.join(pair_quoteList)
     query = "SELECT base, quote, DATE(date) as dt, close, quantity, exchange FROM %s where base = '%s' and quote in (%s) and DATE(date) in (%s);" % (price_table, pair_base, pair_quoteListStr, dateListStr)
+    print(query)
     cursor.execute(query)
     retval = cursor.fetchall()
     cursor.close()
