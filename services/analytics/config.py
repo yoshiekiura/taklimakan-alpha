@@ -3,7 +3,25 @@
 
 # List of pairs to calculate analytics for
 
-pairs = [("RLC", "USD")]
+pairs = [("RLC", "USD"),
+("BTX","BTC"),
+("ANT","USD"),
+("BTCD","BTC"),
+("CS","USD"),
+("PLR","USD"),
+("ICN","BTC"),
+("STORJ","USD"),
+("MTL","USD"),
+("BNT","USD"),
+("PAY","USD"),
+("FUN","USD"),
+("BAT","USD"),
+("PIVX","USD"),
+("REP","USD"),
+("DGD","USD"),
+("QTUM","USD"),
+("NEO","USD") 
+]
 
 '''
 pairs = [
