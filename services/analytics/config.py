@@ -145,7 +145,7 @@ baseCurrency = "USD"
 baseCurrency2 = "BTC"
 indexName = "INDEX001"
 
-
+'''
 baseIndex = [
     ("RLC", 0.01),
     ("BTX", 0.01),
@@ -166,9 +166,9 @@ baseIndex = [
     ("QTUM", 0.01),
     ("NEO", 0.01)
 ]
-
-
 '''
+
+
 baseIndex = [
     ("BTC", 0.01),
 
@@ -302,4 +302,3 @@ baseIndex = [
     ("XRP", 0.01),
     ("ETH", 0.01)
 ]
-'''
