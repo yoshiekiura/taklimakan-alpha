@@ -12,7 +12,7 @@
                     <li class="list-inline-item">/</li>
                     <li class="list-inline-item">Analytics</li>
                 </ul>
-                <p>This is the Analytics section. In this section, we have selected for you the most delicious suggestions to explore. Only the most recent material from professional authors you will find here</p>
+                <p>We present the first set of tools that can be used to Analyze cryptocurrencies. Many more to come!</p>
             </div>
        </div>
        <div class="col-xl-2 d-sm">
@@ -63,38 +63,6 @@
 #}
 
 
-{# --- Crypto Selector --- #}
-
-{# % include 'charts/selector.html.twig' % #}
-
-<style>
-    .dropdown { margin: 20px; }
-    .dropdown-menu { max-height: 20rem; overflow-y: auto; }
-</style>
-
- <!-- class="w-25 p-3" style="background-color: #fee;" -->
-
-<div class="container">
-<div class="row">
-<div class="col-md-12 text-center">
-<div class="row"><div class="col"></div><div class="col">
-<div class="dropdown">
-    <label>Choose Trading Pair</label>
-    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="dropdown_coins" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #564fd9 !important;">
-        {{pair}}
-    </button>
-    <div id="menu" class="dropdown-menu" aria-labelledby="dropdown_coins">
-        <form class="px-4 py-2">
-            <input type="search" class="form-control" id="searchCoin" placeholder="BTC" autofocus="autofocus">
-        </form>
-        <div id="menuItems"></div>
-        <div id="empty" class="dropdown-header">No pairs found</div>
-    </div>
-</div>
-</div><div class="col"></div></div>
-</div></div></div>
-
-
 <div class="container">
 
     {# Read More https://codepen.io/joserick/pen/ooVPwR #}
@@ -129,20 +97,57 @@
         #index-range-selector, #sharpe-range-selector { text-align: right; padding: 20px 20px 0px 0px; }
     </style>
 
-    <div class="news-header" style="margin: 30px 0 0 0"><h2>Price</h2></div>
-    <p>Prices are calculated daily. To calculate price for a given cryptocurrency, we select top 10 global exchanges by volume in USD, that are trading this cryptocurrency. If cryptocurrency was not traded for USD, we use trading data for BTC and convert the price using USD/BTC price for that date. From top 10 selected exchanges we take close price for each exchange and calculate mean which is then the Price that we display.</p>
-    <div id="price-chart"><div id="range-selector"></div></div>
 
-
-    <div id="market-index-card" class="news-header" style="margin: 80px 0 0 0"><h2>Market Index 100</h2></div>
+    <div id="market-index-card" class="news-header" style="margin: 10px 0 0 0"><h2>TN Crypto 100</h2></div>
     <div id="summary">
-        <p class="collapse" id="collapseSummary"><strong>Market Index</strong>, it is composed of the 100 of the largest cryptocurrencies by market capitalization. By creating an index with 100 components we aim to represent the movement of the broader market and at the same time create a benchmark, ie a reference point, that we could measure investment performance, volatility, etc. against.</br></br>
+        <p class="collapse" id="collapseSummary"><strong>TN Crypto 100 Index</strong>, it is composed of the 100 of the largest cryptocurrencies by market capitalization. By creating an index with 100 components we aim to represent the movement of the broader market and at the same time create a benchmark, ie a reference point, that we could measure investment performance, volatility, etc. against.</br></br>
         At the same time we have created a Market Return parameter which is derived from the return from the TN Crypto 100 Market Index that we can use for analytical values calculation.</br></br>
         <strong>Rebalancing</strong> of the index is currently done every two weeks, when we check if there's a change in composition of the 100 largest Market Capitalization crypto currencies; if there is, we change the components to reflect that by selecting the "new largest 100".</br></br>
         If any of the components goes missing between the two rebalancing periods, lasting two weeks, either for the reason of missing data or currency disappearing for any reason, it is replaced by the 101st member of the previously selected Market Capitalization currency from the list. The same would happen for any additional changes with replacement by further 102nd, etc.</p>
         <a class="collapsed" data-toggle="collapse" href="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary"></a>
     </div>
     <div id="index-chart"><div id="index-range-selector"></div></div>
+
+
+
+    {# --- Crypto Selector --- #}
+
+    {# % include 'charts/selector.html.twig' % #}
+
+    <style>
+        .dropdown { margin-top: 75px; }
+        .dropdown-menu { max-height: 20rem; overflow-y: auto; }
+    </style>
+
+     <!-- class="w-25 p-3" style="background-color: #fee;" -->
+
+    <div class="container">
+    <div class="row">
+    <div class="col-md-12 text-center">
+    <div class="row"><div class="col"></div><div class="col">
+    <div class="dropdown">
+        <label>Choose Trading Pair</label>
+        <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="dropdown_coins" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #564fd9 !important;">
+            {{pair}}
+        </button>
+        <div id="menu" class="dropdown-menu" aria-labelledby="dropdown_coins">
+            <form class="px-4 py-2">
+                <input type="search" class="form-control" id="searchCoin" placeholder="BTC" autofocus="autofocus">
+            </form>
+            <div id="menuItems"></div>
+            <div id="empty" class="dropdown-header">No pairs found</div>
+        </div>
+    </div>
+    </div><div class="col"></div></div>
+    </div></div></div>
+
+
+    {# --- Crypto Selector --- #}
+
+
+    <div id="price-card" class="news-header" style="margin: 75px 0 0 0"><h2>Price</h2></div>
+    <p>Prices are calculated daily. To calculate price for a given cryptocurrency, we select top 10 global exchanges by volume in USD, that are trading this cryptocurrency. If cryptocurrency was not traded for USD, we use trading data for BTC and convert the price using USD/BTC price for that date. From top 10 selected exchanges we take close price for each exchange and calculate mean which is then the Price that we display.</p>
+    <div id="price-chart"><div id="range-selector"></div></div>
 
 
     <div id="volatility-card" class="news-header" style="margin: 80px 0 0 0" ><h2>Volatility</h2></div>
