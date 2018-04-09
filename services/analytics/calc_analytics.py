@@ -117,7 +117,7 @@ def getAnalyticsValue(pair, date, type_id):
     cursor.close()
     return retval
 
-def getAnalyticsValueForDateRangeDB(pair, type_id, start_date, stop_date):
+def getAnalyticsValueForDateRange(pair, type_id, start_date, stop_date):
     cursor = db.cursor()
     query = "SELECT value FROM numerical_analytics where pair = '%s' and type_id = '%s' and DATE(dt) >= '%s' and DATE(dt) <= '%s'" % (pair, type_id, start_date, stop_date)
     cursor.execute(query)
@@ -127,7 +127,7 @@ def getAnalyticsValueForDateRangeDB(pair, type_id, start_date, stop_date):
     return values
 
 analyticsValueBuffer = {}
-def getAnalyticsValueForDateRange(pair, type_id, start_date, stop_date):
+def getAnalyticsValueForDateRangeBuffered(pair, type_id, start_date, stop_date):
     global analyticsValueBuffer
     values = []
 
