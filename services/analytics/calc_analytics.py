@@ -585,7 +585,9 @@ for formula in formulas:
             missingDates = getMissingAnalyticsDates(pairToStr(pair), formula)
             if len(missingDates) > 0:
                 # initialize price buffers
-                getAnalyticsValueForDateRange(pairToStr(pair), "1", min(missingDates), max(missingDates))
+                today = datetime.now()
+                todayStr = today.strftime('%Y-%m-%d')
+                getAnalyticsValueForDateRange(pairToStr(pair), "1", "2017-03-01", todayStr)
 
                 for date in missingDates:
                     print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
