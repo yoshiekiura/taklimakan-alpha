@@ -315,10 +315,11 @@ def calculatePriceAndVolumeRange2(pair, dateList):
         prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() if abs(prices[date][exchange] - weightedAveragePrice)/weightedAveragePrice <= 0.15 }
 
         # Aggregate average price for each day
-        averagePrice = float(sum(prices[date].values())) / len(prices[date])
-        totalVolume = float(sum(volumes[date].values()))
-        saveAnalyticsValue(pairToStr(pair), date, "1", averagePrice)
-        saveAnalyticsValue(pairToStr(pair), date, "2", totalVolume)
+        if len(prices[date]) >= 1:
+            averagePrice = float(sum(prices[date].values())) / len(prices[date])
+            totalVolume = float(sum(volumes[date].values()))
+            saveAnalyticsValue(pairToStr(pair), date, "1", averagePrice)
+            saveAnalyticsValue(pairToStr(pair), date, "2", totalVolume)
 
     # Check if we got all prices
     result = True

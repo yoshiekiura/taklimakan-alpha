@@ -2,7 +2,7 @@
 # Script configuration
 
 # List of pairs to calculate analytics for
-
+'''
 pairs = [("RLC", "USD"),
 ("BTX","BTC"),
 ("ANT","USD"),
@@ -22,8 +22,8 @@ pairs = [("RLC", "USD"),
 ("QTUM","USD"),
 ("NEO","USD")
 ]
-
 '''
+
 pairs = [
 ("BTC", "USD"),
 ("ETH", "USD"),
@@ -128,7 +128,7 @@ pairs = [
 ("VEN", "USD")
 
 ]
-'''
+
 
 # List of analytics formulas (type_id) to calculate for each pair
 #formulas = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
@@ -189,7 +189,8 @@ baseIndex = [
 ]
 '''
 
-baseIndex = [("RLC", 0.01),
+'''
+baseIndex = [
 ("RLC", 0.01),
 ("BTX",0.01),
 ("ANT",0.01),
@@ -209,10 +210,10 @@ baseIndex = [("RLC", 0.01),
 ("QTUM",0.01),
 ("NEO",0.01)
 ]
-
-
-
 '''
+
+
+
 baseIndex = [
     ("BTC", 0.01),
 
@@ -346,4 +347,3 @@ baseIndex = [
     ("XRP", 0.01),
     ("ETH", 0.01)
 ]
-'''
