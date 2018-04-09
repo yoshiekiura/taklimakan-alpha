@@ -302,7 +302,17 @@ def calculatePriceAndVolumeRange2(pair, dateList):
     # For each day select top 10 exchanges
     for date in volumes.keys():
         volumes[date] = dict(sorted(volumes[date].items(), key=operator.itemgetter(1), reverse=True)[:min(10, len(volumes[date]))])
-        prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() }
+
+        # Calculate weighted average to filter out bad exchanges
+        totalCost = 0
+        totalWeight = 0
+        for exchange in volumes[date].keys():
+            totalCost += prices[date][exchange] * volumes[date][exchange]
+            totalWeight += volumes[date][exchange]
+        weightedAveragePrice = totalCost / totalWeight
+
+        # Take only exchanges that are within 15% of weighted average price
+        prices[date] = { exchange: prices[date][exchange] for exchange in volumes[date].keys() if abs(prices[date][exchange] - weightedAveragePrice)/weightedAveragePrice <= 0.15 }
 
         # Aggregate average price for each day
         averagePrice = float(sum(prices[date].values())) / len(prices[date])
