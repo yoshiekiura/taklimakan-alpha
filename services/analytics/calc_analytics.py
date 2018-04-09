@@ -528,11 +528,11 @@ for asset in baseIndex:
 
 
 # Calculate index price
-'''
+
 missingDates = getMissingAnalyticsDates(indexName, "11")
 for date in missingDates:
     calculateIndexPrice(baseIndex, date)
-'''
+
 
 # Calculate average prices and total volumes for important pairs (not necessarily used in idex)
 '''

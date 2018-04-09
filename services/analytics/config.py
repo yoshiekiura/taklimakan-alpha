@@ -19,6 +19,7 @@ pairs = [
 ("EOS", "USD"),
 ("LTC", "USD"),
 ("BCH", "USD"),
+
 ("GAME", "USD"),
 ("RLC", "USD"),
 ("BTX", "BTC"),
