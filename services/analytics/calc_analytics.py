@@ -145,7 +145,9 @@ def getAnalyticsValueForDateRange(pair, type_id, start_date, stop_date):
             if len(v) > 0:
                 analyticsValueBuffer[pair][type_id][currentDate] = v[0]
 
-        values.append(analyticsValueBuffer[pair][type_id][currentDate])
+        if currentDate in analyticsValueBuffer[pair][type_id].keys():
+            values.append(analyticsValueBuffer[pair][type_id][currentDate])
+
         currentDate = dateAddDays(currentDate, 1)
 
     return values
