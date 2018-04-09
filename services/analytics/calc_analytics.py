@@ -399,8 +399,8 @@ def calculateFormulaForPair(pair, formula, date):
     # Get data for formulas
     startDateStr = startDate.strftime('%Y-%m-%d')
     stopDateStr = stopDate.strftime('%Y-%m-%d')
-    assetPrices = getAnalyticsValueForDateRange(pairToStr(pair), "1", startDateStr, stopDateStr)
-    index = getAnalyticsValueForDateRange(indexName, "11", startDateStr, stopDateStr)
+    assetPrices = getAnalyticsValueForDateRangeBuffered(pairToStr(pair), "1", startDateStr, stopDateStr)
+    index = getAnalyticsValueForDateRangeBuffered(indexName, "11", startDateStr, stopDateStr)
 
     ##################################################
     # Get required data lengths for formula
@@ -589,7 +589,7 @@ for formula in formulas:
                 # initialize price buffers
                 today = datetime.now()
                 todayStr = today.strftime('%Y-%m-%d')
-                getAnalyticsValueForDateRange(pairToStr(pair), "1", "2017-03-01", todayStr)
+                getAnalyticsValueForDateRangeBuffered(pairToStr(pair), "1", "2017-03-01", todayStr)
 
                 for date in missingDates:
                     print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
