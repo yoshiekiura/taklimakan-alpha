@@ -145,6 +145,9 @@ baseCurrency = "USD"
 baseCurrency2 = "BTC"
 indexName = "INDEX001"
 
+
+baseIndex = [("ADA", 0.01)]
+'''
 baseIndex = [
     ("BTC", 0.01),
 
@@ -278,3 +281,4 @@ baseIndex = [
     ("XRP", 0.01),
     ("ETH", 0.01)
 ]
+'''
