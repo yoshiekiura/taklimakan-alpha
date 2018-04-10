@@ -597,6 +597,19 @@ for pair in pairs:
             calculateUSDPrice(pair1, date)
 '''
 
+# Calculate prices in USD
+for pair in additional_pairs:
+    missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
+    calculatePriceAndVolumeRange2(pair, missingDates)
+
+# Calculate prices in BTC
+for pair in additional_pairs:
+    pairBtc = (pair[0], baseCurrency2)
+    missingDates = getMissingAnalyticsDates(pairToStr(pairBtc), "1")
+    calculatePriceAndVolumeRange2(pairBtc, missingDates)
+
+
+
 ################################################################################
 
 

@@ -125,10 +125,10 @@ pairs = [
 ("ICX", "USD"),
 ("BNB", "BTC"),
 ("QTUM", "USD"),
-("VEN", "USD"),
-("NEU", "USD")
-
+("VEN", "USD")
 ]
+
+additional_pairs = [("NEU", "USD")]
 
 
 # List of analytics formulas (type_id) to calculate for each pair
