@@ -24,6 +24,10 @@ pairs = [("RLC", "USD"),
 ]
 '''
 
+pairs = [("NEU", "USD")]
+
+
+'''
 pairs = [
 ("BTC", "USD"),
 ("ETH", "USD"),
@@ -128,7 +132,7 @@ pairs = [
 ("VEN", "USD"),
 ("NEU", "USD")
 ]
-
+'''
 
 
 # List of analytics formulas (type_id) to calculate for each pair

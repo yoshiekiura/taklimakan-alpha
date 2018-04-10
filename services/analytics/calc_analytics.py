@@ -534,7 +534,7 @@ for asset in baseIndex:
             calculateUSDPrice(pair1, date)
 '''
 
-
+'''
 # Calculate prices in USD
 for asset in baseIndex:
     pair = (asset[0], baseCurrency)
@@ -546,7 +546,7 @@ for asset in baseIndex:
     pair = (asset[0], baseCurrency2)
     missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
     calculatePriceAndVolumeRange2(pair, missingDates)
-
+'''
 
 # Check data: Which index assets are still missing USD prices more than maxDataGap?
 print("Index length = ", len(baseIndex))
@@ -577,14 +577,15 @@ for asset in baseIndex:
 
 
 # Calculate index price
-
+'''
 missingDates = getMissingAnalyticsDates(indexName, "11")
 for date in missingDates:
     calculateIndexPrice(baseIndex, date)
-
+'''
 
 # Calculate average prices and total volumes for important pairs (not necessarily used in idex)
 # Calculate prices in USD
+'''
 for pair in pairs:
     missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
     calculatePriceAndVolumeRange2(pair, missingDates)
@@ -594,7 +595,7 @@ for pair in pairs:
     pairBtc = (pair[0], baseCurrency2)
     missingDates = getMissingAnalyticsDates(pairToStr(pairBtc), "1")
     calculatePriceAndVolumeRange2(pairBtc, missingDates)
-
+'''
 
 
 ################################################################################
