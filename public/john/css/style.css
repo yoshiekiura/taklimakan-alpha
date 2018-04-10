@@ -393,7 +393,8 @@ body {
     font-size: 22px;
     color: #fff;
     margin-bottom: 30px;
-    width: 330px;
+    /*width: 330px;*/
+    width: 540px;
 }
 
 .btn-view {
