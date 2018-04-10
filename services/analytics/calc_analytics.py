@@ -584,26 +584,13 @@ for date in missingDates:
 
 
 # Calculate average prices and total volumes for important pairs (not necessarily used in idex)
-'''
-for pair in pairs:
-    pair1 = (pair[0], baseCurrency)
-    pair2 = (pair[0], baseCurrency2)
-    missingDates1 = getMissingAnalyticsDates(pairToStr(pair1), "1")
-    if not calculatePriceAndVolumeRange(pair1, missingDates1):
-        # Calculate USD prices for pairs used in index based on their BTC prices
-        missingDates2 = getMissingAnalyticsDates(pairToStr(pair1), "1")
-        calculatePriceAndVolumeRange(pair2, missingDates2)
-        for date in missingDates2:
-            calculateUSDPrice(pair1, date)
-'''
-
 # Calculate prices in USD
-for pair in additional_pairs:
+for pair in pairs:
     missingDates = getMissingAnalyticsDates(pairToStr(pair), "1")
     calculatePriceAndVolumeRange2(pair, missingDates)
 
 # Calculate prices in BTC
-for pair in additional_pairs:
+for pair in pairs:
     pairBtc = (pair[0], baseCurrency2)
     missingDates = getMissingAnalyticsDates(pairToStr(pairBtc), "1")
     calculatePriceAndVolumeRange2(pairBtc, missingDates)
@@ -625,7 +612,6 @@ for formula in formulas:
                 todayStr = today.strftime('%Y-%m-%d')
                 #getAnalyticsValueForDateRangeBuffered(pairToStr(pair), "1", "2017-03-01", todayStr)
                 getAnalyticsValueForDateRangeBuffered(pairToStr(pair), "1", min(missingDates), max(missingDates))
-
 
                 for date in missingDates:
                     print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
