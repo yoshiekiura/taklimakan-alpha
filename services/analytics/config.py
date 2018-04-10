@@ -125,7 +125,8 @@ pairs = [
 ("ICX", "USD"),
 ("BNB", "BTC"),
 ("QTUM", "USD"),
-("VEN", "USD")
+("VEN", "USD"),
+("NEU", "USD")
 
 ]
 
