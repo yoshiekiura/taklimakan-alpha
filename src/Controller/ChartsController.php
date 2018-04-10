@@ -127,21 +127,6 @@ class ChartsController extends Controller
 
         $params['pair'] = $pair;
 
-//        function get_msft_daily_short_data() {
-//          return [
-//            ['2004-01-02', 27.58, 27.77, 27.33, 27.45, 44487700],
-/*
-        $data = [
-            ['2004-01-02', 27.58, 27.77, 27.33, 27.45, 44487700],
-            ['2004-01-05', 27.73, 28.18, 27.72, 28.14, 67333696],
-            ['2004-01-06', 28.19, 28.28, 28.07, 28.24, 46950800],
-            ['2004-01-07', 28.17, 28.31, 28.01, 28.21, 54298200],
-            ['2004-01-08', 28.39, 28.48, 28, 28.16, 58810800]
-        ];
-
-        $data = file_get_contents('http://localhost/api/charts/price?symbol=BTC');
-*/
-
         // --- Price 1 -------------------------------------------------
 
         $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "1" AND pair = "' . $pair . '"';

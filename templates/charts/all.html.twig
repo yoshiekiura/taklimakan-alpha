@@ -6,13 +6,27 @@
    <div class="row">
        <div class="col-xl-12">
            <div class="news-header">
+
+               <div style="float: right;">
+                   <i class="fa fa-arrow-right"></i>
+                   <a href="#crypto-index"><strong>TN Crypto 100</strong></a>&nbsp;&nbsp;/&nbsp;&nbsp;
+                   <a href="#price">Price</a>&nbsp;&nbsp;/&nbsp;&nbsp;
+                   <a href="#volatility">Volatility</a>&nbsp;&nbsp;/&nbsp;&nbsp;
+                   <a href="#alpha">Alpha</a>&nbsp;&nbsp;/&nbsp;&nbsp;
+                   <a href="#beta">Beta</a>&nbsp;&nbsp;/&nbsp;&nbsp;
+                   <a href="#sharpe">Sharpe Ratio</a>
+               </div>
+
                 <h2>Analytics</h2>
+
                 <ul class="list-inline">
                     <li class="list-inline-item"><a href="/">Taklimakan</a></li>
                     <li class="list-inline-item">/</li>
                     <li class="list-inline-item">Analytics</li>
                 </ul>
-                <p>This is the Analytics section. In this section, we have selected for you the most delicious suggestions to explore. Only the most recent material from professional authors you will find here</p>
+
+                <p>We present the first set of tools that can be used to Analyze cryptocurrencies. Many more to come!</p>
+
             </div>
        </div>
        <div class="col-xl-2 d-sm">
@@ -63,38 +77,6 @@
 #}
 
 
-{# --- Crypto Selector --- #}
-
-{# % include 'charts/selector.html.twig' % #}
-
-<style>
-    .dropdown { margin: 20px; }
-    .dropdown-menu { max-height: 20rem; overflow-y: auto; }
-</style>
-
- <!-- class="w-25 p-3" style="background-color: #fee;" -->
-
-<div class="container">
-<div class="row">
-<div class="col-md-12 text-center">
-<div class="row"><div class="col"></div><div class="col">
-<div class="dropdown">
-    <label>Choose Trading Pair</label>
-    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="dropdown_coins" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #564fd9 !important;">
-        {{pair}}
-    </button>
-    <div id="menu" class="dropdown-menu" aria-labelledby="dropdown_coins">
-        <form class="px-4 py-2">
-            <input type="search" class="form-control" id="searchCoin" placeholder="BTC" autofocus="autofocus">
-        </form>
-        <div id="menuItems"></div>
-        <div id="empty" class="dropdown-header">No pairs found</div>
-    </div>
-</div>
-</div><div class="col"></div></div>
-</div></div></div>
-
-
 <div class="container">
 
     {# Read More https://codepen.io/joserick/pen/ooVPwR #}
@@ -129,14 +111,10 @@
         #index-range-selector, #sharpe-range-selector { text-align: right; padding: 20px 20px 0px 0px; }
     </style>
 
-    <div class="news-header" style="margin: 30px 0 0 0"><h2>Price</h2></div>
-    <p>Prices are calculated daily. To calculate price for a given cryptocurrency, we select top 10 global exchanges by volume in USD, that are trading this cryptocurrency. If cryptocurrency was not traded for USD, we use trading data for BTC and convert the price using USD/BTC price for that date. From top 10 selected exchanges we take close price for each exchange and calculate mean which is then the Price that we display.</p>
-    <div id="price-chart"><div id="range-selector"></div></div>
 
-
-    <div id="market-index-card" class="news-header" style="margin: 80px 0 0 0"><h2>Market Index 100</h2></div>
+    <div id="crypto-index-card" class="news-header" style="margin: 10px 0 0 0"><h2><a name="crypto-index">TN Crypto 100</a></h2></div>
     <div id="summary">
-        <p class="collapse" id="collapseSummary"><strong>Market Index</strong>, it is composed of the 100 of the largest cryptocurrencies by market capitalization. By creating an index with 100 components we aim to represent the movement of the broader market and at the same time create a benchmark, ie a reference point, that we could measure investment performance, volatility, etc. against.</br></br>
+        <p class="collapse" id="collapseSummary"><strong>TN Crypto 100 Index</strong>, it is composed of the 100 of the largest cryptocurrencies by market capitalization. By creating an index with 100 components we aim to represent the movement of the broader market and at the same time create a benchmark, ie a reference point, that we could measure investment performance, volatility, etc. against.</br></br>
         At the same time we have created a Market Return parameter which is derived from the return from the TN Crypto 100 Market Index that we can use for analytical values calculation.</br></br>
         <strong>Rebalancing</strong> of the index is currently done every two weeks, when we check if there's a change in composition of the 100 largest Market Capitalization crypto currencies; if there is, we change the components to reflect that by selecting the "new largest 100".</br></br>
         If any of the components goes missing between the two rebalancing periods, lasting two weeks, either for the reason of missing data or currency disappearing for any reason, it is replaced by the 101st member of the previously selected Market Capitalization currency from the list. The same would happen for any additional changes with replacement by further 102nd, etc.</p>
@@ -145,12 +123,53 @@
     <div id="index-chart"><div id="index-range-selector"></div></div>
 
 
-    <div id="volatility-card" class="news-header" style="margin: 80px 0 0 0" ><h2>Volatility</h2></div>
+
+    {# --- Crypto Selector --- #}
+
+    {# % include 'charts/selector.html.twig' % #}
+
+    <style>
+        .dropdown { margin-top: 75px; }
+        .dropdown-menu { max-height: 20rem; overflow-y: auto; }
+    </style>
+
+     <!-- class="w-25 p-3" style="background-color: #fee;" -->
+
+    <div class="container">
+    <div class="row">
+    <div class="col-md-12 text-center">
+    <div class="row"><div class="col"></div><div class="col">
+    <div class="dropdown">
+        <label>Choose Trading Pair</label>
+        <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="dropdown_coins" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #564fd9 !important;">
+            {{pair}}
+        </button>
+        <div id="menu" class="dropdown-menu" aria-labelledby="dropdown_coins">
+            <form class="px-4 py-2">
+                <input type="search" class="form-control" id="searchCoin" placeholder="BTC" autofocus="autofocus">
+            </form>
+            <div id="menuItems"></div>
+            <div id="empty" class="dropdown-header">No pairs found</div>
+        </div>
+    </div>
+    </div><div class="col"></div></div>
+    </div></div></div>
+
+
+    {# --- Crypto Selector --- #}
+
+
+    <div id="price-card" class="news-header" style="margin: 75px 0 0 0"><h2><a name="price">Price</a></h2></div>
+    <p>Prices are calculated daily. To calculate price for a given cryptocurrency, we select top 10 global exchanges by volume in USD, that are trading this cryptocurrency. If cryptocurrency was not traded for USD, we use trading data for BTC and convert the price using USD/BTC price for that date. From top 10 selected exchanges we take close price for each exchange and calculate mean which is then the Price that we display.</p>
+    <div id="price-chart"><div id="range-selector"></div></div>
+
+
+    <div id="volatility-card" class="news-header" style="margin: 80px 0 0 0" ><h2><a name="volatility">Volatility</a></h2></div>
     <p>Volatility is a statistical measure of the dispersion of returns for a given cryptocurrency. It is calculated as a square root of variance of returns.</p>
     <div id="volatility-chart"><div id="volatility-range-selector"></div></div>
 
 
-    <div id="alpha-card" class="news-header" style="margin: 80px 0 0 0" ><h2>Alpha</h2></div>
+    <div id="alpha-card" class="news-header" style="margin: 80px 0 0 0" ><h2><a name="alpha">Alpha</a></h2></div>
     <div id="alpha-summary">
         <p class="collapse" id="alpha-collapseSummary">Alpha measures how well an investment performed compared to its benchmark (Market Index). It means how better or worse an investment is relative to the market or by how much is over performing or underperforming the market.</br></br>
         For Clarity Difference: Beta is the volatility and Alpha is the excess return when compared to market (Market Index = BT Crypto 100).</br></br>
@@ -165,7 +184,7 @@
     <div id="alpha-chart" ><div id="alpha-range-selector"></div></div>
 
 
-    <div id="beta-card" class="news-header" style="margin: 80px 0 0 0" ><h2>Beta</h2></div>
+    <div id="beta-card" class="news-header" style="margin: 80px 0 0 0" ><h2><a name="beta">Beta</a></h2></div>
     <div id="beta-summary">
         <p class="collapse" id="beta-collapseSummary">Beta is a measure of the volatility, or systematic risk, of a security or an investment portfolio in comparison to the market as a whole. In our case we use TN Crypto 100 to measure market as a whole.</br></br>
         Therefore, Beta is measuring volatility of any particular cryptocurrency against the the Market Index BT Crypto 100. In simple terms the Beta will be telling us if any currency is more or less volatile than the index.</br></br>
@@ -177,7 +196,7 @@
     <div id="beta-chart"><div id="beta-range-selector"></div></div>
 
 
-    <div id="sharpe-card" class="news-header" style="margin: 80px 0 0 0" ><h2>Sharpe Ratio</h2></div>
+    <div id="sharpe-card" class="news-header" style="margin: 80px 0 0 0" ><h2><a name="sharpe">Sharpe Ratio</a></h2></div>
     <div id="sharpe-summary">
         <p class="collapse" id="sharpe-collapseSummary">The Sharpe ratio is the average return in excess of the risk-free rate per unit of volatility.</br></br>
         Sharpe ratio and Alpha are both excess returns measures. Sharpe is extra return over risk free interest rate (ie the one set by the central banks), while Alpha is extra return over the general crypto market (Market Index, BT Crypto 100).</br></br>
@@ -216,6 +235,7 @@
             { 'type' : 'unit', 'unit' : 'month', 'count' : 1, 'text' : 'Month' },
             { 'type' : 'unit', 'unit' : 'month', 'count' : 3, 'text' : 'Quarter' },
             { 'type' : 'unit', 'unit' : 'year', 'count' : 1, 'text' : 'Year' },
+            // { 'type' : 'unit', 'unit' : 'year', 'count' : 10, 'text' : '10' },
             { 'type': 'max', 'text': 'All' },
         ];
 
