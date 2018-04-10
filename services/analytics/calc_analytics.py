@@ -597,7 +597,6 @@ for pair in pairs:
     calculatePriceAndVolumeRange2(pairBtc, missingDates)
 '''
 
-
 ################################################################################
 
 
@@ -616,6 +615,8 @@ for formula in formulas:
 
                 for date in missingDates:
                     print("Pair: %s, Formula: %s, Date: %s" % (pair, formula, date))
+                    # Extrapolate prices
+                    getExtrapolatedAssetPrice(pairToStr(pair), date)
                     calculateFormulaForPair(pair, formula, date)
 
 
