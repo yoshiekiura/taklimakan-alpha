@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CourseRepository")
+ * @ORM\Table(name="courses")
  */
 class Course
 {

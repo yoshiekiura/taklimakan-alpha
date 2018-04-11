@@ -10,6 +10,7 @@ use App\Entity\Likes;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
+ * @ORM\Table(name="news")
  */
 class News
 {

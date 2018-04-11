@@ -4,7 +4,7 @@
 
 {% block body %}
 
-{% if show_welcome == true %}
+{% if show_welcome is defined and show_welcome == true %}
     {% include 'welcome.modal.html.twig' %}
 {% endif %}
 
