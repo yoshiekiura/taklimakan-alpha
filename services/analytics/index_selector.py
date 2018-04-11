@@ -694,8 +694,9 @@ for asset in newIndexCandidates:
     for rp in rawPrices:
         # base, quote, DATE(date) as dt, price, volume
         date = rp[2]
-        if date not in availabilityDates:
-            availabilityDates.append(date)
+        dateStr = date.strftime('%Y-%m-%d')
+        if dateStr not in availabilityDates:
+            availabilityDates.append(dateStr)
 
     pprint(availabilityDates)
 
