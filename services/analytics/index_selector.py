@@ -687,16 +687,14 @@ pprint(dateList)
 badAssets = []
 for asset in newIndexCandidates:
     rawPrices = getPairPricesByDateRange2(asset, [baseCurrency, baseCurrency2], dateList)
-    pprint(rawPrices)
 
     # See if there are gaps of more than maxDataGap in rawPrices
     availabilityDates = []
 
     for rp in rawPrices:
-        priceFound = False
-
         # base, quote, DATE(date) as dt, price, volume
         date = rp[2]
+        print(date)
         if date not in availabilityDates:
             availabilityDates.append(date)
 
