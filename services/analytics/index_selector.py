@@ -696,13 +696,19 @@ for asset in newIndexCandidates:
 
         # base, quote, DATE(date) as dt, price, volume
         date = rp[2]
-        availabilityDates.append(date)
+        if date not in availabilityDates:
+            availabilityDates.append(date)
 
     missingInARow = 0
     for i in range (28):
         dateToCheck = dateAddDays(startDateStr, i)
+        print(dateToCheck)
         if dateToCheck not in availabilityDates:
             missingInARow += 1
+            print("missing")
+        else:
+            missingInARow = 0
+            print("present")
         if missingInARow >= maxDataGap:
             badAssets.append(asset)
     if asset not in badAssets:
