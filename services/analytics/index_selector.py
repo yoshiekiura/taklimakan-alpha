@@ -699,7 +699,7 @@ for asset in newIndexCandidates:
         availabilityDates.append(date)
 
     missingInARow = 0
-    for i in range (28)
+    for i in range (28):
         dateToCheck = dateAddDays(startDateStr, i)
         if dateToCheck not in availabilityDates:
             missingInARow += 1
