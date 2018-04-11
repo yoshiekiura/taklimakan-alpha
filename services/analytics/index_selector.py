@@ -694,9 +694,10 @@ for asset in newIndexCandidates:
     for rp in rawPrices:
         # base, quote, DATE(date) as dt, price, volume
         date = rp[2]
-        print(date)
         if date not in availabilityDates:
             availabilityDates.append(date)
+
+    pprint(availabilityDates)
 
     missingInARow = 0
     for i in range (28):
