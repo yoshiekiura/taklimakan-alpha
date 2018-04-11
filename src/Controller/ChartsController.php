@@ -13,11 +13,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 //use Symfony\Component\Form\FormBuilderInterface;
 //use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\HttpFoundation\Cookie;
+
 class ChartsController extends Controller
 {
-    /**
+
+/*
+    / **
      * @Route("/charts", name="charts")
-     */
+     * /
     public function index()
     {
 
@@ -37,7 +41,7 @@ class ChartsController extends Controller
             'charts' => $charts,
         ]);
     }
-
+*/
     /* @ Route("api/charts/{type}", name="api_charts")
     public function getData($type, Request $request) */
 
@@ -101,10 +105,15 @@ class ChartsController extends Controller
     }
 
     /**
-     * @Route("/charts/{type}", name="price_chart")
+     * @Route("/charts", name="charts")
+     * @Route("/charts/", name="charts")
+     * @Route("/charts/{type}", name="charts_all")
      */
-    public function showChart($type, Request $request)
+    public function showChart($type = null, Request $request)
     {
+        // Do we have to show Welcome Popup ?
+        $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
+
         $conn = $this->getDoctrine()->getConnection();
 
         $sql = 'SELECT data FROM pair_set WHERE id = "1"';
@@ -215,6 +224,7 @@ class ChartsController extends Controller
         return $this->render('charts/all.html.twig', [
             'menu' => 'charts',
             'params' => $params,
+            'show_welcome' => $showWelcome,            
             'allowed' => $allowed,
             'pair' => $pair,
             'data' => $data,
