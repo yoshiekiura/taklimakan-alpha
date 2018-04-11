@@ -681,8 +681,6 @@ startDateStr = dateSubDays(todayStr, 28)
 # Create date list: Start 28 days ago and finish yesterday
 dateList = [dateAddDays(startDateStr, i) for i in range (28)]
 
-pprint(dateList)
-
 # Get pair raw prices
 badAssets = []
 for asset in newIndexCandidates:
@@ -698,18 +696,14 @@ for asset in newIndexCandidates:
         if dateStr not in availabilityDates:
             availabilityDates.append(dateStr)
 
-    pprint(availabilityDates)
-
     missingInARow = 0
     for i in range (28):
         dateToCheck = dateAddDays(startDateStr, i)
         print(dateToCheck)
         if dateToCheck not in availabilityDates:
             missingInARow += 1
-            print("missing")
         else:
             missingInARow = 0
-            print("present")
         if missingInARow >= maxDataGap:
             badAssets.append(asset)
     if asset not in badAssets:
