@@ -19,6 +19,9 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
+        // Do we have to show Welcome Popup ?
+        $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
+
         $filter = [];
 
         if ($request->query->get('tags'))
@@ -38,6 +41,7 @@ class NewsController extends Controller
 
         return $this->render('news/index.html.twig', [
             'menu' => 'news',
+            'show_welcome' => $showWelcome,
             'news' => $news,
             'tags' => $tags,
         ]);
@@ -48,6 +52,9 @@ class NewsController extends Controller
      */
     public function show($id, Request $request)
     {
+        // Do we have to show Welcome Popup ?
+        $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
+        
 //die("FULL");
 //        $filter = [];
 
@@ -80,6 +87,7 @@ class NewsController extends Controller
 
         return $this->render('news/show.html.twig', [
             'menu' => 'news',
+            'show_welcome' => $showWelcome,
             'news' => $news,
             'tags' => $tags,
         ]);
