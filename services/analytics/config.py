@@ -218,7 +218,7 @@ baseIndex = [
 '''
 
 
-
+# Base Index up until April 11.
 baseIndex = [
     ("BTC", 0.01),
 

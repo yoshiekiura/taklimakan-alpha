@@ -283,10 +283,9 @@ for asset in newIndexCandidates:
     else:
         print("%s BAD" % (asset))
 
-goodAssets = [asset for asset in newIndexCandidates if asset not in badAssets]
-
-# Slice first 100 
-goodAssets = goodAssets[:100]
+    goodAssets = [asset for asset in newIndexCandidates if asset not in badAssets]
+    if len(goodAssets) == 100:
+        break
 
 print("baseIndex = [")
 for ga in goodAssets:
