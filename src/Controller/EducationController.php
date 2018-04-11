@@ -32,7 +32,11 @@ class EducationController extends Controller
      */
     public function courses(Request $request)
     {
-        $courses = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        // $courses = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+        $filter = [];
+        $courseRepo = $this->getDoctrine()->getRepository(Course::class);
+        $courses = $courseRepo->getCourses($filter);
 
         return $this->render('edu/courses.html.twig', [
             'menu' => 'edu',

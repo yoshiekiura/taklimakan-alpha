@@ -4,6 +4,11 @@
 
 {% block body %}
 
+{% if show_welcome is defined and show_welcome == true %}
+    {% include 'welcome.modal.html.twig' %}
+{% endif %}
+
+
     {% include 'john-top-menu.html.twig' %}
 
     {# % include 'news/breadcrumbs.html.twig' % #}

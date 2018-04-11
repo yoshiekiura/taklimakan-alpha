@@ -21,19 +21,19 @@ class CourseRepository extends ServiceEntityRepository
 
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
-/*
+
         $filterTags = isset($filter['tags']) ? $filter['tags'] : [];
         $filterLimit = isset($filter['limit']) ? intval($filter['limit']) : null;
 
-        // Get News by Filter including Tags and count of Likes & Comments
+        // Get Courses by Filter including Tags and count of Likes & Comments
 
+        // (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = n.id) AS likes_count,
+        // (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = n.id) AS comments_count,
+        //    c.id as id
         $sql =
-            'SELECT *,
-            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = n.id) AS likes_count,
-            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = n.id) AS comments_count,
-            n.id as id
-            FROM news n';
-
+            'SELECT *
+            FROM courses c';
+/*
         if (count($filterTags)) {
             $sql .=
                 ' JOIN news_tags nt on nt.news_id = n.id
@@ -41,7 +41,7 @@ class CourseRepository extends ServiceEntityRepository
                 WHERE t.tag in (:tags)
                 AND active = true
                 ORDER BY date DESC';
-        } else
+        } else */
             $sql .= ' WHERE active = true
             ORDER BY date DESC';
 
@@ -52,15 +52,15 @@ class CourseRepository extends ServiceEntityRepository
 
         $params = [];
 
-        if (count($filterTags))
-            $params = [ 'tags' => implode(', ', $filterTags) ];
+//        if (count($filterTags))
+//            $params = [ 'tags' => implode(', ', $filterTags) ];
 
         $query->execute($params);
-
-
+        $rows = $query->fetchAll();
+/*
         $tagsCollection = new ArrayCollection();
 
-        $rows = $query->fetchAll();
+
 
         $sql =
             'SELECT tag
@@ -77,10 +77,9 @@ class CourseRepository extends ServiceEntityRepository
             $tags = $query->fetchAll();
 
             $row['tags'] = $tags;
-        }
+        } */
 
         return $rows;
-*/
     }
 
 /*
