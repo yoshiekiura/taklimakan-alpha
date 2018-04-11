@@ -14,10 +14,7 @@ use App\Entity\Likes;
 class News
 {
 
-    private $em;
-
-    public function __construct($em) {
-        $this->em = $em;
+    public function __construct() {
         $this->date = new \DateTime();
         $this->tags = new ArrayCollection();
     }

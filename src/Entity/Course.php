@@ -164,7 +164,7 @@ class Course
     // Complexity Level : 0 = NOT_DEFINED | 1 = LOW | 2 = MEDIUM | 3 = HIGH
 
     /**
-     * @ORM\Column(type="int", options={"default": 0})
+     * @ORM\Column(type="integer", nullable=true, options={"default": 0})
      */
     private $level;
     public function getLevel()
@@ -179,7 +179,7 @@ class Course
     // Price in base currency (USD?) like $99.95
 
     /**
-     * @ORM\Column(type="decimal", precision=8, scale=2)
+     * @ORM\Column(type="decimal", precision=8, scale=2, options={"default": 0.0})
      */
     private $price;
     public function getPrice()
@@ -189,6 +189,14 @@ class Course
     public function setPrice($price)
     {
         $this->price = $price;
+    }
+
+    // Virtual Property to aggregate Rating from external Stars table
+
+    private $stars;
+    public function getStars()
+    {
+        return $this->stars;
     }
 
     /**

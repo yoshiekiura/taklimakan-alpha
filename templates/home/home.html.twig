@@ -2,6 +2,10 @@
 
 {% block body %}
 
+    {% if show_welcome == true %}
+        {% include 'welcome.modal.html.twig' %}
+    {% endif %}
+
     {# % include 'home/top-menu.html.twig' % #}
     {% include 'home/banner.html.twig' %}
     {% include 'home/news-block.html.twig' %}

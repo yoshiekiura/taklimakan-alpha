@@ -6,10 +6,8 @@ use App\Entity\Course;
 //use App\Entity\Tags;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-//use Symfony\Bridge\Doctrine\RegistryInterface;
-
-//use Doctrine\ORM\PersistentCollection;
-// use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class CourseRepository extends ServiceEntityRepository
 {
@@ -82,7 +80,7 @@ class CourseRepository extends ServiceEntityRepository
         }
 
         return $rows;
-*/        
+*/
     }
 
 /*
