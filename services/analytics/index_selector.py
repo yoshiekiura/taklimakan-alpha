@@ -687,6 +687,7 @@ pprint(dateList)
 badAssets = []
 for asset in newIndexCandidates:
     rawPrices = getPairPricesByDateRange2(asset, [baseCurrency, baseCurrency2], dateList)
+    pprint(rawPrices)
 
     # See if there are gaps of more than maxDataGap in rawPrices
     availabilityDates = []
@@ -712,7 +713,7 @@ for asset in newIndexCandidates:
         if missingInARow >= maxDataGap:
             badAssets.append(asset)
     if asset not in badAssets:
-        print("%s OK" % (asset))
+        print("%s GOOD" % (asset))
     else:
         print("%s BAD" % (asset))
 
