@@ -2,23 +2,19 @@
 
 namespace App\Repository;
 
-use App\Entity\Course;
-//use App\Entity\Tags;
-
+use App\Entity\Lecture;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-//use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
-//use Doctrine\ORM\PersistentCollection;
-// use Doctrine\Common\Collections\ArrayCollection;
-
-class CourseRepository extends ServiceEntityRepository
+class LectureRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Course::class);
+        parent::__construct($registry, Lecture::class);
     }
 
-    public function getCourses($filter)
+    public function getLectures($filter)
     {
 
         $em = $this->getEntityManager();

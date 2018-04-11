@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use Psr\Log\LoggerInterface;
 
+use Symfony\Component\HttpFoundation\Cookie;
+
 class IndexController extends Controller
 {
     /**
@@ -20,6 +22,9 @@ class IndexController extends Controller
     */
 
 	public function index(LoggerInterface $logger, Request $request) {
+
+        // Do we have to show Welcome Popup ?
+        $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
         $newsRepo = $this->getDoctrine()->getRepository(News::class);
         $likesRepo = $this->getDoctrine()->getRepository(Likes::class);
@@ -41,9 +46,9 @@ class IndexController extends Controller
             'news' => $news,
         ]);
 */
-
         return $this->render('home/home.html.twig', [
             'menu' => 'home',
+            'show_welcome' => $showWelcome,
             'news' => $news,
         ]);
 

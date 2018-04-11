@@ -163,7 +163,7 @@ class Lecture
     // Standalone Lectures without any Course links could have its own price
 
     /**
-     * @ORM\Column(type="decimal", precision=8, scale=2)
+     * @ORM\Column(type="decimal", precision=8, scale=2, nullable=true, options={"default": 0.0})
      */
     private $price;
     public function getPrice()
@@ -173,6 +173,19 @@ class Lecture
     public function setPrice($price)
     {
         $this->price = $price;
+    }
+
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"default": 0})
+     */
+    private $level;
+    public function getLevel()
+    {
+        return $this->level;
+    }
+    public function setLevel($level)
+    {
+        $this->level = $level;
     }
 
 
