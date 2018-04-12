@@ -14,11 +14,11 @@
                      <li class="list-inline-item"><a href="#"><img src="images/i/bubble.svg" alt=""> {{ el.comments_count }} comments</a></li>
                      <li class="list-inline-item"><a href="#"><img src="images/i/like.svg" alt=""> {{el.likes_count}} likes</a></li>
                  </ul>
-#}                 
+#}
                  <ul class="list-inline news-tags">
                      <li class="list-inline-item">Tags:</li>
                         {% for tag in el.tags %}
-                            <li class="list-inline-item"><a href="?tags={{tag.tag}}">{{tag.tag}}</a></li>
+                            <li class="list-inline-item"><a href="?tags={{tag}}">{{tag}}</a></li>
                         {% endfor %}
                  </ul>
              </div>

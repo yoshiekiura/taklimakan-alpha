@@ -109,10 +109,15 @@ class Analytics
     {
         $this->date = $date;
     }
-
-    /**
+/*
+    / **
      * @ORM\ManyToMany(targetEntity="Tags")
-     */
+     * /
+*/
+    /**
+      * @var string
+      * @ORM\Column(type="string", length=255, nullable=true)
+      */
     private $tags;
     public function getTags()
     {

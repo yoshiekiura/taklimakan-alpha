@@ -54,7 +54,7 @@ class NewsController extends Controller
     {
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
-        
+
 //die("FULL");
 //        $filter = [];
 
@@ -72,14 +72,19 @@ class NewsController extends Controller
 
         $news = $newsRepo->findOneBy([ 'id' => $id ]);
 
+/*
         // FIXME! По быстрому дергаем теги - потом архитектура изменится, переделать
+        // NB! Уже переделали :)
 
         $conn = $this->getDoctrine()->getEntityManager()->getConnection();
         $sql = 'SELECT tag FROM tags t JOIN news_tags nt ON nt.tags_id = t.id WHERE nt.news_id = :id';
         $query = $conn->prepare($sql);
         $query->execute([ 'id' => $id ]);
         $tags = $query->fetchAll();
+*/
 
+        $tags = array_map('trim', explode(',', $news->getTags()));
+//var_dump($tags); die();
 //        $tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
         //$tags = $tagsRepo->findAll();
 
