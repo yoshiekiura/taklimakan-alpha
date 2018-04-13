@@ -14,6 +14,11 @@ else
     cd ..
 fi
 
+#remove git folder
+cd taklimakan-alpha
+rm -rf .git
+cd ..
+
 zip -r taklimakan-alpha.zip taklimakan-alpha'''
       }
     }
