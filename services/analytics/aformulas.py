@@ -105,14 +105,20 @@ def getSharpeRatio(asset):
     assetReturns = getReturns(subasset)
     meanReturn = np.mean(assetReturns)
     stdevReturn = np.std(assetReturns)
-    return (meanReturn - riskFreeRate) / stdevReturn
+    if stdevReturn != 0:
+        return (meanReturn - riskFreeRate) / stdevReturn
+    else:
+        return 0
 
 def getWeightedSharpeRatio(asset):
     subasset = asset[-sharpeLength-1:]
     assetReturns = getReturns(subasset)
     meanReturn = weightedMean(assetReturns)
     stdevReturn = math.sqrt(weightedCov(assetReturns, assetReturns))
-    return (meanReturn - riskFreeRate) / stdevReturn
+    if stdevReturn != 0:
+        return (meanReturn - riskFreeRate) / stdevReturn
+    else:
+        return 0
 
 current = 0
 def initBrownian(newCurrent):
