@@ -4,7 +4,9 @@ pipeline {
     stage('get github data') {
       steps {
         git(url: 'https://github.com/usetech-llc/taklimakan-alpha', branch: 'develop')
-        sh '''if [ ! -f taklimakan-alpha ]
+        sh '''dir
+
+if [ ! -d "taklimakan-alpha" ]
 then
     git clone https://github.com/usetech-llc/taklimakan-alpha -b develop
 else
@@ -13,7 +15,6 @@ else
     cd ..
 fi
 
-dir
 zip -r deploy.zip taklimakan-alpha'''
       }
     }
