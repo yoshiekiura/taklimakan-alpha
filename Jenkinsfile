@@ -18,9 +18,11 @@ fi
 cd taklimakan-alpha
 rm -rf .git
 rm -f Jenkinsfile
+rm -f .gitignore
 cd ..
 
-zip -r taklimakan-alpha.zip taklimakan-alpha'''
+zip -r taklimakan-alpha.zip taklimakan-alpha
+'''
       }
     }
     stage('Archive') {
