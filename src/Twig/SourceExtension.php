@@ -24,6 +24,8 @@ class SourceExtension extends AbstractExtension
                 $source = 'CoinDesk'; break;
             case 'cryptovest.com':
                 $source = 'Cryptovest'; break;
+            case 'bitcoinist.com':
+                $source = 'Bitcoinist'; break;
             default:
                 $source = ucfirst($domain);
         }

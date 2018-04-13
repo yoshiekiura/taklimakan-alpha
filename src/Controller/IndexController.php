@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 class IndexController extends Controller
 {
     /**
-    * @Route("/")
+    * @Route("/", name="home")
     */
 
 	public function index(LoggerInterface $logger, Request $request) {

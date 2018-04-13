@@ -11,6 +11,7 @@ use App\Entity\Comment;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnalyticsRepository")
+ * @ORM\Table(name="analytics", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
  */
 class Analytics
 {

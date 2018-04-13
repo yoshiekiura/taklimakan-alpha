@@ -13,7 +13,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
- * @ORM\Table(name="news")
+ * @ORM\Table(name="news", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
  * @Vich\Uploadable
  */
 class News
@@ -89,7 +89,7 @@ class News
 
     /**
      * @ORM\ManyToOne(targetEntity="Provider")
-     * @ORM\JoinColumn(name="provider_id", referencedColumnName="id", nullable=true)     
+     * @ORM\JoinColumn(name="provider_id", referencedColumnName="id", nullable=true)
      */
     private $provider;
     public function getProvider()

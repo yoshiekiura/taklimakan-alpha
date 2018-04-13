@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
- * @ORM\Table(name="comments")
+ * @ORM\Table(name="comments", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
  */
 class Comment
 {

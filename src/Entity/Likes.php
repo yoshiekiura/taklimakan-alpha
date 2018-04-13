@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LikesRepository")
- * @ORM\Table(name="likes")
+ * @ORM\Table(name="likes", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
  */
 class Likes
 {
