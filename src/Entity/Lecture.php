@@ -89,10 +89,10 @@ class Lecture
         $this->source = $source;
     }
 
-
-    /**
+/*
+    / **
      * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     * /
     private $image;
     public function getImage()
     {
@@ -102,6 +102,86 @@ class Lecture
     {
         $this->image = $image;
     }
+*/
+
+    //
+
+    // https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/doc/usage.md
+
+    /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     * Mappings are defined at : app/config/config.yml
+     * @Vich\UploadableField(mapping="news", fileNameProperty="image")
+     * @var File $imageFile
+     */
+
+    private $imageFile;
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     */
+    public function setImageFile(File $imageFile = null)
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->date = new \DateTime();
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    // Image Name for storing in DB (nor the File nor an Entity)
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+
+    private $image;
+/*
+    public function getImage()
+    {
+        return $this->image;
+    }
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+*/
+
+    public function setImage(?string $image)
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+/*
+    public function setImageSize(?int $imageSize): void
+    {
+        $this->imageSize = $imageSize;
+    }
+
+    public function getImageSize(): ?int
+    {
+        return $this->imageSize;
+    }
+*/
+    
 
     // Date of Creation or Update ?
 
