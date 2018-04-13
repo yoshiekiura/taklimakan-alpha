@@ -17,6 +17,7 @@ fi
 #remove git folder
 cd taklimakan-alpha
 rm -rf .git
+rm -f Jenkinsfile
 cd ..
 
 zip -r taklimakan-alpha.zip taklimakan-alpha'''
