@@ -3,10 +3,18 @@ pipeline {
   stages {
     stage('get github data') {
       steps {
-        sh '''cd ..
-dir
+        sh '''dir
 
-zip -r deploy.zip taklimakan-alpha'''
+if [ ! -d "taklimakan-alpha" ]
+then
+    git clone https://github.com/usetech-llc/taklimakan-alpha -b develop
+else
+    cd taklimakan-alpha
+    git fetch --all
+    cd ..
+fi
+
+zip -r taklimakan-alpha.zip taklimakan-alpha'''
       }
     }
     stage('Archive') {
