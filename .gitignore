@@ -12,7 +12,7 @@
 
 .env.dist
 /bin
-/config
+# /config
 /temp
 /tmp
 temp

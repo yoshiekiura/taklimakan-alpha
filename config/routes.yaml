@@ -1,0 +1,9 @@
+# config/routes.yaml
+index:
+    path: /
+    controller: 'App\Controller\IndexController::index'
+#    path: /hello/{name_error}
+
+#kms_froala_editor:
+#    resource: "@KMSFroalaEditorBundle/Resources/config/routing.yml"
+#    prefix:   /froalaeditor

@@ -1,0 +1,15 @@
+vich_uploader:
+
+    db_driver: orm
+
+    mappings:
+        news:
+            uri_prefix: /images/news
+            upload_destination: '%kernel.project_dir%/public/images/news'
+        courses:
+            uri_prefix: /images/courses
+            upload_destination: '%kernel.project_dir%/public/images/courses'
+        lectures:
+            uri_prefix: /images/lectures
+            upload_destination: '%kernel.project_dir%/public/images/lectures'
+
