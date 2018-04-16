@@ -616,7 +616,7 @@ for formula in formulas:
 ######################################################################
 # Close DB Connection and SSH (for local dev)
 
-db.disconnect()
+db.close()
 if not ('DB_HOST' in os.environ.keys()) and ('DB_USER' in os.environ.keys()) and ('DB_PASSWORD' in os.environ.keys()):
     server.stop()
 
