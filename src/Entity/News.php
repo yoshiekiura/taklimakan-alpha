@@ -251,7 +251,7 @@ class News
 */
 
     /**
-     * @ORM\Column(type="boolean", options={"default": false})
+     * @ORM\Column(type="boolean", nullable=true, options={"default": false})
      */
     private $active;
     public function getActive()

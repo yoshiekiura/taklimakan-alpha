@@ -1,0 +1,249 @@
+easy_admin:
+
+    site_name: 'Taklimakan'
+
+    design:
+
+        form_theme: 'vertical'
+
+        templates:
+            # Used to decorate the main templates (list, edit, new and show)
+            # layout: '@MyBundle/backend/base.html.twig'
+            # Used to render image field types (a special type that displays the image contents)
+            field_image: '/easy-admin.image.html.twig'
+
+        menu:
+            - { label: 'Content' }
+            - { entity: 'News', label: 'News', icon: 'newspaper-o' }
+            - { entity: 'Courses', label: 'Courses', icon: 'align-justify' }
+            - { entity: 'Lectures', label: 'Lectures', icon: 'file' }
+            # - { entity: 'Analytics', label: 'Analytics', icon: 'signal' }
+
+            - { label: 'Taxonomy' }
+            - { entity: 'Joiner', label: 'Joiner', icon: 'briefcase' }
+            - { entity: 'Provider', label: 'Providers', icon: 'clone' }
+            # - { entity: 'Category', label: 'Categories', icon: 'clone' }
+            # - { entity: 'Tags', label: 'Tags', icon: 'tags' }
+
+            - { label: 'Engagement' }
+            - { entity: 'Likes', label: 'Likes', icon: 'heart' }
+            - { entity: 'Comment', label: 'Comments', icon: 'comments' }
+
+            - { label: 'Security' }
+            - { label: 'Users', url: '#', rel: 'index', icon: 'users' }
+
+            - { label: 'Etc' }
+            - { label: 'Home', url: 'http://taklimakan.io', rel: 'index' }
+            # - Tags
+
+        assets:
+            css:
+            - '/css/easy-admin-styling.css'
+            - 'https://fonts.googleapis.com/css?family=Alegreya+Sans+SC'
+            js:
+            - 'js/ckeditor.js.map'
+            - 'js/ckeditor.js'
+            - 'js/my.js'
+
+    entities:
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        News:
+
+            class: App\Entity\News
+            list:
+                # fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
+                fields: [ 'id', 'active', { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'provider', 'tags']
+            form:
+                fields:
+                - { type: 'tab' , label: 'News Summary', icon: 'newspaper-o' }
+
+                - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
+                - title
+                - lead                
+                - source
+                - tags
+
+                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
+                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
+                - active
+                - date
+                - { type: 'divider' }
+                #- { property: 'image', template: '/easy-admin.image.html.twig' }
+                #- image
+                #- { property: 'image', type: 'image', base_path: '/images/news' }
+                - { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+                - { type: 'divider' }
+                - provider
+                # - { type: 'divider' }
+                
+                - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
+                #- { property: 'text', type: 'ckeditor' }
+                #- { property: 'text', type: 'hillrange_ckeditor' }
+                #- text
+                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Analytics:
+
+            class: App\Entity\Analytics
+            list:
+                fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/img/products/' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'category', 'tags']
+            form:
+                fields:
+                - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }
+                - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
+                - title
+                - lead
+                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
+                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
+                - active
+                - date
+                # - { property: 'image', type: 'image', base_path: '/img/products/' }
+                - image
+                - category
+                # - { type: 'divider' }
+                - tags
+                - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
+                #- { property: 'text', type: 'ckeditor' }
+                #- { property: 'text', type: 'hillrange_ckeditor' }
+                #- text
+                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Lectures:
+
+            class: App\Entity\Lecture
+            list:
+                fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/lectures' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
+            form:
+                fields:
+                - { type: 'tab' , label: 'Lecture Summary', icon: 'newspaper-o' }
+                - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
+                - title
+                - lead
+                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
+                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
+                - active
+                - date
+                # - { property: 'image', type: 'image', base_path: '/img/products/' }
+                # - image
+                - { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+                - provider
+                # - category
+                # - { type: 'divider' }
+                - tags
+                - source
+                
+                - { type: 'divider' }
+                - price
+                - level
+
+                - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
+                #- { property: 'text', type: 'ckeditor' }
+                #- { property: 'text', type: 'hillrange_ckeditor' }
+                #- text
+                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Courses:
+
+            class: App\Entity\Course
+            list:
+                fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/courses' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
+            form:
+                fields:
+                - { type: 'tab' , label: 'News Summary', icon: 'newspaper-o' }
+                - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
+                - title
+                - lead
+                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
+                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
+                - active
+                - date
+                # - { property: 'image', type: 'image', base_path: '/img/products/' }
+                # - image
+                - { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+                - provider
+                # - category
+                # - { type: 'divider' }
+                - tags
+                - source
+
+                - { type: 'divider' }
+                - price
+                - level
+
+                - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
+                #- { property: 'text', type: 'ckeditor' }
+                #- { property: 'text', type: 'hillrange_ckeditor' }
+                #- text
+                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Joiner:
+
+            class: App\Entity\Joiner
+            list:
+                fields: ['id', 'fromType', 'fromId', 'toType', 'toId']
+            form:
+                fields: # ['active', 'fromType', 'fromId', 'toType', 'toId']
+                - { property: 'fromType', label: 'Link', css_class: 'col-sm-2' }
+                - { property: 'fromId', label: '#', css_class: 'col-sm-1' }
+                - { property: 'toType', label: 'To', css_class: 'col-sm-2' }
+                - { property: 'toId', label: '#', css_class: 'col-sm-1' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Tags:
+
+            class: App\Entity\Tags
+            list:
+                fields: ['id', 'tag']
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Category:
+
+            class: App\Entity\Category
+            list:
+                fields: ['id', 'name']
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Provider:
+
+            class: App\Entity\Provider
+            list:
+                fields: ['id', 'name', 'web']
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Likes:
+
+            class: App\Entity\Likes
+#            list:
+ #               fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/img/products/' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'tags']
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Comment:
+
+            class: App\Entity\Comment
+
+
+#        - App\Entity\Category
+#        - App\Entity\User
+
+    list:
+        actions:
+            #- { name: 'show', icon: 'search', label: '' }
+            - { name: 'edit', icon: 'pencil', label: '', title: 'Edit' }
+            - { name: 'delete', icon: 'times', label: '', title: 'Delete' }
+
+    formats:
+
+        date:     'Y-m-d'
+        time:     'H:i'
+        datetime: 'Y-m-d H:i'

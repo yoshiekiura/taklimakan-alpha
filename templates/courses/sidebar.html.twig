@@ -1,0 +1,71 @@
+            <!-- -->
+
+            <!-- Sidebar -->
+
+            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                    <div class="news-body leftside-box mb-30">
+                        <div class="row bb-1">
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+                                <h3 class="main-price">
+                                    {{course.price|price}}
+                                </h3>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-6 text-right">
+                                <a class="news-favor favor-relative" href="#"><img src="/images/i/favor-o.svg" alt=""></a>
+                            </div>
+                        </div>
+
+                        <div class="row mb-10">
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+                                <span class="level-cource">Level: <strong>easy</strong></span>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-6 text-right">
+                                <ul class="list-inline rating list-rate">
+                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
+                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
+                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
+                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
+                                    <li class="list-inline-item"><a href="#"><img src="images/i/star-o.svg" alt=""></a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="row mb-10">
+                            <div class="col-xl-12 col-lg-12">
+                                <span class="category-course ml-15">Course</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-10">
+                            <div class="col-xl-12">
+                                <span class="last-upd">Last updated: {{ course.date|date("d/m/Y") }}</span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <a href="\course\{{course.id}}" class="btn btn-buy btn-block">Start Course</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="leftside-box text-center">
+                        <span>Have any question?</span>
+                        <a href="#">write to us</a>
+                    </div>
+
+                    <ul class="list-inline news-tags mb-40">
+                        <li class="list-inline-item">Tags:</li>
+                        {% for tag in course.tags %}
+                            <li class="list-inline-item"><a href="?tags={{tag}}">{{tag}}</a></li>
+                        {% endfor %}
+                    </ul>
+
+                    {% include '/courses/sidebar.list.html.twig' %}
+
+
+            </div>
+
+        </div>
+    </div>
