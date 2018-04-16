@@ -191,13 +191,14 @@ easy_admin:
 
             class: App\Entity\Joiner
             list:
-                fields: ['id', 'fromType', 'fromId', 'toType', 'toId']
+                fields: ['id', { property: 'fromType', label: 'Parent / Type' }, { property: 'fromId', label: 'Parent / ID' } , { property: 'toType', label: 'Child / Type' }, { property: 'toId', label: 'Child / ID' }, { property: 'number', label: 'Number' } ]
             form:
                 fields: # ['active', 'fromType', 'fromId', 'toType', 'toId']
-                - { property: 'fromType', label: 'Link', css_class: 'col-sm-2' }
-                - { property: 'fromId', label: '#', css_class: 'col-sm-1' }
-                - { property: 'toType', label: 'To', css_class: 'col-sm-2' }
-                - { property: 'toId', label: '#', css_class: 'col-sm-1' }
+                - { property: 'fromType', label: 'Parent / Type', css_class: 'col-sm-2' }
+                - { property: 'fromId', label: 'Parent / ID', css_class: 'col-sm-1' }
+                - { property: 'toType', label: 'Child / Type', css_class: 'col-sm-2' }
+                - { property: 'toId', label: 'Child / ID', css_class: 'col-sm-1' }
+                - { property: 'number', label: 'Number', css_class: 'col-sm-1' }
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         Tags:
