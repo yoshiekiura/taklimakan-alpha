@@ -47,7 +47,7 @@ class Comment
     private $text;
 
     /**
-     * @ORM\Column(type="boolean", options={"default": true})
+     * @ORM\Column(type="boolean", nullable=true, options={"default": true})
      */
     private $active;
     public function show()

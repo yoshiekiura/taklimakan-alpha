@@ -10,9 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/association-mapping.html
 // NB! To have real flexibility we'll start without any hard mapping between them!
 
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CourseRepository")
  * @ORM\Table(name="courses", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
+ * @Vich\Uploadable
  */
 class Course
 {
@@ -111,7 +115,7 @@ class Course
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      * Mappings are defined at : app/config/config.yml
-     * @Vich\UploadableField(mapping="news", fileNameProperty="image")
+     * @Vich\UploadableField(mapping="courses", fileNameProperty="image")
      * @var File $imageFile
      */
 
@@ -230,7 +234,7 @@ class Course
 
 
     /**
-     * @ORM\Column(type="boolean", options={"default": false})
+     * @ORM\Column(type="boolean", nullable=true, options={"default": false})
      */
     private $active;
     public function getActive()
@@ -279,6 +283,22 @@ class Course
     {
         return $this->stars;
     }
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Provider")
+     * @ORM\JoinColumn(name="provider_id", referencedColumnName="id", nullable=true)
+     */
+    private $provider;
+    public function getProvider()
+    {
+        return $this->provider;
+    }
+    public function setProvider($provider)
+    {
+        $this->provider = $provider;
+    }
+
 
     /**
      * {@inheritdoc}

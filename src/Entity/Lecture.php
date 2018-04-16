@@ -10,9 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/association-mapping.html
 // NB! To have real flexibility we'll start without any hard mapping between them!
 
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LectureRepository")
  * @ORM\Table(name="lectures", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
+ * @Vich\Uploadable
  */
 class Lecture
 {
@@ -111,7 +115,7 @@ class Lecture
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      * Mappings are defined at : app/config/config.yml
-     * @Vich\UploadableField(mapping="news", fileNameProperty="image")
+     * @Vich\UploadableField(mapping="lectures", fileNameProperty="image")
      * @var File $imageFile
      */
 
@@ -181,7 +185,7 @@ class Lecture
         return $this->imageSize;
     }
 */
-    
+
 
     // Date of Creation or Update ?
 
@@ -214,7 +218,7 @@ class Lecture
     }
 
     /**
-     * @ORM\Column(type="boolean", options={"default": false})
+     * @ORM\Column(type="boolean", nullable=true, options={"default": false})
      */
     private $active;
     public function getActive()
@@ -229,7 +233,7 @@ class Lecture
     // Lectures have no Categories like Courses but Types instead (Tutorial, How-To and so on)
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $type;
     public function getType()
@@ -267,6 +271,21 @@ class Lecture
     public function setLevel($level)
     {
         $this->level = $level;
+    }
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Provider")
+     * @ORM\JoinColumn(name="provider_id", referencedColumnName="id", nullable=true)
+     */
+    private $provider;
+    public function getProvider()
+    {
+        return $this->provider;
+    }
+    public function setProvider($provider)
+    {
+        $this->provider = $provider;
     }
 
 

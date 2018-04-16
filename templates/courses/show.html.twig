@@ -1,0 +1,124 @@
+{% extends 'john-base.html.twig' %}
+
+{% block title %}{{course.title}} - Taklimakan Course{% endblock %}
+
+{% block body %}
+
+{% if show_welcome is defined and show_welcome == true %}
+    {% include 'welcome.modal.html.twig' %}
+{% endif %}
+
+    {% include 'john-top-menu.html.twig' %}
+
+    <div class="container">
+        <div class="news-box">
+
+    <div class="tab-content" id="pills-tabContent">
+    <!-- Cards -->
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+
+    <!-- Breadcrumbs -->
+    <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="news-header">
+                        <h2>{{course.title}}</h2>
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><a href="\">Taklimakan</a></li>
+                            <li class="list-inline-item">/</li>
+                            <li class="list-inline-item"><a href="\edu">Cources & Materials</a></li>
+                            <li class="list-inline-item">/</li>
+                            <li class="list-inline-item">{{course.title}}</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Main Container -->
+
+        <div class="container">
+            <div class="news-box">
+                <div class="row">
+
+                    <!-- Course Body -->
+                    <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
+                        <div class="news-include">
+                            <div class="news-img news-img-include">
+                                <img src="/images/courses/{{course.image}}" alt="">
+                            </div>
+                            <div class="news-body news-body-include">
+                                <div class="p-content">
+
+                                    {{ course.text|raw }}
+
+                                </div>
+{# FIXME Hide Shares and Likes while they are not working properly
+                                <ul class="list-inline news-likes news-likes-include">
+                                    <li class="list-inline-item"><a href="#"><img src="images/i/like.svg" alt=""> 10 likes</a></li>
+                                    <li class="list-inline-item"><a href="#"><img src="images/i/share.svg" alt=""> Share</a></li>
+                                </ul>
+#}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of Course Body -->
+
+                    {% include '/courses/sidebar.html.twig' %}
+
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+{#
+        <div class="container">
+                <div class="news-box">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="news-include">
+                                <div class="news-img news-img-include">
+                                    <img src="/images/courses/{{course.image}}" alt="">
+                                    <a class="news-date" href="#">{{ course.date|date("F jS \\a\\t g:ia") }}</a>
+                                </div>
+                                <div class="news-body news-body-include">
+                                    <ul class="list-inline">
+                                        <li class="list-inline-item">Source: <a href="{{ course.source }}" target="_blank" class="news-source">{{ course.source|source }}</a></li>
+                                        {# <li class="list-inline-item"><a href="#">Subscribe</a></li> #}
+                                    </ul>
+
+                                    <div class="p-content">
+                                        {{ course.text|raw }}
+                                    </div>
+                                    <ul class="list-inline news-tags mb-40">
+                                        <li class="list-inline-item">Tags:</li>
+                                        {% for tag in tags %}
+                                            <li class="list-inline-item"><a href="/news?tags={{tag}}">{{tag}}</a></li>
+                                        {% endfor %}
+                                    </ul>
+FIXME Hide Shares and Likes while they are not working properly
+                                    <ul class="list-inline news-likes news-likes-include">
+                                        <li class="list-inline-item"><a href="#"><img src="images/i/like.svg" alt=""> 10 likes</a></li>
+                                        <li class="list-inline-item"><a href="#"><img src="images/i/share.svg" alt=""> Share</a></li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+    </div>
+#}
+
+
+
+{% endblock %}
