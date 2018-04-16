@@ -12,8 +12,6 @@ use Doctrine\ORM\PersistentCollection;
 //use Doctrine\ORM\ArrayCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 
-
-
 /**
  * @method News|null find($id, $lockMode = null, $lockVersion = null)
  * @method News|null findOneBy(array $criteria, array $orderBy = null)
@@ -79,10 +77,17 @@ class NewsRepository extends ServiceEntityRepository
                 WHERE t.tag in (:tags)
                 GROUP BY n.id';
 */
+/*
             $sql .=
                 ' JOIN news_tags nt on nt.news_id = n.id
                 JOIN tags t on t.id = nt.tags_id
                 WHERE t.tag in (:tags)
+                AND active = true
+                ORDER BY date DESC';
+*/
+//                ' WHERE tags LIKE "%' . $filterTags[0] . '%"
+            $sql .=
+                ' WHERE tags LIKE :tags
                 AND active = true
                 ORDER BY date DESC';
         } else
@@ -92,43 +97,35 @@ class NewsRepository extends ServiceEntityRepository
         if ($filterLimit)
             $sql .= " LIMIT $filterLimit";
 
-        // $sql .= ' GROUP BY n.id';
-//echo $sql; die();
-
         $query = $conn->prepare($sql);
-
         $params = [];
-
-//        if (count($filterTags) && $filterLimit)
-//            $params = [ 'tags' => implode(', ', $filterTags), 'limit' => $filterLimit ];
+        // FIXME If there are a few tags we have to use looping here instead of implode
         if (count($filterTags))
-            $params = [ 'tags' => implode(', ', $filterTags) ];
-//        else if ($filterLimit)
-//            $params = [ 'limit' => intval($filterLimit) ];
-
+            //$params = [ 'tags' => implode(', ', $filterTags) ];
+            $params = [ 'tags' => '%'.$filterTags[0].'%'];
         $query->execute($params);
-
-        // $tagsCollection = new PersistentCollection($em, Tags::class, []);
         $tagsCollection = new ArrayCollection(); // $em, Tags::class, []
-
         $rows = $query->fetchAll();
 
+/*
         $sql =
             'SELECT tag
             FROM tags t
             INNER JOIN news_tags nt on nt.tags_id = t.id
             WHERE nt.news_id = :news_id';
-
         foreach ($rows as &$row) {
-//echo " | " . $row['id'];
             $query = $conn->prepare($sql);
             $query->execute([
                 'news_id' => $row['id'],
             ]);
             $tags = $query->fetchAll();
-//var_dump($tags);die();
             $row['tags'] = $tags;
         }
+*/
+
+        // Create tags array from string, trimming commas and whitespace
+        foreach ($rows as &$row)
+            $row['tags'] = array_map('trim', explode(',', $row['tags']));
 
         return $rows;
     }

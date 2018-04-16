@@ -5,10 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
- * @ORM\Table(name="categories", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
+ * @ORM\Entity(repositoryClass="App\Repository\ProviderRepository")
+ * @ORM\Table(name="providers", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
  */
-class Category
+class Provider
 {
 
     public function __construct() {
@@ -35,6 +35,19 @@ class Category
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $web;
+    public function getWeb()
+    {
+        return $this->web;
+    }
+    public function setWeb($web)
+    {
+        $this->web = $web;
     }
 
     /**

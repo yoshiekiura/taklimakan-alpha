@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TagsRepository")
- * @ORM\Table(name="tags") 
+ * @ORM\Table(name="tags", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"}) 
  */
 class Tags
 {

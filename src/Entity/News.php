@@ -13,7 +13,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
- * @ORM\Table(name="news")
+ * @ORM\Table(name="news", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
  * @Vich\Uploadable
  */
 class News
@@ -86,6 +86,21 @@ class News
     {
         $this->source = $source;
     }
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Provider")
+     * @ORM\JoinColumn(name="provider_id", referencedColumnName="id", nullable=true)
+     */
+    private $provider;
+    public function getProvider()
+    {
+        return $this->provider;
+    }
+    public function setProvider($provider)
+    {
+        $this->provider = $provider;
+    }
+
 
     // https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/doc/usage.md
 
@@ -178,8 +193,10 @@ class News
     }
 
     /**
-     * @ORM\ManyToMany(targetEntity="Tags")
+     * @var string
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
+
     private $tags;
     public function getTags()
     {
@@ -190,6 +207,20 @@ class News
         $this->tags = $tags;
     }
 
+/*
+    / * *
+     * @ORM\ManyToMany(targetEntity="Tags")
+     * /
+    private $tags;
+    public function getTags()
+    {
+        return $this->tags;
+    }
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+    }
+*/
 
 //    / * *
 //     * @ORM\OneToMany(targetEntity="Likes", mappedBy="content_id")
@@ -204,10 +235,10 @@ class News
 //        $this->likes = $likes;
 //    }
 
-
-    /**
+/*
+    / **
      * @ORM\ManyToOne(targetEntity="Category")
-     */
+     * /
     private $category;
     public function getCategory()
     {
@@ -217,7 +248,7 @@ class News
     {
         $this->category = $category;
     }
-
+*/
 
     /**
      * @ORM\Column(type="boolean", options={"default": false})
