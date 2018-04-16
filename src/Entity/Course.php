@@ -247,6 +247,7 @@ class Course
     }
 
     // Complexity Level : 0 = NOT_DEFINED | 1 = LOW | 2 = MEDIUM | 3 = HIGH
+    // NB! Level — сделать выбор по списку Easy / Moderate / Advanced / Expert
 
     /**
      * @ORM\Column(type="integer", nullable=true, options={"default": 0})
@@ -260,6 +261,37 @@ class Course
     {
         $this->level = $level;
     }
+
+/* NB! Do not need this. Use Easy Admin [ type_options: {choices: ] instead 
+
+    private $levelName;
+    public function getLevelName()
+    {
+        switch($this->level) {
+            case 2:
+                return 'Moderate';
+            case 3:
+                return 'Advanced';
+            case 4:
+                return 'Expert';
+        }
+
+        return "Easy";
+    }
+    public function setLevelName($level)
+    {
+        switch($level) {
+            case 'Moderate':
+                $this->level = 2; break;
+            case 'Advanced':
+                $this->level = 3; break;
+            case 'Expert':
+                $this->level = 4; break;
+            default:
+                $this->level = 1; ;
+        }
+    }
+*/
 
     // Price in base currency (USD?) like $99.95
 

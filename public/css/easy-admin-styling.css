@@ -1,3 +1,5 @@
+/* Easy Admin Styling */
+
 body { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; font-size: 1.6em; }
 h1, h2, h3, h4, h5 { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; font-weight: 700; }
 p, a, .main-header .logo { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; }
@@ -10,4 +12,8 @@ p, a, .main-header .logo { font-family: 'Alegreya Sans SC', Helvetica, sans-seri
 @media (min-width: 768px) body.list .table thead tr th.sorted { border-bottom: 2px outset #564fd9; } */
 .sidebar-menu > li:hover > a, .sidebar-menu .treeview-menu > li:hover > a, .sidebar-menu > li.active > a, .sidebar-menu .treeview-menu > li.active > a, .sidebar-collapse .sidebar-menu > li.active.submenu-active > a, .sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li.active > a 
 { color: #FFFFFF; background: #333; border-left-color: #bbb; }
+
+/* Froala Editor Styling */
+
+.fr-box .fr-counter { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; }
 

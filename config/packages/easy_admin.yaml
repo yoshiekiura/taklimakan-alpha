@@ -38,12 +38,26 @@ easy_admin:
 
         assets:
             css:
-            - '/css/easy-admin-styling.css'
             - 'https://fonts.googleapis.com/css?family=Alegreya+Sans+SC'
+            # Froala Editor CSS / https://www.froala.com/wysiwyg-editor/docs/overview
+            - 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/css/froala_editor.pkgd.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/css/froala_style.min.css'
+            # - 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css'
+            - '/css/easy-admin-styling.css'
             js:
-            - 'js/ckeditor.js.map'
-            - 'js/ckeditor.js'
-            - 'js/my.js'
+            # CK Editor 5
+            # - 'js/ckeditor.js.map'
+            # - 'js/ckeditor.js'
+            # - 'js/my.js'
+            # Froala Editor
+            - 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/xml/xml.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/js/froala_editor.pkgd.min.js'
+            # - '/js/datepicker.js'
+            - '/js/froala.js'
 
     entities:
 
@@ -62,13 +76,15 @@ easy_admin:
                 - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
                 - title
                 - lead                
-                - source
                 - tags
+                - source
 
                 - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
                 #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
                 - active
-                - date
+                # - date
+                # - { property: 'date', css_class: 'datepicker', type: 'date' }
+                - { property: 'date', css_class: '', type: 'date' }
                 - { type: 'divider' }
                 #- { property: 'image', template: '/easy-admin.image.html.twig' }
                 #- image
@@ -82,7 +98,10 @@ easy_admin:
                 #- { property: 'text', type: 'ckeditor' }
                 #- { property: 'text', type: 'hillrange_ckeditor' }
                 #- text
-                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                #- { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                # - { property: 'text', type: 'kms_froala_editor' }
+                # - text
+                - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -125,28 +144,37 @@ easy_admin:
                 - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
                 - title
                 - lead
+                - tags
+                - source
+
                 - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
                 #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
                 - active
-                - date
+                # - date
+                # - { property: 'date', css_class: 'datepicker', type: 'date' }
+                - { property: 'date', css_class: '', type: 'date' }
                 # - { property: 'image', type: 'image', base_path: '/img/products/' }
                 # - image
+                - { type: 'divider' }
                 - { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+
+                - { type: 'divider' }
                 - provider
                 # - category
                 # - { type: 'divider' }
-                - tags
-                - source
                 
                 - { type: 'divider' }
                 - price
-                - level
+                # - level
+                # - levelName
+                - { property: 'level', type: 'choice', type_options: {choices: {'---': '', 'Easy': '1', 'Moderate': '2', 'Advanced': '3', 'Expert': '4'}}}
 
                 - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
                 #- { property: 'text', type: 'ckeditor' }
                 #- { property: 'text', type: 'hillrange_ckeditor' }
                 #- text
-                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                # - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -161,28 +189,37 @@ easy_admin:
                 - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
                 - title
                 - lead
-                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
-                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
-                - active
-                - date
-                # - { property: 'image', type: 'image', base_path: '/img/products/' }
-                # - image
-                - { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
-                - provider
-                # - category
-                # - { type: 'divider' }
                 - tags
                 - source
 
+                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
+                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
+                - active
+                # - date
+                # - { property: 'date', css_class: 'datepicker', type: 'date' }
+                - { property: 'date', css_class: '', type: 'date' }
+                # - { property: 'image', type: 'image', base_path: '/img/products/' }
+                # - image
+                - { type: 'divider' }
+                - { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+
+                - { type: 'divider' }
+                - provider
+                # - category
+                # - { type: 'divider' }
+
                 - { type: 'divider' }
                 - price
-                - level
+                # - level
+                # - levelName
+                - { property: 'level', type: 'choice', type_options: {choices: {'---': '', 'Easy': '1', 'Moderate': '2', 'Advanced': '3', 'Expert': '4'}}}
 
                 - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
                 #- { property: 'text', type: 'ckeditor' }
                 #- { property: 'text', type: 'hillrange_ckeditor' }
                 #- text
-                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                # - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
 
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
