@@ -15,13 +15,13 @@ easy_admin:
         menu:
             - { label: 'Content' }
             - { entity: 'News', label: 'News', icon: 'newspaper-o' }
-            - { entity: 'Courses', label: 'Courses', icon: 'align-justify' }
+            - { entity: 'Courses', label: 'Courses', icon: 'briefcase' }
             - { entity: 'Lectures', label: 'Lectures', icon: 'file' }
             # - { entity: 'Analytics', label: 'Analytics', icon: 'signal' }
 
             - { label: 'Taxonomy' }
-            - { entity: 'Joiner', label: 'Joiner', icon: 'briefcase' }
-            - { entity: 'Provider', label: 'Providers', icon: 'clone' }
+            # - { entity: 'Joiner', label: 'Joiner', icon: 'briefcase' }
+            - { entity: 'Provider', label: 'Providers', icon: 'rss' }
             # - { entity: 'Category', label: 'Categories', icon: 'clone' }
             # - { entity: 'Tags', label: 'Tags', icon: 'tags' }
 
@@ -38,12 +38,26 @@ easy_admin:
 
         assets:
             css:
-            - '/css/easy-admin-styling.css'
             - 'https://fonts.googleapis.com/css?family=Alegreya+Sans+SC'
+            # Froala Editor CSS / https://www.froala.com/wysiwyg-editor/docs/overview
+            - 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/css/froala_editor.pkgd.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/css/froala_style.min.css'
+            # - 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css'
+            - '/css/easy-admin-styling.css'
             js:
-            - 'js/ckeditor.js.map'
-            - 'js/ckeditor.js'
-            - 'js/my.js'
+            # CK Editor 5
+            # - 'js/ckeditor.js.map'
+            # - 'js/ckeditor.js'
+            # - 'js/my.js'
+            # Froala Editor
+            #- 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/xml/xml.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/js/froala_editor.pkgd.min.js'
+            # - '/js/datepicker.js'
+            - '/js/froala.js'
 
     entities:
 
@@ -57,32 +71,41 @@ easy_admin:
                 fields: [ 'id', 'active', { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'provider', 'tags']
             form:
                 fields:
-                - { type: 'tab' , label: 'News Summary', icon: 'newspaper-o' }
+                - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }
 
-                - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
+                - { type: 'group', label: 'Main', css_class: 'col-sm-8' }
                 - title
-                - lead                
-                - source
+                - lead
+                - { type: 'divider' }             
                 - tags
+                - source
 
-                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
+                - { type: 'group', label: 'Props', css_class: 'col-sm-4' }
                 #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
                 - active
-                - date
+                # - date
+                # - { property: 'date', css_class: 'datepicker', type: 'date' }
+                - { property: 'date', css_class: '', type: 'date' }
                 - { type: 'divider' }
-                #- { property: 'image', template: '/easy-admin.image.html.twig' }
-                #- image
-                #- { property: 'image', type: 'image', base_path: '/images/news' }
-                - { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+
+                #- { property: 'image', template: '/easy-admin.image.html.twig', css_class: 'image-preview', attr: 'attr1' }                
+                # - image
+                # - { property: 'image', type: 'image', base_path: '/images/news' }
+
+                #- { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+                - { property: 'imageFile', type: 'vich_image', label: 'Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
                 - { type: 'divider' }
                 - provider
                 # - { type: 'divider' }
                 
-                - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
+                - { type: 'tab' , label: 'Content', icon: 'edit' }
                 #- { property: 'text', type: 'ckeditor' }
                 #- { property: 'text', type: 'hillrange_ckeditor' }
                 #- text
-                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                #- { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                # - { property: 'text', type: 'kms_froala_editor' }
+                # - text
+                - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -118,35 +141,61 @@ easy_admin:
 
             class: App\Entity\Lecture
             list:
-                fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/lectures' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
+                # fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/lectures' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
+                fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/lectures' }, { property: 'date', format: 'Y-m-d' }, 'number', 'title', 'provider', 'tags']
             form:
                 fields:
-                - { type: 'tab' , label: 'Lecture Summary', icon: 'newspaper-o' }
-                - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
-                - title
+                - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }
+                - { type: 'group', label: 'Main', css_class: 'col-sm-8' }
+                - course
+                - { type: 'divider' }
+                # - title
+                - { property: 'title', label: 'Title', css_class: 'col-sm-9' }
+                - { property: 'number', label: 'Number', css_class: 'col-sm-3' }
                 - lead
-                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
+                - { type: 'divider' }
+                - tags
+                - source
+
+                - { type: 'group', label: 'Props', css_class: 'col-sm-4' }
                 #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
                 - active
-                - date
+                #- { property: 'active', label: 'Active', css_class: 'col-sm-6' }
+                # - number
+                #- { property: 'number', label: 'Number', css_class: 'col-sm-6' }
+                # - date
+                # - { property: 'date', css_class: 'datepicker', type: 'date' }
+                - { property: 'date', css_class: '', type: 'date' }
                 # - { property: 'image', type: 'image', base_path: '/img/products/' }
                 # - image
-                - { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+                - { type: 'divider' }
+                - { property: 'imageFile', type: 'vich_image', label: 'Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+
+                - { type: 'divider' }
                 - provider
                 # - category
                 # - { type: 'divider' }
-                - tags
-                - source
                 
-                - { type: 'divider' }
-                - price
-                - level
+                #- { type: 'divider' }
+                # - price
+                # - level
+                # - levelName
+                - { property: 'level', type: 'choice', type_options: {choices: {'---': '', 'Easy': '1', 'Moderate': '2', 'Advanced': '3', 'Expert': '4'}}}
 
-                - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
+                - { type: 'tab' , label: 'Content', icon: 'edit' }
                 #- { property: 'text', type: 'ckeditor' }
                 #- { property: 'text', type: 'hillrange_ckeditor' }
                 #- text
-                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                # - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        LecturesShort:
+
+            class: App\Entity\Lecture
+            list:
+                fields: ['id', 'title' ]
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -157,32 +206,51 @@ easy_admin:
                 fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/courses' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
             form:
                 fields:
-                - { type: 'tab' , label: 'News Summary', icon: 'newspaper-o' }
-                - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
+                - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }
+                - { type: 'group', label: 'Main', css_class: 'col-sm-8' }
                 - title
                 - lead
-                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
+                - { type: 'divider' }
+                - tags
+                - source                
+                #- { property: 'lectures', label: 'Lectures', type: embedded_list, type_options: { entity: LecturesShort, filters: { 'lecture.course_id': 'form:parent.data.id' } } }
+
+                - { type: 'group', label: 'Props', css_class: 'col-sm-4' }
                 #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
                 - active
-                - date
+                # - date
+                # - { property: 'date', css_class: 'datepicker', type: 'date' }
+                - { property: 'date', css_class: '', type: 'date' }
                 # - { property: 'image', type: 'image', base_path: '/img/products/' }
                 # - image
-                - { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+                - { type: 'divider' }
+                - { property: 'imageFile', type: 'vich_image', label: 'Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+
+                - { type: 'divider' }
                 - provider
                 # - category
                 # - { type: 'divider' }
-                - tags
-                - source
 
                 - { type: 'divider' }
                 - price
-                - level
+                # - level
+                # - levelName
+                - { property: 'level', type: 'choice', type_options: {choices: {'---': '', 'Easy': '1', 'Moderate': '2', 'Advanced': '3', 'Expert': '4'}}}
 
-                - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
+                #- { type: 'group', label: 'Lectures', css_class: 'col-sm-12' }
+                #- { property: 'lectures', label: 'Lectures', type: embedded_list }
+
+
+                - { type: 'tab' , label: 'Content', icon: 'edit' }
                 #- { property: 'text', type: 'ckeditor' }
                 #- { property: 'text', type: 'hillrange_ckeditor' }
                 #- text
-                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                # - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
+
+                - { type: 'tab' , label: 'Lectures', icon: 'edit' }
+                - { property: 'lectures', label: 'Lectures', type: embedded_list, type_options: { entity: Lectures, filters: { 'lecture.course_id': 'form:parent.data.id' } } }
+                # - { property: 'lectures', label: 'Lectures', type: embedded_list }
 
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -191,13 +259,14 @@ easy_admin:
 
             class: App\Entity\Joiner
             list:
-                fields: ['id', 'fromType', 'fromId', 'toType', 'toId']
+                fields: ['id', { property: 'fromType', label: 'Parent / Type' }, { property: 'fromId', label: 'Parent / ID' } , { property: 'toType', label: 'Child / Type' }, { property: 'toId', label: 'Child / ID' }, { property: 'number', label: 'Number' } ]
             form:
                 fields: # ['active', 'fromType', 'fromId', 'toType', 'toId']
-                - { property: 'fromType', label: 'Link', css_class: 'col-sm-2' }
-                - { property: 'fromId', label: '#', css_class: 'col-sm-1' }
-                - { property: 'toType', label: 'To', css_class: 'col-sm-2' }
-                - { property: 'toId', label: '#', css_class: 'col-sm-1' }
+                - { property: 'fromType', label: 'Parent / Type', css_class: 'col-sm-2' }
+                - { property: 'fromId', label: 'Parent / ID', css_class: 'col-sm-1' }
+                - { property: 'toType', label: 'Child / Type', css_class: 'col-sm-2' }
+                - { property: 'toId', label: 'Child / ID', css_class: 'col-sm-1' }
+                - { property: 'number', label: 'Number', css_class: 'col-sm-1' }
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         Tags:

@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-//use Doctrine\Common\Collections\ArrayCollection;
-//use App\Entity\Likes;
+use Doctrine\Common\Collections\ArrayCollection;
+//use Doctrine\Common\Annotations\AnnotationReader;
+//use Doctrine\Common\Annotations\AnnotationRegistry;
+
+use App\Entity\Course;
 
 // Trying to use right association to link Courses and Lessons together
 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/association-mapping.html
@@ -28,6 +31,20 @@ class Lecture
     }
 
     /**
+     * @ORM\ManyToOne(targetEntity="Course", inversedBy="lectures")
+     * @ORM\JoinColumn(name="course_id", referencedColumnName="id")
+     */
+    private $course;
+    public function getCourse()
+    {
+        return $this->course;
+    }
+    public function setCourse($course)
+    {
+        $this->course = $course;
+    }
+
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -35,6 +52,21 @@ class Lecture
     private $id;
     public function getId() {
         return $this->id;
+    }
+
+    // Number in Collection (for example, Lecture #3 in some Bla-Bla Course)
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $number;
+    public function getNumber()
+    {
+        return $this->number;
+    }
+    public function setNumber($number)
+    {
+        $this->number = $number;
     }
 
     /**
@@ -52,7 +84,7 @@ class Lecture
 
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $lead;
     public function getLead()
@@ -65,7 +97,7 @@ class Lecture
     }
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $text;
     public function getText()

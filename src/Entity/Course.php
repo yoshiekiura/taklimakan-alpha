@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-//use Doctrine\Common\Collections\ArrayCollection;
-//use App\Entity\Likes;
+use Doctrine\Common\Collections\ArrayCollection;
+//use Doctrine\Common\Annotations\AnnotationReader;
+//use Doctrine\Common\Annotations\AnnotationRegistry;
+
+use App\Entity\Lecture;
 
 // Trying to use right association to link Courses and Lessons together
 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/association-mapping.html
@@ -22,10 +25,22 @@ class Course
 {
 
     public function __construct() {
-//        $this->em = $em;
         $this->date = new \DateTime();
-//        $this->tags = new ArrayCollection();
+        $this->lectures = new ArrayCollection();
     }
+
+    /**
+     * @ORM\OneToMany(targetEntity="Lecture", mappedBy="course")
+     */
+     private $lectures;
+     public function getLectures()
+     {
+         return $this->lectures;
+     }
+     public function setLectures($lectures)
+     {
+         $this->lectures = $lectures;
+     }
 
     /**
      * @ORM\Id()
@@ -52,7 +67,7 @@ class Course
 
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $lead;
     public function getLead()
@@ -65,7 +80,7 @@ class Course
     }
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $text;
     public function getText()
@@ -247,6 +262,7 @@ class Course
     }
 
     // Complexity Level : 0 = NOT_DEFINED | 1 = LOW | 2 = MEDIUM | 3 = HIGH
+    // NB! Level — сделать выбор по списку Easy / Moderate / Advanced / Expert
 
     /**
      * @ORM\Column(type="integer", nullable=true, options={"default": 0})
@@ -260,6 +276,37 @@ class Course
     {
         $this->level = $level;
     }
+
+/* NB! Do not need this. Use Easy Admin [ type_options: {choices: ] instead
+
+    private $levelName;
+    public function getLevelName()
+    {
+        switch($this->level) {
+            case 2:
+                return 'Moderate';
+            case 3:
+                return 'Advanced';
+            case 4:
+                return 'Expert';
+        }
+
+        return "Easy";
+    }
+    public function setLevelName($level)
+    {
+        switch($level) {
+            case 'Moderate':
+                $this->level = 2; break;
+            case 'Advanced':
+                $this->level = 3; break;
+            case 'Expert':
+                $this->level = 4; break;
+            default:
+                $this->level = 1; ;
+        }
+    }
+*/
 
     // Price in base currency (USD?) like $99.95
 

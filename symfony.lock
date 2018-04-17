@@ -1,4 +1,7 @@
 {
+    "alterphp/easyadmin-extension-bundle": {
+        "version": "v1.2.4"
+    },
     "behat/transliterator": {
         "version": "v1.2.0"
     },
