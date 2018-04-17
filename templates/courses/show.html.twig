@@ -1,7 +1,7 @@
 {% extends 'john-base.html.twig' %}
 
 {% block title %}{{course.title}} | Taklimakan{% endblock %}
-{% block description %}{{course.title}}{% endblock %}
+{% block description %}{{course.lead}}{% endblock %}
 {% block keywords %}{{tags|join(', ')}}{% endblock %}
 
 {% block body %}
