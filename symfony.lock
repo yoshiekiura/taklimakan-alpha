@@ -77,9 +77,6 @@
     "jms/metadata": {
         "version": "1.6.0"
     },
-    "kms/froala-editor-bundle": {
-        "version": "v2.7.5"
-    },
     "monolog/monolog": {
         "version": "1.23.0"
     },

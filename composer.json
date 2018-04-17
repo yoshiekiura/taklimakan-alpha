@@ -6,7 +6,6 @@
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^1.8",
         "easycorp/easyadmin-bundle": "^1.17",
-        "kms/froala-editor-bundle": "^2.7",
         "sensio/framework-extra-bundle": "^5.1",
         "sensiolabs/security-checker": "^4.1",
         "symfony/apache-pack": "^1.0",
