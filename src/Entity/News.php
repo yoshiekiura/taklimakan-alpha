@@ -49,7 +49,7 @@ class News
 
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $lead;
     public function getLead()
@@ -62,7 +62,7 @@ class News
     }
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $text;
     public function getText()
@@ -157,7 +157,7 @@ class News
     }
 */
 
-    public function setImage(?string $image)
+    public function setImage(string $image)
     {
         $this->image = $image;
     }
@@ -251,7 +251,7 @@ class News
 */
 
     /**
-     * @ORM\Column(type="boolean", options={"default": false})
+     * @ORM\Column(type="boolean", nullable=true, options={"default": false})
      */
     private $active;
     public function getActive()

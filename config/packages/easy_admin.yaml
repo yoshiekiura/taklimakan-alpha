@@ -1,0 +1,318 @@
+easy_admin:
+
+    site_name: 'Taklimakan'
+
+    design:
+
+        form_theme: 'vertical'
+
+        templates:
+            # Used to decorate the main templates (list, edit, new and show)
+            # layout: '@MyBundle/backend/base.html.twig'
+            # Used to render image field types (a special type that displays the image contents)
+            field_image: '/easy-admin.image.html.twig'
+
+        menu:
+            - { label: 'Content' }
+            - { entity: 'News', label: 'News', icon: 'newspaper-o' }
+            - { entity: 'Courses', label: 'Courses', icon: 'briefcase' }
+            - { entity: 'Lectures', label: 'Lectures', icon: 'file' }
+            # - { entity: 'Analytics', label: 'Analytics', icon: 'signal' }
+
+            - { label: 'Taxonomy' }
+            # - { entity: 'Joiner', label: 'Joiner', icon: 'briefcase' }
+            - { entity: 'Provider', label: 'Providers', icon: 'rss' }
+            # - { entity: 'Category', label: 'Categories', icon: 'clone' }
+            # - { entity: 'Tags', label: 'Tags', icon: 'tags' }
+
+            - { label: 'Engagement' }
+            - { entity: 'Likes', label: 'Likes', icon: 'heart' }
+            - { entity: 'Comment', label: 'Comments', icon: 'comments' }
+
+            - { label: 'Security' }
+            - { label: 'Users', url: '#', rel: 'index', icon: 'users' }
+
+            - { label: 'Etc' }
+            - { label: 'Home', url: 'http://taklimakan.io', rel: 'index' }
+            # - Tags
+
+        assets:
+            css:
+            - 'https://fonts.googleapis.com/css?family=Alegreya+Sans+SC'
+            # Froala Editor CSS / https://www.froala.com/wysiwyg-editor/docs/overview
+            - 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/css/froala_editor.pkgd.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/css/froala_style.min.css'
+            # - 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css'
+            - '/css/easy-admin-styling.css'
+            js:
+            # CK Editor 5
+            # - 'js/ckeditor.js.map'
+            # - 'js/ckeditor.js'
+            # - 'js/my.js'
+            # Froala Editor
+            #- 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/xml/xml.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/js/froala_editor.pkgd.min.js'
+            # - '/js/datepicker.js'
+            - '/js/froala.js'
+
+    entities:
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        News:
+
+            class: App\Entity\News
+            list:
+                # fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
+                fields: [ 'id', 'active', { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'provider', 'tags']
+            form:
+                fields:
+                - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }
+
+                - { type: 'group', label: 'Main', css_class: 'col-sm-8' }
+                - title
+                - lead
+                - { type: 'divider' }             
+                - tags
+                - source
+
+                - { type: 'group', label: 'Props', css_class: 'col-sm-4' }
+                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
+                - active
+                # - date
+                # - { property: 'date', css_class: 'datepicker', type: 'date' }
+                - { property: 'date', css_class: '', type: 'date' }
+                - { type: 'divider' }
+
+                #- { property: 'image', template: '/easy-admin.image.html.twig', css_class: 'image-preview', attr: 'attr1' }                
+                # - image
+                # - { property: 'image', type: 'image', base_path: '/images/news' }
+
+                #- { property: 'imageFile', type: 'file', label: 'Upload Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+                - { property: 'imageFile', type: 'vich_image', label: 'Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+                - { type: 'divider' }
+                - provider
+                # - { type: 'divider' }
+                
+                - { type: 'tab' , label: 'Content', icon: 'edit' }
+                #- { property: 'text', type: 'ckeditor' }
+                #- { property: 'text', type: 'hillrange_ckeditor' }
+                #- text
+                #- { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                # - { property: 'text', type: 'kms_froala_editor' }
+                # - text
+                - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Analytics:
+
+            class: App\Entity\Analytics
+            list:
+                fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/img/products/' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'category', 'tags']
+            form:
+                fields:
+                - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }
+                - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
+                - title
+                - lead
+                - { type: 'group', label: 'Attributes', css_class: 'col-sm-4' }
+                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
+                - active
+                - date
+                # - { property: 'image', type: 'image', base_path: '/img/products/' }
+                - image
+                - category
+                # - { type: 'divider' }
+                - tags
+                - { type: 'tab' , label: 'Rich Text Editor', icon: 'edit' }
+                #- { property: 'text', type: 'ckeditor' }
+                #- { property: 'text', type: 'hillrange_ckeditor' }
+                #- text
+                - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Lectures:
+
+            class: App\Entity\Lecture
+            list:
+                # fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/lectures' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
+                fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/lectures' }, { property: 'date', format: 'Y-m-d' }, 'number', 'title', 'provider', 'tags']
+            form:
+                fields:
+                - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }
+                - { type: 'group', label: 'Main', css_class: 'col-sm-8' }
+                - course
+                - { type: 'divider' }
+                # - title
+                - { property: 'title', label: 'Title', css_class: 'col-sm-9' }
+                - { property: 'number', label: 'Number', css_class: 'col-sm-3' }
+                - lead
+                - { type: 'divider' }
+                - tags
+                - source
+
+                - { type: 'group', label: 'Props', css_class: 'col-sm-4' }
+                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
+                - active
+                #- { property: 'active', label: 'Active', css_class: 'col-sm-6' }
+                # - number
+                #- { property: 'number', label: 'Number', css_class: 'col-sm-6' }
+                # - date
+                # - { property: 'date', css_class: 'datepicker', type: 'date' }
+                - { property: 'date', css_class: '', type: 'date' }
+                # - { property: 'image', type: 'image', base_path: '/img/products/' }
+                # - image
+                - { type: 'divider' }
+                - { property: 'imageFile', type: 'vich_image', label: 'Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+
+                - { type: 'divider' }
+                - provider
+                # - category
+                # - { type: 'divider' }
+                
+                #- { type: 'divider' }
+                # - price
+                # - level
+                # - levelName
+                - { property: 'level', type: 'choice', type_options: {choices: {'---': '', 'Easy': '1', 'Moderate': '2', 'Advanced': '3', 'Expert': '4'}}}
+
+                - { type: 'tab' , label: 'Content', icon: 'edit' }
+                #- { property: 'text', type: 'ckeditor' }
+                #- { property: 'text', type: 'hillrange_ckeditor' }
+                #- text
+                # - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        LecturesShort:
+
+            class: App\Entity\Lecture
+            list:
+                fields: ['id', 'title' ]
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Courses:
+
+            class: App\Entity\Course
+            list:
+                fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/courses' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
+            form:
+                fields:
+                - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }
+                - { type: 'group', label: 'Main', css_class: 'col-sm-8' }
+                - title
+                - lead
+                - { type: 'divider' }
+                - tags
+                - source                
+                #- { property: 'lectures', label: 'Lectures', type: embedded_list, type_options: { entity: LecturesShort, filters: { 'lecture.course_id': 'form:parent.data.id' } } }
+
+                - { type: 'group', label: 'Props', css_class: 'col-sm-4' }
+                #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
+                - active
+                # - date
+                # - { property: 'date', css_class: 'datepicker', type: 'date' }
+                - { property: 'date', css_class: '', type: 'date' }
+                # - { property: 'image', type: 'image', base_path: '/img/products/' }
+                # - image
+                - { type: 'divider' }
+                - { property: 'imageFile', type: 'vich_image', label: 'Image', help: 'Select file to upload / change Image', base_path: '/images/news' } #  data_class: null ..  type: 'file'
+
+                - { type: 'divider' }
+                - provider
+                # - category
+                # - { type: 'divider' }
+
+                - { type: 'divider' }
+                - price
+                # - level
+                # - levelName
+                - { property: 'level', type: 'choice', type_options: {choices: {'---': '', 'Easy': '1', 'Moderate': '2', 'Advanced': '3', 'Expert': '4'}}}
+
+                #- { type: 'group', label: 'Lectures', css_class: 'col-sm-12' }
+                #- { property: 'lectures', label: 'Lectures', type: embedded_list }
+
+
+                - { type: 'tab' , label: 'Content', icon: 'edit' }
+                #- { property: 'text', type: 'ckeditor' }
+                #- { property: 'text', type: 'hillrange_ckeditor' }
+                #- text
+                # - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
+                - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
+
+                - { type: 'tab' , label: 'Lectures', icon: 'edit' }
+                - { property: 'lectures', label: 'Lectures', type: embedded_list, type_options: { entity: Lectures, filters: { 'lecture.course_id': 'form:parent.data.id' } } }
+                # - { property: 'lectures', label: 'Lectures', type: embedded_list }
+
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Joiner:
+
+            class: App\Entity\Joiner
+            list:
+                fields: ['id', { property: 'fromType', label: 'Parent / Type' }, { property: 'fromId', label: 'Parent / ID' } , { property: 'toType', label: 'Child / Type' }, { property: 'toId', label: 'Child / ID' }, { property: 'number', label: 'Number' } ]
+            form:
+                fields: # ['active', 'fromType', 'fromId', 'toType', 'toId']
+                - { property: 'fromType', label: 'Parent / Type', css_class: 'col-sm-2' }
+                - { property: 'fromId', label: 'Parent / ID', css_class: 'col-sm-1' }
+                - { property: 'toType', label: 'Child / Type', css_class: 'col-sm-2' }
+                - { property: 'toId', label: 'Child / ID', css_class: 'col-sm-1' }
+                - { property: 'number', label: 'Number', css_class: 'col-sm-1' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Tags:
+
+            class: App\Entity\Tags
+            list:
+                fields: ['id', 'tag']
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Category:
+
+            class: App\Entity\Category
+            list:
+                fields: ['id', 'name']
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Provider:
+
+            class: App\Entity\Provider
+            list:
+                fields: ['id', 'name', 'web']
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Likes:
+
+            class: App\Entity\Likes
+#            list:
+ #               fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/img/products/' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'tags']
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        Comment:
+
+            class: App\Entity\Comment
+
+
+#        - App\Entity\Category
+#        - App\Entity\User
+
+    list:
+        actions:
+            #- { name: 'show', icon: 'search', label: '' }
+            - { name: 'edit', icon: 'pencil', label: '', title: 'Edit' }
+            - { name: 'delete', icon: 'times', label: '', title: 'Delete' }
+
+    formats:
+
+        date:     'Y-m-d'
+        time:     'H:i'
+        datetime: 'Y-m-d H:i'

@@ -1,0 +1,11 @@
+#easy_admin_bundle:
+#    resource: '@EasyAdminBundle/Controller/AdminController.php'
+#    prefix: /admin
+#    type: annotation
+
+# Routes for Easy Admin Extension Bundle
+# https://github.com/alterphp/EasyAdminExtensionBundle
+easy_admin:
+    resource: '@EasyAdminExtensionBundle/Controller/AdminController.php'
+    prefix: /admin
+    type: annotation

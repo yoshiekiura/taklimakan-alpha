@@ -3,16 +3,23 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-//use Doctrine\Common\Collections\ArrayCollection;
-//use App\Entity\Likes;
+use Doctrine\Common\Collections\ArrayCollection;
+//use Doctrine\Common\Annotations\AnnotationReader;
+//use Doctrine\Common\Annotations\AnnotationRegistry;
+
+use App\Entity\Course;
 
 // Trying to use right association to link Courses and Lessons together
 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/association-mapping.html
 // NB! To have real flexibility we'll start without any hard mapping between them!
 
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LectureRepository")
  * @ORM\Table(name="lectures", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
+ * @Vich\Uploadable
  */
 class Lecture
 {
@@ -24,6 +31,20 @@ class Lecture
     }
 
     /**
+     * @ORM\ManyToOne(targetEntity="Course", inversedBy="lectures")
+     * @ORM\JoinColumn(name="course_id", referencedColumnName="id")
+     */
+    private $course;
+    public function getCourse()
+    {
+        return $this->course;
+    }
+    public function setCourse($course)
+    {
+        $this->course = $course;
+    }
+
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -31,6 +52,21 @@ class Lecture
     private $id;
     public function getId() {
         return $this->id;
+    }
+
+    // Number in Collection (for example, Lecture #3 in some Bla-Bla Course)
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $number;
+    public function getNumber()
+    {
+        return $this->number;
+    }
+    public function setNumber($number)
+    {
+        $this->number = $number;
     }
 
     /**
@@ -48,7 +84,7 @@ class Lecture
 
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $lead;
     public function getLead()
@@ -61,7 +97,7 @@ class Lecture
     }
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $text;
     public function getText()
@@ -89,10 +125,10 @@ class Lecture
         $this->source = $source;
     }
 
-
-    /**
+/*
+    / **
      * @ORM\Column(type="string", length=255, nullable=true)
-     */
+     * /
     private $image;
     public function getImage()
     {
@@ -102,6 +138,86 @@ class Lecture
     {
         $this->image = $image;
     }
+*/
+
+    //
+
+    // https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/doc/usage.md
+
+    /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     * Mappings are defined at : app/config/config.yml
+     * @Vich\UploadableField(mapping="lectures", fileNameProperty="image")
+     * @var File $imageFile
+     */
+
+    private $imageFile;
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     */
+    public function setImageFile(File $imageFile = null)
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->date = new \DateTime();
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    // Image Name for storing in DB (nor the File nor an Entity)
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+
+    private $image;
+/*
+    public function getImage()
+    {
+        return $this->image;
+    }
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+*/
+
+    public function setImage(?string $image)
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+/*
+    public function setImageSize(?int $imageSize): void
+    {
+        $this->imageSize = $imageSize;
+    }
+
+    public function getImageSize(): ?int
+    {
+        return $this->imageSize;
+    }
+*/
+
 
     // Date of Creation or Update ?
 
@@ -134,7 +250,7 @@ class Lecture
     }
 
     /**
-     * @ORM\Column(type="boolean", options={"default": false})
+     * @ORM\Column(type="boolean", nullable=true, options={"default": false})
      */
     private $active;
     public function getActive()
@@ -149,7 +265,7 @@ class Lecture
     // Lectures have no Categories like Courses but Types instead (Tutorial, How-To and so on)
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $type;
     public function getType()
@@ -187,6 +303,21 @@ class Lecture
     public function setLevel($level)
     {
         $this->level = $level;
+    }
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Provider")
+     * @ORM\JoinColumn(name="provider_id", referencedColumnName="id", nullable=true)
+     */
+    private $provider;
+    public function getProvider()
+    {
+        return $this->provider;
+    }
+    public function setProvider($provider)
+    {
+        $this->provider = $provider;
     }
 
 
