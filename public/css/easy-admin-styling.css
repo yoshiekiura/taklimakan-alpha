@@ -16,4 +16,5 @@ p, a, .main-header .logo { font-family: 'Alegreya Sans SC', Helvetica, sans-seri
 /* Froala Editor Styling */
 
 .fr-box .fr-counter { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; }
+.fr-box.fr-basic .fr-element { min-height: 400px /* 52 px by default */ ; }
 

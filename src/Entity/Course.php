@@ -67,7 +67,7 @@ class Course
 
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $lead;
     public function getLead()
@@ -80,7 +80,7 @@ class Course
     }
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $text;
     public function getText()

@@ -54,6 +54,21 @@ class Lecture
         return $this->id;
     }
 
+    // Number in Collection (for example, Lecture #3 in some Bla-Bla Course)
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $number;
+    public function getNumber()
+    {
+        return $this->number;
+    }
+    public function setNumber($number)
+    {
+        $this->number = $number;
+    }
+
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -69,7 +84,7 @@ class Lecture
 
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $lead;
     public function getLead()
@@ -82,7 +97,7 @@ class Lecture
     }
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $text;
     public function getText()
