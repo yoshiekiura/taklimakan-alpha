@@ -47,9 +47,9 @@ class EducationController extends Controller
     }
 
     /**
-     * @Route("/course/{id}", name="course_show")
+     * @Route("/course/{id}/{translit}", name="course_show")
      */
-    public function show($id, Request $request)
+    public function show($id, $translit, Request $request)
     {
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;

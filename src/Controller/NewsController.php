@@ -48,9 +48,9 @@ class NewsController extends Controller
     }
 
     /**
-     * @Route("/news/{id}", name="news_show")
+     * @Route("/news/{id}/{translit}", name="news_show")
      */
-    public function show($id, Request $request)
+    public function show($id, $translit, Request $request)
     {
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
