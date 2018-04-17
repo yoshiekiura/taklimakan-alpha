@@ -1,6 +1,8 @@
 {% extends 'john-base.html.twig' %}
 
-{% block title %}{{news.title}} - Taklimakan News{% endblock %}
+{% block title %}{{news.title}} | Taklimakan{% endblock %}
+{% block description %}{{news.title}}{% endblock %}
+{% block keywords %}{{tags|join(', ')}}{% endblock %}
 
 {% block body %}
 
