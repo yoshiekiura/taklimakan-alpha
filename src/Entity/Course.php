@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-//use Doctrine\Common\Collections\ArrayCollection;
-//use App\Entity\Likes;
+use Doctrine\Common\Collections\ArrayCollection;
+//use Doctrine\Common\Annotations\AnnotationReader;
+//use Doctrine\Common\Annotations\AnnotationRegistry;
+
+use App\Entity\Lecture;
 
 // Trying to use right association to link Courses and Lessons together
 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/association-mapping.html
@@ -22,10 +25,22 @@ class Course
 {
 
     public function __construct() {
-//        $this->em = $em;
         $this->date = new \DateTime();
-//        $this->tags = new ArrayCollection();
+        $this->lectures = new ArrayCollection();
     }
+
+    /**
+     * @ORM\OneToMany(targetEntity="Lecture", mappedBy="course")
+     */
+     private $lectures;
+     public function getLectures()
+     {
+         return $this->lectures;
+     }
+     public function setLectures($lectures)
+     {
+         $this->lectures = $lectures;
+     }
 
     /**
      * @ORM\Id()
@@ -262,7 +277,7 @@ class Course
         $this->level = $level;
     }
 
-/* NB! Do not need this. Use Easy Admin [ type_options: {choices: ] instead 
+/* NB! Do not need this. Use Easy Admin [ type_options: {choices: ] instead
 
     private $levelName;
     public function getLevelName()

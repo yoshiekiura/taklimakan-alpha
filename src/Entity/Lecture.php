@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-//use Doctrine\Common\Collections\ArrayCollection;
-//use App\Entity\Likes;
+use Doctrine\Common\Collections\ArrayCollection;
+//use Doctrine\Common\Annotations\AnnotationReader;
+//use Doctrine\Common\Annotations\AnnotationRegistry;
+
+use App\Entity\Course;
 
 // Trying to use right association to link Courses and Lessons together
 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/association-mapping.html
@@ -25,6 +28,20 @@ class Lecture
 //        $this->em = $em;
         $this->date = new \DateTime();
 //        $this->tags = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Course", inversedBy="lectures")
+     * @ORM\JoinColumn(name="course_id", referencedColumnName="id")
+     */
+    private $course;
+    public function getCourse()
+    {
+        return $this->course;
+    }
+    public function setCourse($course)
+    {
+        $this->course = $course;
     }
 
     /**

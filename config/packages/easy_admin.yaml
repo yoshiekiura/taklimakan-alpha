@@ -142,6 +142,7 @@ easy_admin:
                 fields:
                 - { type: 'tab' , label: 'Lecture Summary', icon: 'newspaper-o' }
                 - { type: 'group', label: 'Summary', css_class: 'col-sm-8' }
+                - course
                 - title
                 - lead
                 - tags
@@ -220,6 +221,9 @@ easy_admin:
                 #- text
                 # - { property: 'text', css_class: 'awesome-ckeditor', type: 'textarea' }
                 - { property: 'text', css_class: 'froala-editor', type: 'textarea' }
+
+                - { type: 'tab' , label: 'Lectures', icon: 'edit' }
+                - { property: 'lectures', label: 'Lectures', type: embedded_list, type_options: { entity: Lectures, filters: { 'lecture.course_id': 'form:parent.data.id' } } }
 
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
