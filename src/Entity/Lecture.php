@@ -25,9 +25,7 @@ class Lecture
 {
 
     public function __construct() {
-//        $this->em = $em;
         $this->date = new \DateTime();
-//        $this->tags = new ArrayCollection();
     }
 
     /**
@@ -277,10 +275,10 @@ class Lecture
         $this->type = $type;
     }
 
-    // Standalone Lectures without any Course links could have its own price
+    // Standalone Lectures without any Course links could have its own price // options={"default": 0.0}
 
     /**
-     * @ORM\Column(type="decimal", precision=8, scale=2, nullable=true, options={"default": 0.0})
+     * @ORM\Column(type="decimal", precision=8, scale=2, nullable=true)
      */
     private $price;
     public function getPrice()

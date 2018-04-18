@@ -1,9 +1,7 @@
 
-        {% if lectures is defined and lectures is not empty %}
-
             <div class="leftside-box">
 
-                <h3>Course Content</h3>
+                <h3>{{course.title}}</h3>
 
                 {% for lecture in lectures %}
 
@@ -11,8 +9,7 @@
                   <div class="row">
                       <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
                           <div class="last-cource-title mobile-overflow">
-                            {# <img src="/images/lectures/{{lecture.image}}" alt=""> #}
-                            <img src="/images/folder.png" alt="">
+                            <img src="/images/lectures/{{lecture.image}}" alt="">
                         </div>
                       </div>
                       <div class="col-xl-6 col-lg-6 col-md-8 col-sm-8 col-8">
@@ -34,5 +31,3 @@
                 {% endfor %}
 
             </div>
-
-        {% endif %}
