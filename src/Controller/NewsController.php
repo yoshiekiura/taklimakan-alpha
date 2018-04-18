@@ -14,28 +14,13 @@ use App\Entity\Tags;
 
 class NewsController extends Controller
 {
-/*
-    / **
-     * @Route("/{url}", name="remove_trailing_slash", requirements={"url" = ".*\/$"})
-     * /
-    public function removeTrailingSlash(Request $request)
-    {
-        $pathInfo = $request->getPathInfo();
-        $requestUri = $request->getRequestUri();
-
-        $url = str_replace($pathInfo, rtrim($pathInfo, ' /'), $requestUri);
-
-        // 308 (Permanent Redirect) is similar to 301 (Moved Permanently) except
-        // that it does not allow changing the request method (e.g. from POST to GET)
-        return $this->redirect($url, 308);
-    }
-*/
     /**
      * @Route("/news", name="news")
      * @Route("/news/", name="news_trail")
      */
     public function index(Request $request)
     {
+
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
@@ -65,12 +50,13 @@ class NewsController extends Controller
     }
 
     /**
-     * @Route("/news/{id}", name="news_id")
-     * @Route("/news/{id}/", name="news_trail")     
-     * @Route("/news/{id}/{translit}", name="news_show_translit")
+     * @Route("/news/{id}", name="news_id", requirements={"id"="\d+"})
+     * @Route("/news/{id}/", name="news_id_trail", requirements={"id"="\d+"})
+     * @Route("/news/{id}/{translit}", name="news_id_translit", requirements={"id"="\d+"})
      */
     public function show($id, $translit = '', Request $request)
     {
+
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
@@ -90,6 +76,9 @@ class NewsController extends Controller
         // $news = $newsRepo->getNews($filter);
 
         $news = $newsRepo->findOneBy([ 'id' => $id ]);
+
+        if (!$news)
+            throw $this->createNotFoundException('Sorry, this news does not exist!');
 
 /*
         // FIXME! По быстрому дергаем теги - потом архитектура изменится, переделать
