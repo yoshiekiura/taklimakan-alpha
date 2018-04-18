@@ -232,6 +232,14 @@ class Course
         $this->tags = $tags;
     }
 
+    private $tagsArray;
+    public function getTagsArray()
+    {
+        $tags = array_map('trim', explode(',', $this->tags));
+        return $tags;
+    }
+
+
     // There are common Categories between News, Analytics section and Courses?
 
     /**
@@ -308,10 +316,10 @@ class Course
     }
 */
 
-    // Price in base currency (USD?) like $99.95
+    // Price in base currency (USD?) like $99.95 // options={"default": 0.0}
 
     /**
-     * @ORM\Column(type="decimal", precision=8, scale=2, options={"default": 0.0})
+     * @ORM\Column(type="decimal", precision=8, scale=2, nullable=true)
      */
     private $price;
     public function getPrice()

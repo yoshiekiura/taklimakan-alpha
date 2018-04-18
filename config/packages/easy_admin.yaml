@@ -151,7 +151,8 @@ easy_admin:
                 - { type: 'divider' }
                 # - title
                 - { property: 'title', label: 'Title', css_class: 'col-sm-9' }
-                - { property: 'number', label: 'Number', css_class: 'col-sm-3' }
+                #- { property: 'number', label: 'Number', type="text", css_class: 'col-sm-3' }
+                - { property: 'number', label: 'Number', type: "text", css_class: 'col-sm-3' }
                 - lead
                 - { type: 'divider' }
                 - tags

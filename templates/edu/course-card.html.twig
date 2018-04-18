@@ -3,25 +3,27 @@
                 <div class="news-item">
                     <div class="news-img">
                         <img src="/images/courses/{{course.image}}" alt="">
+                        {# NB! Hiding Heart and Category
                         <a class="news-favor" href="#"><img src="/images/i/favor-o.svg" alt=""></a>
-                        <a class="news-source" href="#"><span>Cryptocurrencies</span></a>
+                        <a class="news-source" href="#"><span>Cryptocurrencies</span></a> #}
                     </div>
                     <div class="news-body">
                         <div class="row">
                             <div class="col-xl-9 col-lg-9 col-md-9 col-sm-8 col-9">
-                                <a href="\course\{{course.id}}">
+                                <a href="/courses/{{course.id}}/{{course.title|translit}}">
                                     <h3>{{course.title}}</h3>
                                 </a>
                             </div>
                             <div class="col-lg-3 col-lg-3 col-md-3 col-sm-3 col-3 text-right">
-                                <span class="category-course">{# {{course.category.title}} #}</span>
+                                <span class="category-course">Course{# {{course.category.title}} #}</span>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-5 col-6">
-                                <span class="level-cource">Level: <strong>easy</strong></span>
+                                <span class="level-cource">Level: <strong>{{course.level|level}}</strong></span>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-7 col-6 text-right">
+                            {# Hiding Stars Rating and adding 12 px margin for Price
                                 <ul class="list-inline rating">
                                     <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
                                     <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
@@ -29,17 +31,25 @@
                                     <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
                                     <li class="list-inline-item"><a href="#"><img src="images/i/star-o.svg" alt=""></a></li>
                                 </ul>
+                            #}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-                                <h3 class="main-price">
+                                <h3 class="main-price" style="margin-top: 12px;">
                                     {{course.price|price}}
                                 </h3>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-6 col-md-6 col-sm-6 col-6 text-right">
 <!--                                    <a href="#" class="btn btn-buy btn-buy-sm"><img src="images/i/cart.svg" alt=""> Buy</a>-->
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-12 col-md-12 col-sm-12 col-12 text-right">
+                                {% for tag in course.tags|split(',') %}
+                                    <a href="/news?tag={{tag|trim}}">{{tag|trim}}</a>
+                                {% endfor %}
+                        </div>
                         </div>
                     </div>
                 </div>

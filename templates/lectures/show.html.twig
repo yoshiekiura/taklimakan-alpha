@@ -1,7 +1,7 @@
 {% extends 'john-base.html.twig' %}
 
-{% block title %}{{course.title}} | Taklimakan{% endblock %}
-{% block description %}{{course.lead}}{% endblock %}
+{% block title %}{{lecture.title}} | Taklimakan{% endblock %}
+{% block description %}{{lecture.lead}}{% endblock %}
 {% block keywords %}{{tags|join(', ')}}{% endblock %}
 
 {% block body %}
@@ -25,13 +25,15 @@
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                     <div class="news-header">
-                        <h2>{{course.title}}</h2>
+                        <h2>{{lecture.title}}</h2>
                         <ul class="list-inline">
-                            <li class="list-inline-item"><a href="\">Taklimakan</a></li>
+                            <li class="list-inline-item"><a href="/">Taklimakan</a></li>
                             <li class="list-inline-item">/</li>
-                            <li class="list-inline-item"><a href="\courses">Courses & Materials</a></li>
+                            <li class="list-inline-item"><a href="/courses">Courses & Materials</a></li>
                             <li class="list-inline-item">/</li>
-                            <li class="list-inline-item">{{course.title}}</li>
+                            <li class="list-inline-item"><a href="/courses/{{course.id}}/{{course.title|translit}}">{{course.title}}</a></li>
+                            <li class="list-inline-item">/</li>
+                            <li class="list-inline-item">#{{lecture.number}}. {{lecture.title}}</li>
                         </ul>
                     </div>
                 </div>
@@ -47,22 +49,18 @@
             <div class="news-box">
                 <div class="row">
 
-                    <!-- Course Body -->
+                    <!-- Lecture Body -->
                     <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
                         <div class="news-include">
-                            {% if course.image is defined and course.image is not empty %}
+                            {% if lecture.image is defined and lecture.image is not empty %}
                             <div class="news-img news-img-include">
-                                <img src="/images/courses/{{course.image}}" alt="">
+                                <img src="/images/lectures/{{lecture.image}}" alt="">
                             </div>
                             {% endif %}
                             <div class="news-body news-body-include">
                                 <div class="p-content">
 
-                                    {% if course.text|length > 42 %}
-                                        {{ course.text|raw }}
-                                    {% else %}
-                                        {{ course.lead|raw }}
-                                    {% endif %}
+                                    {{ lecture.text|raw }}
 
                                 </div>
 {# FIXME Hide Shares and Likes while they are not working properly
@@ -74,9 +72,9 @@
                             </div>
                         </div>
                     </div>
-                    <!-- End of Course Body -->
+                    <!-- End of Lecture Body -->
 
-                    {% include '/courses/sidebar.html.twig' %}
+                    {% include '/lectures/sidebar.html.twig' %}
 
 
                 </div>

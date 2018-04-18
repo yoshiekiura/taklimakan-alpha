@@ -1,5 +1,22 @@
-{% include 'john-header.html.twig' %}
+<!doctype html>
+<html lang="en">
 
-    {% block body %}{% endblock %}
+    <head>
 
-{% include 'john-footer.html.twig' %}
+        {% include 'john-header.html.twig' %}
+
+        <meta name="description" content="{% block description %}Taklimakan | Your Compass in the Cryptocurrency World{% endblock %}">
+        <meta name="keywords" content="{% block keywords %}taklimakan, trading, cryptocurrency{% endblock %}">
+        <title>{% block title %}Taklimakan{% endblock %}</title>
+
+    </head>
+
+    <body>
+
+        {% block body %}{% endblock %}
+
+        {% include 'john-footer.html.twig' %}
+
+    </body>
+
+</html>
