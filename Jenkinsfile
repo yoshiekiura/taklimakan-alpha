@@ -30,5 +30,10 @@ zip -r taklimakan-alpha.zip taklimakan-alpha
         archiveArtifacts '*.zip'
       }
     }
+    stage('deploy') {
+      steps {
+        sh 'echo $BRANCH_NAME'
+      }
+    }
   }
 }
