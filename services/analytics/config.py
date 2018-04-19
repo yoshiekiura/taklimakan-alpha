@@ -145,7 +145,7 @@ startDateByType = {"1": "2017-01-01", "2": "2017-01-01", "3": "2017-03-03", "4":
 # If set, it will calculate analytics for all dates starting from pricesStartDate
 # plus data windows. Otherwise, it will calculate only starting from backDays
 # back from now
-calculateAllDates = False
+calculateAllDates = True
 backDays = 7
 saveExtrapolatedPrices = True
 
