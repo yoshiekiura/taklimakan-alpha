@@ -146,7 +146,7 @@ startDateByType = {"1": "2017-01-01", "2": "2017-01-01", "3": "2017-03-03", "4":
 # plus data windows. Otherwise, it will calculate only starting from backDays
 # back from now
 calculateAllDates = False
-backDays = 7
+backDays = 10
 saveExtrapolatedPrices = True
 
 # Maximum number of days price data is extrapolated
@@ -172,7 +172,7 @@ baseCurrency2 = "BTC"
 indexName = "INDEX001"
 
 # Base Index up until April 12.
-'''
+
 baseIndex = [
     ("BTC", 0.01),
 
@@ -306,9 +306,10 @@ baseIndex = [
     ("XRP", 0.01),
     ("ETH", 0.01)
 ]
-'''
+
 
 # Base Index from April 12.
+'''
 baseIndex = [
     ("BTC", 0.01),
     ("ETH", 0.01),
@@ -445,3 +446,4 @@ baseIndex = [
     ("BLZ", 0.01),
     ("SAN", 0.01),
 ]
+'''
