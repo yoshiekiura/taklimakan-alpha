@@ -17,7 +17,7 @@ pipeline {
           steps {
             sh '''#!/bin/bash
 
-if [ ! -f pylint.cfg ] 
+if [ ! -f pylint.cfg ]
 then
   # generate pylint configuration file if not exist
   pylint --generate-rcfile > pylint.cfg
@@ -93,5 +93,16 @@ else
 fi'''
       }
     }
+  }
+  post {
+  step([
+          $class                     : 'WarningsPublisher',
+          parserConfigurations       : [[
+                                                parserName: 'PYLint',
+                                                pattern   : 'pylint.log'
+                                        ]],
+          unstableTotalAll           : '0',
+          usePreviousBuildAsReference: true
+  ])  
   }
 }
