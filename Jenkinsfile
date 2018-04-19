@@ -34,9 +34,9 @@ for entry in `ls services/analytics/*.py`; do
   name=$(basename $entry .py)
   if [ ! -f pylint.log ]
   then
-    pylint --rcfile=pylint.cfg $entry > pylint.log || exit 0
+    pylint --rcfile=pylint.cfg $entry > pylint.log
   else
-    pylint --rcfile=pylint.cfg $entry >> pylint.log || exit 0
+    pylint --rcfile=pylint.cfg $entry >> pylint.log
   fi
 done
 
