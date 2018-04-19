@@ -35,10 +35,10 @@ logger("equity", "--- Starting Equity Task ---");
 // DB Connection
 
 if ($writeToDB) {
-    $db_pass = getenv('DB_PASS', true);
+    $db_pass = getenv('DB_PASSWORD', true);
     if (!isset($db_pass) || $db_pass == '') {
-        logger("equity", "DB_PASS is not set");
-        die("DB_PASS is not set");
+        logger("equity", "DB_PASSWORD is not set");
+        die("DB_PASSWORD is not set");
     }
 
     $db = new PDO($db_conn_str, $db_user, $db_pass);
