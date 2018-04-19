@@ -35,12 +35,12 @@ zip -r taklimakan-alpha.zip taklimakan-alpha
         sh '''#!/bin/bash
 
 echo $BRANCH_NAME
-if [[ $BRANCH_NAME="master" ]]
+if [ $BRANCH_NAME -eq "master" ]
 then
   #some special action for master branch
   echo execute special steps for master branch
 else
-  if [[ $BRANCH_NAME="develop" ]]
+  if [ $BRANCH_NAME-eq "develop" ]
   then
     #some special action for develop branch
     echo execute special steps for develop branch
