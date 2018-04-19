@@ -32,7 +32,20 @@ zip -r taklimakan-alpha.zip taklimakan-alpha
     }
     stage('deploy') {
       steps {
-        sh 'echo $BRANCH_NAME'
+        sh '''if [ $BRANCH_NAME="master" ]
+then
+  #some special action for master branch
+  echo execute special steps for master branch
+else
+  if [ $BRANCH_NAME="develop" ]
+  then
+    #some special action for develop branch
+    echo execute special steps for develop branch
+  else
+    # all other branches should not perform these actions
+    echo skip deploy step for $BRANCH_NAME branch
+  fi
+fi'''
       }
     }
   }
