@@ -23,7 +23,24 @@ then
   pylint --generate-rcfile > pylint.cfg
 fi
 
-pylint --rcfile=pylint.cfg $(find . -maxdepth 1 -name "*.py" -print) services/analytics / > pylint.log || exit 0'''
+if [  -f pylint.log ]
+then
+  #remove previous execution log
+  rm -rf pylint.log
+fi
+
+for entry in `ls services/analytics/*.py`; do
+  echo $entry
+  name=$(basename $entry .py)
+  if [ ! -f pylint.log ]
+  then
+    pylint --rcfile=pylint.cfg $entry > pylint.log || exit 0
+  else
+    pylint --rcfile=pylint.cfg $entry >> pylint.log || exit 0
+  fi
+done
+
+'''
           }
         }
       }
