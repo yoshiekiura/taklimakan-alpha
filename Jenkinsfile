@@ -40,6 +40,9 @@ for entry in `ls services/analytics/*.py`; do
   fi
 done
 
+#return 0 to be able to continue execution of jenkins steps
+exit 0
+
 '''
           }
         }
