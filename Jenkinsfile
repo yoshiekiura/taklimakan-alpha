@@ -32,7 +32,9 @@ zip -r taklimakan-alpha.zip taklimakan-alpha
     }
     stage('deploy') {
       steps {
-        sh '''echo $BRANCH_NAME
+        sh '''#!/bin/bash
+
+echo $BRANCH_NAME
 if [ $BRANCH_NAME="master" ]
 then
   #some special action for master branch
