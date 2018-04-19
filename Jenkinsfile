@@ -34,9 +34,9 @@ for entry in `ls services/analytics/*.py`; do
   name=$(basename $entry .py)
   if [ ! -f pylint.log ]
   then
-    pylint --rcfile=pylint.cfg $entry > pylint.log
+    pylint --rcfile=pylint.cfg --msg-template=\'{msg_id}:{line:3d},{column}: {obj}: {msg}\' $entry > pylint.html
   else
-    pylint --rcfile=pylint.cfg $entry >> pylint.log
+    pylint --rcfile=pylint.cfg --msg-template=\'{msg_id}:{line:3d},{column}: {obj}: {msg}\' $entry >> pylint.html
   fi
 done
 
