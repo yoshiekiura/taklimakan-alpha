@@ -94,17 +94,4 @@ fi'''
       }
     }
   }
-  post {
-    always {
-      step([
-          $class                     : 'WarningsPublisher',
-          parserConfigurations       : [[
-                                                parserName: 'PYLint',
-                                                pattern   : 'pylint.log'
-                                        ]],
-          unstableTotalAll           : '0',
-          usePreviousBuildAsReference: true
-      ])  
-    }
-  }
 }
