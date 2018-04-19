@@ -95,7 +95,8 @@ fi'''
     }
   }
   post {
-  step([
+    always {
+      step([
           $class                     : 'WarningsPublisher',
           parserConfigurations       : [[
                                                 parserName: 'PYLint',
@@ -103,6 +104,7 @@ fi'''
                                         ]],
           unstableTotalAll           : '0',
           usePreviousBuildAsReference: true
-  ])  
+      ])  
+    }
   }
 }
