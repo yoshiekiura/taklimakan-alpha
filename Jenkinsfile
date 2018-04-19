@@ -1,7 +1,34 @@
 pipeline {
   agent any
   stages {
-    stage('get github data') {
+    stage('Test') {
+      steps {
+        echo 'Add UnitTests and build them'
+      }
+    }
+    stage('Static Analysis') {
+      parallel {
+        stage('Static Analysis') {
+          steps {
+            echo 'Static Analysis'
+          }
+        }
+        stage('Analitics') {
+          steps {
+            sh '''#!/bin/bash
+
+if [ ! -f pylint.cfg ] 
+then
+  # generate pylint configuration file if not exist
+  pylint --generate-rcfile > pylint.cfg
+fi
+
+pylint --rcfile=pylint.cfg $(find . -maxdepth 1 -name "*.py" -print) services/analytics / > pylint.log || exit 0'''
+          }
+        }
+      }
+    }
+    stage('Archive') {
       steps {
         sh '''dir
 
@@ -21,16 +48,11 @@ rm -f Jenkinsfile
 rm -f .gitignore
 cd ..
 
-zip -r taklimakan-alpha.zip taklimakan-alpha
-'''
-      }
-    }
-    stage('Archive') {
-      steps {
+zip -r taklimakan-alpha.zip taklimakan-alpha'''
         archiveArtifacts '*.zip'
       }
     }
-    stage('deploy') {
+    stage('Deploy') {
       steps {
         sh '''#!/bin/bash
 
