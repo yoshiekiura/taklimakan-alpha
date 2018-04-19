@@ -44,6 +44,7 @@ done
 exit 0
 
 '''
+            archiveArtifacts '*.html'
           }
         }
       }
