@@ -62,24 +62,24 @@ exit 0
     }
     stage('Archive') {
       steps {
-        sh '''dir
-
-if [ ! -d "taklimakan-alpha" ]
+        sh '''#!/bin/bash
+if [ -d taklimakan-alpha ]
 then
-    git clone https://github.com/usetech-llc/taklimakan-alpha -b develop
-else
-    cd taklimakan-alpha
-    git fetch --all
-    cd ..
+  # remove previous deploy data
+  rm -rf taklimakan-alpha
 fi
 
-#remove git folder
-cd taklimakan-alpha
-rm -rf .git
-rm -f Jenkinsfile
-rm -f .gitignore
-cd ..
+mkdir taklimakan-alpha
 
+for D in *; do
+  if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ]
+  then
+    # copy to taklimakan-alpha
+    cp $D /taklimakan-alpha
+  fi
+done
+
+#zip deploy file
 zip -r taklimakan-alpha.zip taklimakan-alpha'''
         archiveArtifacts 'taklimakan-alpha.zip'
       }
