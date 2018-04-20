@@ -34,9 +34,9 @@ for entry in `ls services/analytics/*.py`; do
   name=$(basename $entry)
   if [ ! -f pylint.log ]
   then
-    pylint --rcfile=pylint.cfg --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" > pylint.log
+    pylint --rcfile=pylint.cfg $entry > pylint.log
   else
-    pylint --rcfile=pylint.cfg --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" > pylint.log
+    pylint --rcfile=pylint.cfg $entry >> pylint.log
   fi
 #  pylint --rcfile=pylint.cfg --output-format=json $entry > $name.json
 done
