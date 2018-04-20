@@ -34,7 +34,7 @@ for entry in `ls services/analytics/*.py`; do
     name=$(basename $entry)
     #pylint --rcfile=pylint.cfg $entry > pylint_$name.log
 #  pylint --rcfile=pylint.cfg --output-format=json $entry > $name.json
-    pylint --output-format=\'{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}\' > pylint_$name.log
+    pylint --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" > pylint_$name.log
 done
 
 #for entry in `ls *.json`; do
