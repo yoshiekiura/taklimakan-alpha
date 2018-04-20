@@ -23,28 +23,23 @@ then
   pylint --generate-rcfile > pylint.cfg
 fi
 
-if [  -f pylint.html ]
-then
-  #remove previous execution log
-  rm -rf pylint.html
-fi
+#if [  -f pylint.json ]
+#then
+#  #remove previous execution log
+#  rm -rf pylint.json
+#fi
 
 for entry in `ls services/analytics/*.py`; do
   echo $entry
-  name=$(basename $entry .py)
-  if [ ! -f pylint.html ]
-  then
-    pylint --rcfile=pylint.cfg --output-format=html $entry > pylint.html
-  else
-    pylint --rcfile=pylint.cfg --output-format=html $entry >> pylint.html
-  fi
+  name=$(basename $entry.py)
+  pylint --rcfile=pylint.cfg --output-format=json $entry
 done
 
 #return 0 to be able to continue execution of jenkins steps
 exit 0
 
 '''
-            archiveArtifacts '*.html'
+            archiveArtifacts '*.json'
           }
         }
       }
