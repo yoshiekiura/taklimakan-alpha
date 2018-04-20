@@ -74,14 +74,13 @@ exit 0
 #fi
 
 #remove git folder
-cd taklimakan-alpha
-rm -rf .git
-rm -f Jenkinsfile
-rm -f .gitignore
-cd ..
+#cd taklimakan-alpha
+#rm -rf .git
+#rm -f Jenkinsfile
+#rm -f .gitignore
+#cd ..
 
-zip -r taklimakan-alpha.zip taklimakan-alpha'''
-        archiveArtifacts '*.zip'
+#zip -r taklimakan-alpha.zip taklimakan-alpha'''
       }
     }
     stage('Deploy') {
