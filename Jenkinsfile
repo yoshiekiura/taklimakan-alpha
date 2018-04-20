@@ -34,7 +34,7 @@ for entry in `ls services/analytics/*.py`; do
     name=$(basename $entry)
     #pylint --rcfile=pylint.cfg $entry > pylint_$name.log
 #  pylint --rcfile=pylint.cfg --output-format=json $entry > $name.json
-    pylint --disable=W1202 --output-format=parseable --reports=no module > pylint_$name.log
+    pylint --disable=W1202 --output-format=parseable > pylint_$name.log
 done
 
 #for entry in `ls *.json`; do
