@@ -23,10 +23,10 @@ then
   pylint --generate-rcfile > pylint.cfg
 fi
 
-if [  -f pylint.log ]
+if [  -f pylint.html]
 then
   #remove previous execution log
-  rm -rf pylint.log
+  rm -rf pylint.html
 fi
 
 for entry in `ls services/analytics/*.py`; do
@@ -34,9 +34,9 @@ for entry in `ls services/analytics/*.py`; do
   name=$(basename $entry .py)
   if [ ! -f pylint.log ]
   then
-    pylint --rcfile=pylint.cfg --msg-template=\'{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}\' $entry > pylint.log
+    pylint --rcfile=pylint.cfg --output-format=html $entry > pylint.html
   else
-    pylint --rcfile=pylint.cfg --msg-template=\'{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}\' $entry >> pylint.log
+    pylint --rcfile=pylint.cfg --output-format=html $entry >> pylint.html
   fi
 done
 
@@ -44,7 +44,7 @@ done
 exit 0
 
 '''
-            archiveArtifacts '*.log'
+            archiveArtifacts '*.html'
           }
         }
       }
