@@ -23,36 +23,42 @@ then
   pylint --generate-rcfile > pylint.cfg
 fi
 
-if [ -f pylint.json ]
+if [ -f pylint.log ]
 then
   #remove previous execution log
-  rm -rf pylint.json
+  rm -rf pylint.log
 fi
 
 for entry in `ls services/analytics/*.py`; do
   echo $entry
   name=$(basename $entry)
-  pylint --rcfile=pylint.cfg --output-format=json $entry > $name.json
+  if [ ! -f pylint.log ]
+  then
+    pylint --rcfile=pylint.cfg --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" > pylint.log
+  else
+    pylint --rcfile=pylint.cfg --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" > pylint.log
+  fi
+#  pylint --rcfile=pylint.cfg --output-format=json $entry > $name.json
 done
 
-for entry in `ls *.json`; do
-  echo $entry
-  if [ ! -f pylint.json ]
-  then
-     cp -f $entry pylint.json
-  else
-     if [ $entry != "pylint.json" ]
-     then
-       json-merge pylint.json $entry
-     fi
-  fi
-done
+#for entry in `ls *.json`; do
+#  echo $entry
+#  if [ ! -f pylint.json ]
+#  then
+#     cp -f $entry pylint.json
+#  else
+#     if [ $entry != "pylint.json" ]
+#     then
+#       json-merge pylint.json $entry
+#     fi
+#  fi
+#done
 
 #return 0 to be able to continue execution of jenkins steps
 exit 0
 
 '''
-            archiveArtifacts 'pylint.json'
+            archiveArtifacts 'pylint.log'
           }
         }
       }
