@@ -96,7 +96,9 @@ zip -r taklimakan-alpha.zip taklimakan-alpha'''
       }
       steps {
         sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-          sh '''# Cleanup previous deploy (if any)
+          sh '''#!/bin/bash
+dir
+# Cleanup previous deploy (if any)
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpdeploy
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpwww
 
