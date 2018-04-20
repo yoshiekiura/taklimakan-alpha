@@ -34,9 +34,9 @@ for entry in `ls services/analytics/*.py`; do
   name=$(basename $entry .py)
   if [ ! -f pylint.log ]
   then
-    pylint --rcfile=pylint.cfg --msg-template=\'{msg_id}:{line:3d},{column}: {obj}: {msg}\' $entry > pylint.html
+    pylint --rcfile=pylint.cfg --msg-template=\'{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}\' $entry > pylint.log
   else
-    pylint --rcfile=pylint.cfg --msg-template=\'{msg_id}:{line:3d},{column}: {obj}: {msg}\' $entry >> pylint.html
+    pylint --rcfile=pylint.cfg --msg-template=\'{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}\' $entry >> pylint.log
   fi
 done
 
@@ -44,7 +44,7 @@ done
 exit 0
 
 '''
-            archiveArtifacts '*.html'
+            archiveArtifacts '*.log'
           }
         }
       }
