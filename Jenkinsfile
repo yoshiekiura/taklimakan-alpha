@@ -75,7 +75,7 @@ for D in *; do
   if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ]
   then
     # copy to taklimakan-alpha
-    cp $D /taklimakan-alpha
+    cp $D taklimakan-alpha/
   fi
 done
 
