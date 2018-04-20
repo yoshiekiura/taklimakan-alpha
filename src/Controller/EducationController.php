@@ -37,6 +37,7 @@ class EducationController extends Controller
 */
     /**
      * @Route("/edu", name="edu")
+     * @Route("/edu/", name="edu_trail")
      */
     public function index(Request $request)
     {
@@ -51,7 +52,8 @@ class EducationController extends Controller
      */
     public function courses(Request $request)
     {
-        // $courses = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        // Do we have to show Welcome Popup ?
+        $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
         $filter = [];
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
@@ -59,14 +61,15 @@ class EducationController extends Controller
 
         return $this->render('edu/courses.html.twig', [
             'menu' => 'edu',
+            'show_welcome' => $showWelcome,
             'courses' => $courses
         ]);
     }
 
     /**
-     * @Route("/courses/{id}", name="courses_id")
-     * @Route("/courses/{id}/", name="courses_id_trail")
-     * @Route("/courses/{id}/{translit}", name="courses_translit")
+     * @Route("/courses/{id}", name="courses_id", requirements={"id"="\d+"})
+     * @Route("/courses/{id}/", name="courses_id_trail", requirements={"id"="\d+"})
+     * @Route("/courses/{id}/{translit}", name="courses_id_translit", requirements={"id"="\d+"})
      */
     public function show($id, $translit = '', Request $request)
     {
@@ -75,6 +78,10 @@ class EducationController extends Controller
 
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
         $course = $courseRepo->findOneBy([ 'id' => $id ]);
+
+        if (!$course)
+            throw $this->createNotFoundException('Sorry, this course does not exist!');
+
         $tags = array_map('trim', explode(',', $course->getTags()));
 
         // NB! Get Course' lectures via Joiner - rewrite it into Repository method later
@@ -88,7 +95,6 @@ class EducationController extends Controller
 //        $lectures = $lectureRepo->findBy([ 'id' => $joiners ]);
         $lectures = $course->getLectures();
 
-//var_dump(count($lectures)); die();
         return $this->render('courses/show.html.twig', [
             'menu' => 'edu',
             'show_welcome' => $showWelcome,
@@ -107,6 +113,7 @@ class EducationController extends Controller
      */
     public function lectures(Request $request)
     {
+die("KEK");
         // https://stackoverflow.com/questions/10625491/symfony2-and-throwing-exception-error/35088605#35088605
         throw $this->createNotFoundException('This route does not exist!');
 
@@ -121,9 +128,9 @@ class EducationController extends Controller
     }
 
     /**
-     * @Route("/lectures/{id}", name="lectures_id")
-     * @Route("/lectures/{id}/", name="lectures_id_trail")
-     * @Route("/lectures/{id}/{translit}", name="lectures_translit")
+     * @Route("/lectures/{id}", name="lectures_id", requirements={"id"="\d+"})
+     * @Route("/lectures/{id}/", name="lectures_id_trail", requirements={"id"="\d+"})
+     * @Route("/lectures/{id}/{translit}", name="lectures_id_translit", requirements={"id"="\d+"})
      */
     public function showLecture($id, $translit = '', Request $request)
     {
@@ -132,6 +139,10 @@ class EducationController extends Controller
 
         $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
         $lecture = $lectureRepo->findOneBy([ 'id' => $id ]);
+
+        if (!$lecture)
+            throw $this->createNotFoundException('Sorry, this lecture does not exist!');
+
         $tags = array_map('trim', explode(',', $lecture->getTags()));
 //echo $lecture->getId(); die();
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
@@ -153,7 +164,7 @@ class EducationController extends Controller
             'show_welcome' => $showWelcome,
             'course' => $course, // ???
             'lecture' => $lecture,
-            'lectures' => $lectures,            
+            'lectures' => $lectures,
             'tags' => $tags, // ???
         ]);
     }

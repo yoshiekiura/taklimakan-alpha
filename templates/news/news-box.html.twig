@@ -2,7 +2,12 @@
      <div class="col-xl-4 col-lg-4 col-md-6">
          <div class="news-item">
              <div class="news-img">
-                 <img src="/images/news/{{ el.image }}" alt="">
+                {% if 'http://' in el.image or 'https://' in el.image %}
+                    <img src="{{el.image}}" alt="">
+                {% else %}
+                    <img src="/images/news/{{el.image}}" alt="">
+                {% endif %}
+                {# <img src="/images/news/{{ el.image }}" alt=""> #}
                  <a class="news-date" href="#">{{ el.date|date("F jS \\a\\t g:ia") }}</a>
                  <a class="news-source" href="{{ el.source }}" target="_blank">Source: <span>{{ el.source|source }}</span></a>
              </div>

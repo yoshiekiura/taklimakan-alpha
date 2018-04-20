@@ -63,12 +63,17 @@
                                     {{ lecture.text|raw }}
 
                                 </div>
+
+                                <ul class="list-inline">
+                                    {% if lecture.source is not empty %}
+                                        <li class="list-inline-item"><strong>Source:</strong> <a href="{{lecture.source}}">{{lecture.source}}</a></li>
+                                    {% endif %}
 {# FIXME Hide Shares and Likes while they are not working properly
-                                <ul class="list-inline news-likes news-likes-include">
                                     <li class="list-inline-item"><a href="#"><img src="images/i/like.svg" alt=""> 10 likes</a></li>
                                     <li class="list-inline-item"><a href="#"><img src="images/i/share.svg" alt=""> Share</a></li>
-                                </ul>
 #}
+                                </ul>
+
                             </div>
                         </div>
                     </div>
