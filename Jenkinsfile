@@ -32,7 +32,7 @@ fi
 for entry in `ls services/analytics/*.py`; do
   echo $entry
   name=$(basename $entry.py)
-  pylint --rcfile=pylint.cfg --output-format=json $entry
+  pylint --rcfile=pylint.cfg --output-format=json $entry > $name.json
 done
 
 #return 0 to be able to continue execution of jenkins steps
