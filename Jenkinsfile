@@ -90,7 +90,7 @@ exit 0
       }
       steps {
         sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-          sh 'ssh tkln@192.168.100.125 -p 8022 ls'
+          sh 'ssh -o StrictHostKeyChecking=no tkln@192.168.100.125 -p 8022 ls'
         }
 
         sh '''#!/bin/bash
