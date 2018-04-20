@@ -84,6 +84,10 @@ exit 0
       }
     }
     stage('Deploy') {
+      agent any
+      when{
+        branch 'develop'
+      }
       steps {
         sh '''#!/bin/bash
 
