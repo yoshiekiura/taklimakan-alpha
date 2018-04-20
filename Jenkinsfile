@@ -23,18 +23,19 @@ then
   pylint --generate-rcfile > pylint.cfg
 fi
 
-if [ -f pylint.log ]
-then
-  #remove previous execution log
-  rm -rf pylint.log
-fi
+#if [ -f pylint.log ]
+#then
+#  #remove previous execution log
+#  rm -rf pylint.log
+#fi
+rm -rf pylint_*.log
 
 for entry in `ls services/analytics/*.py`; do
     echo $entry
     name=$(basename $entry)
-    #pylint --rcfile=pylint.cfg $entry > pylint_$name.log
+    pylint --rcfile=pylint.cfg $entry > pylint_$name.log
 #  pylint --rcfile=pylint.cfg --output-format=json $entry > $name.json
-    pylint --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" > pylint_$name.log
+    #pylint --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" > pylint_$name.log
 done
 
 #for entry in `ls *.json`; do
