@@ -93,22 +93,24 @@ zip -r taklimakan-alpha.zip taklimakan-alpha'''
       archiveArtifacts 'taklimakan-alpha.zip'
 
         sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-          sh '''# Cleanup previous deploy (if any)
+          sh '''#!/bin/bash
+dir
+echo "Cleanup previous deploy (if any)"
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpdeploy
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpwww
 
-# Upload file to host
+echo "Upload file to host"
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mkdir /home/tkln/tmpdeploy
 scp -P $DEPLOY_DEV_PORT taklimakan-alpha.zip tkln@$DEPLOY_DEV_HOST:/home/tkln/tmpdeploy/taklimakan-alpha.zip
 
-# Unzip file into temp folder
+echo "Unzip file into temp folder"
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mkdir /home/tkln/tmpwww
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT unzip /home/tkln/tmpdeploy/taklimakan-alpha.zip -d /home/tkln/tmpwww
 
-# Remove target folder
+echo "Remove target folder"
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -fr /var/www/
 
-# Move unzipped files into target
+echo "Move unzipped files into target"
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mv /home/tkln/tmpwww/taklimakan-alpha/* /var/www/'''
         }
 
