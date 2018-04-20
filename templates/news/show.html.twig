@@ -52,7 +52,12 @@
                         <div class="col-xl-12">
                             <div class="news-include">
                                 <div class="news-img news-img-include">
-                                    <img src="/images/news/{{news.image}}" alt="">
+                                    {% if 'http://' in news.image or 'https://' in news.image %}
+                                        <img src="{{news.image}}" alt="">
+                                    {% else %}
+                                        <img src="/images/news/{{news.image}}" alt="">
+                                    {% endif %}
+                                    {# <img src="/images/news/{{news.image}}" alt=""> #}
                                     <a class="news-date" href="#">{{ news.date|date("F jS \\a\\t g:ia") }}</a>
                                 </div>
                                 <div class="news-body news-body-include">

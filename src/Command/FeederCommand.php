@@ -74,7 +74,7 @@ echo "\n\n --- $provider -------------------------------------------------------
             $feeder = new FeedIo($client, $logger);
 
             // $feedIo = $this->getContainer()->get('feedio');
-            $modifiedSince = new \DateTime('-12 hours');
+            $modifiedSince = new \DateTime('-48 hours');
             // $feed = $feedIo->read($url, new \Acme\Entity\Feed, $modifiedSince)->getFeed();
             //$feed = $feedIo->read($url)->getFeed();
 
@@ -82,18 +82,20 @@ echo "\n\n --- $provider -------------------------------------------------------
 
             foreach ($feed as $item) {
 
+                $title = $lead = $text = $image = $tags = $date = $source = '';
+
 //var_dump($item);
 
                 $title = $item->getTitle();
 
                 // NB! After we got item, purge unnecessary tags from it with str_replace
                 $lead = trim($item->getDescription());
-echo "\nLEAD-FULL = $lead";
+//echo "\nLEAD-FULL = $lead";
                 $lead = trim(str_replace(
                     ['![CDATA[<', '</p>]]>', '></p>]]', '</p>', '<p>', '#NEWS', '#ANALYSIS', '#SPONSORED', '#RECAP', '#EXPERT_TAKE', '#EXPLAINED]', ],
-                    [''         , '',        '',        '',    '',    '',      '',          '',           '',        '',            '',            ],
+                    ['', '', '', '', '', '', '', '', '', '', '', ],
                     $lead));
-echo "\nLEAD-TRIM = $lead";
+//echo "\nLEAD-TRIM = $lead";
                 // NB! And after that we have to remove some more complex staff too (divs, images and so on)
                 // ...
 
@@ -122,16 +124,119 @@ echo "\nSOURCE = $source";
             $html = (string) $response->getBody();
 //var_dump($html);
 
-            $crawler = new Crawler($html);
 
-            $image = $crawler->filter('body div .post-header .height--container"')->attr('style');
-var_dump($image);
+
+
 //var_dump($crawler->filter('body')->children());
-die();
+//die();
 
 
             // NB! And we have to get IMAGE somewhere too
             // ...
+
+            if ($item->hasMedia()) {
+                $medias = $item->getMedias();
+                foreach ($medias as $m) {
+                    //var_dump($m);
+                    $type = $m->getType();
+                    //echo "\nMEDIA-TYPE $type";
+                    //$url = $m->getUrl();
+                    //echo "\nMEDIA-URL $url";
+                    $image = $m->getUrl();
+//var_dump($image);
+                }
+            }
+
+            if ($provider == 'cointelegraph') {
+                // Remove image from lead
+                preg_match('/<img.*>(.*)/usi', $lead, $matches);
+                $lead = count($matches) ? $matches[1] : '';
+//var_dump($matches);
+//die();
+                $crawler = new Crawler($html);
+                $crawler = $crawler->filter('.post-full-text');
+                $text = $crawler->html();
+
+                // FIXME Remove from the end of HTML : <div id="quiz"></div>
+
+//var_dump($text_html);
+//die();
+            }
+
+            if ($provider == 'bitcoinist') {
+
+                // Narrow search area to header DIV
+                $crawler = new Crawler($html);
+                $crawler = $crawler->filter('.post-header');
+                $head_html = $crawler->html();
+
+                // Get link for JPEG image
+                // preg_match('/<!-- Image Wrap -->.*(http.*\.jpg).*<!-- End Image Wrap -->/usi', $html, $matches);
+                preg_match('/http.*\.(jpg|jpeg|png)/usi', $head_html, $matches);
+                $image = count($matches) ? $matches[0] : '';
+//var_dump($matches);
+//var_dump($image);
+//die();
+
+                preg_match('/<!-- Content -->(.*)<!-- End Content -->/usi', $html, $matches);
+                $text = count($matches) ? $matches[1] : '';
+
+//var_dump($matches);
+//die();
+            }
+
+            if ($provider == 'cryptovest') {
+
+
+                // Narrow search area to header DIV
+                $crawler = new Crawler($html);
+                //$crawler = $crawler->filter('.arcticle-start-img');
+                //$image_html = $crawler->html();
+                $image = $crawler->filter('.arcticle-start-img')->attr('src');
+
+                // Narrow search area to header DIV
+                $crawler = new Crawler($html);
+                $crawler = $crawler->filter('.twitterembedcontainer');
+                $text = $crawler->html();
+
+//    var_dump($image);
+//    var_dump($text);
+//    die();
+
+//                preg_match('/<!-- Content -->(.*)<!-- End Content -->/usi', $html, $matches);
+//                $text = count($matches) ? $matches[1] : '';
+
+//var_dump($matches);
+//die();
+            }
+
+            if ($provider == 'coindesk') {
+
+
+                // Narrow search area to header DIV
+                $crawler = new Crawler($html);
+                $head_html = $crawler->filter('.article-top-image-section')->attr('style');
+//var_dump($head_html);
+                preg_match('/http.*\.(jpg|jpeg|png)/usi', $head_html, $matches);
+                $image = count($matches) ? $matches[0] : '';
+
+                // Narrow search area to header DIV
+                $crawler = new Crawler($html);
+                $crawler = $crawler->filter('.article-content-container');
+                $text = $crawler->html();
+
+//    var_dump($image);
+//    var_dump($text);
+//    die();
+
+//                preg_match('/<!-- Content -->(.*)<!-- End Content -->/usi', $html, $matches);
+//                $text = count($matches) ? $matches[1] : '';
+
+//var_dump($matches);
+//die();
+            }
+
+
 
             // NB! Set provider / THAT FOR LATER!
             // ...
@@ -144,37 +249,15 @@ die();
             $news = new News();
             $news->setTitle($title);
             $news->setLead($lead);
+            $news->setText($text);
+            $news->setImage($image);
             $news->setTags($tags);
             $news->setSource($source);
             $news->setDate($date);
-            //$news->
 
             $em->persist($news);
             $em->flush();
 
-//var_dump($tags);
-
-//echo "\nTAGS = $tags";
-
-//    var_dump($v->getLabel());
-
-//}
-
-
-        if ($item->hasMedia()) {
-            $medias = $item->getMedias();
-            foreach ($medias as $m) {
-                //var_dump($m);
-                $type = $m->getType();
-                echo "\nMEDIA-TYPE $type";
-                $url = $m->getUrl();
-                echo "\nMEDIA-URL $url";
-
-            }
-        }
-
-//var_dump($medias);
-//die();
             }
 
         }
