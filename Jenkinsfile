@@ -64,23 +64,24 @@ exit 0
       steps {
         sh '''dir
 
-#if [ ! -d "taklimakan-alpha" ]
-#then
-#    git clone https://github.com/usetech-llc/taklimakan-alpha -b develop
-#else
-#    cd taklimakan-alpha
-#    git fetch --all
-#    cd ..
-#fi
+if [ ! -d "taklimakan-alpha" ]
+then
+    git clone https://github.com/usetech-llc/taklimakan-alpha -b develop
+else
+    cd taklimakan-alpha
+    git fetch --all
+    cd ..
+fi
 
-#remove git folder
-#cd taklimakan-alpha
-#rm -rf .git
-#rm -f Jenkinsfile
-#rm -f .gitignore
-#cd ..
+remove git folder
+cd taklimakan-alpha
+rm -rf .git
+rm -f Jenkinsfile
+rm -f .gitignore
+cd ..
 
-#zip -r taklimakan-alpha.zip taklimakan-alpha'''
+zip -r taklimakan-alpha.zip taklimakan-alpha'''
+        archiveArtifacts 'taklimakan-alpha.zip'
       }
     }
     stage('Deploy') {
@@ -90,7 +91,23 @@ exit 0
       }
       steps {
         sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-          sh 'ssh -o StrictHostKeyChecking=no tkln@192.168.100.125 -p 8022 ls'
+          sh '''# Cleanup previous deploy (if any)
+ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpdeploy
+ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpwww
+
+# Upload file to host
+ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mkdir /home/tkln/tmpdeploy
+scp -P $DEPLOY_DEV_PORT taklimakan-alpha.zip tkln@$DEPLOY_DEV_HOST:/home/tkln/tmpdeploy/taklimakan-alpha.zip
+
+# Unzip file into temp folder
+ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mkdir /home/tkln/tmpwww
+ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT unzip /home/tkln/tmpdeploy/taklimakan-alpha.zip -d /home/tkln/tmpwww
+
+# Remove target folder
+ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -fr /var/www/
+
+# Move unzipped files into target
+ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mv /home/tkln/tmpwww/* /var/www/'''
         }
 
         sh '''#!/bin/bash
@@ -112,5 +129,9 @@ else
 fi'''
       }
     }
+  }
+  environment {
+    DEPLOY_DEV_HOST = '192.168.100.125'
+    DEPLOY_DEV_PORT = '8022'
   }
 }
