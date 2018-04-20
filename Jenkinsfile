@@ -23,7 +23,7 @@ then
   pylint --generate-rcfile > pylint.cfg
 fi
 
-if [  -f pylint.html]
+if [  -f pylint.html ]
 then
   #remove previous execution log
   rm -rf pylint.html
@@ -32,7 +32,7 @@ fi
 for entry in `ls services/analytics/*.py`; do
   echo $entry
   name=$(basename $entry .py)
-  if [ ! -f pylint.log ]
+  if [ ! -f pylint.html ]
   then
     pylint --rcfile=pylint.cfg --output-format=html $entry > pylint.html
   else
