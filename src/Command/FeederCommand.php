@@ -18,6 +18,9 @@ use GuzzleHttp\Client as GuzzleClient;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\CssSelector\CssSelectorConverter;
+
 use App\Entity\News;
 
 // class FeederCommand extends Command
@@ -61,14 +64,17 @@ class FeederCommand extends ContainerAwareCommand
         // Scan all RSS feeds to find latest news
         foreach ($this->feeds as $provider => $url) {
 
+echo "\n\n --- $provider ---------------------------------------------------------------------------------- \n";
+
             $guzzle = new GuzzleClient([ 'verify' => false ]);
             $client = new Client($guzzle);
-            // FIXME! Set up Monolog properly https://github.com/Seldaek/monolog and hide log from console
-            $logger = new Logger('default', [new StreamHandler('php://stdout')]);
+            // FIXME! Set up Monolog properly https://github.com/Seldaek/monolog
+            // Logger::ERROR ignores all INFO, NOTICE and DEBUG messages
+            $logger = new Logger('default', [new StreamHandler('php://stdout', Logger::ERROR)]);
             $feeder = new FeedIo($client, $logger);
 
             // $feedIo = $this->getContainer()->get('feedio');
-            $modifiedSince = new \DateTime('-6 hours');
+            $modifiedSince = new \DateTime('-12 hours');
             // $feed = $feedIo->read($url, new \Acme\Entity\Feed, $modifiedSince)->getFeed();
             //$feed = $feedIo->read($url)->getFeed();
 
@@ -76,7 +82,7 @@ class FeederCommand extends ContainerAwareCommand
 
             foreach ($feed as $item) {
 
-var_dump($item);
+//var_dump($item);
 
                 $title = $item->getTitle();
 
@@ -100,7 +106,7 @@ echo "\nLEAD-TRIM = $lead";
 
 //echo "\nTITLE = $title";
 //echo "\nLEAD = $lead";
-//echo "\nSOURCE = $source";
+echo "\nSOURCE = $source";
 //echo "\nDATE = $date";
 
 //echo "[TAGS]";
@@ -111,6 +117,18 @@ echo "\nLEAD-TRIM = $lead";
 
             // NB! And we have to get FULL TEXT somewhere
             // ...
+            // FIXME Handle errors here!
+            $response = $guzzle->get($source);
+            $html = (string) $response->getBody();
+//var_dump($html);
+
+            $crawler = new Crawler($html);
+
+            $image = $crawler->filter('body div .post-header .height--container"')->attr('style');
+var_dump($image);
+//var_dump($crawler->filter('body')->children());
+die();
+
 
             // NB! And we have to get IMAGE somewhere too
             // ...
@@ -146,7 +164,7 @@ echo "\nLEAD-TRIM = $lead";
         if ($item->hasMedia()) {
             $medias = $item->getMedias();
             foreach ($medias as $m) {
-                var_dump($m);
+                //var_dump($m);
                 $type = $m->getType();
                 echo "\nMEDIA-TYPE $type";
                 $url = $m->getUrl();
