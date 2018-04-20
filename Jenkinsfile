@@ -89,6 +89,9 @@ exit 0
         branch 'develop'
       }
       steps {
+        sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+          // some block
+        }
         sh '''#!/bin/bash
 
 echo $BRANCH_NAME
