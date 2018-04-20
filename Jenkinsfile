@@ -32,12 +32,7 @@ fi
 for entry in `ls services/analytics/*.py`; do
   echo $entry
   name=$(basename $entry)
-  if [ ! -f pylint.log ]
-  then
-    pylint --rcfile=pylint.cfg $entry > pylint.log
-  else
-    pylint --rcfile=pylint.cfg $entry >> pylint.log
-  fi
+    pylint --rcfile=pylint.cfg $entry > pylint_$name.log
 #  pylint --rcfile=pylint.cfg --output-format=json $entry > $name.json
 done
 
@@ -58,6 +53,7 @@ done
 exit 0
 
 '''
+            warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'PyLint']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', parserConfigurations: [[parserName: 'PyLint', pattern: 'pylint*.log']], unHealthy: ''
             archiveArtifacts 'pylint.log'
           }
         }
