@@ -85,13 +85,14 @@ exit 0
     }
     stage('Deploy') {
       agent any
-      when{
+      when {
         branch 'develop'
       }
       steps {
         sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-          // some block
+          sh 'ssh tkln@192.168.100.125 -p 8022 ls'
         }
+
         sh '''#!/bin/bash
 
 echo $BRANCH_NAME
