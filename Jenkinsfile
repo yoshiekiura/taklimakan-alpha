@@ -75,7 +75,12 @@ for D in *; do
   if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ]
   then
     # copy to taklimakan-alpha
-    cp $D taklimakan-alpha/
+    if [ -d "${D}" ]
+    then
+      cp -R $D taklimakan-alpha/
+    else
+      cp $D taklimakan-alpha/
+    fi
   fi
 done
 
