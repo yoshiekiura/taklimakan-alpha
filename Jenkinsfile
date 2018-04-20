@@ -97,7 +97,7 @@ ssh -o StrictHostKeyChecking=no tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf
 
 # Upload file to host
 ssh -o StrictHostKeyChecking=no tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mkdir /home/tkln/tmpdeploy
-scp -P $DEPLOY_DEV_PORT taklimakan-alpha.zip -o StrictHostKeyChecking=no tkln@$DEPLOY_DEV_HOST:/home/tkln/tmpdeploy/taklimakan-alpha.zip
+scp -o StrictHostKeyChecking=no -P $DEPLOY_DEV_PORT taklimakan-alpha.zip tkln@$DEPLOY_DEV_HOST:/home/tkln/tmpdeploy/taklimakan-alpha.zip
 
 # Unzip file into temp folder
 ssh -o StrictHostKeyChecking=no tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mkdir /home/tkln/tmpwww
@@ -107,7 +107,7 @@ ssh -o StrictHostKeyChecking=no tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT unzip 
 ssh -o StrictHostKeyChecking=no tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -fr /var/www/
 
 # Move unzipped files into target
-ssh -o StrictHostKeyChecking=no tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mv /home/tkln/tmpwww/* /var/www/'''
+ssh -o StrictHostKeyChecking=no tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mv /home/tkln/tmpwww/taklimakan-alpha/* /var/www/'''
         }
 
         sh '''#!/bin/bash
