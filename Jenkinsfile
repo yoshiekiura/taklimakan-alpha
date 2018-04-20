@@ -60,41 +60,38 @@ exit 0
         }
       }
     }
-    stage('Archive') {
-      steps {
-        sh '''#!/bin/bash
-if [ -d taklimakan-alpha ]
-then
-  # remove previous deploy data
-  rm -rf taklimakan-alpha
-fi
-
-mkdir taklimakan-alpha
-
-for D in *; do
-  if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ]
-  then
-    # copy to taklimakan-alpha
-    if [ -d "${D}" ]
-    then
-      cp -R $D taklimakan-alpha/
-    else
-      cp $D taklimakan-alpha/
-    fi
-  fi
-done
-
-#zip deploy file
-zip -r taklimakan-alpha.zip taklimakan-alpha'''
-        archiveArtifacts 'taklimakan-alpha.zip'
-      }
-    }
-    stage('Deploy') {
+    stage('Archive & Deploy') {
       agent any
       when {
         branch 'develop'
       }
       steps {
+      sh '''#!/bin/bash
+if [ -d taklimakan-alpha ]
+then
+# remove previous deploy data
+rm -rf taklimakan-alpha
+fi
+
+mkdir taklimakan-alpha
+
+for D in *; do
+if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ]
+then
+  # copy to taklimakan-alpha
+  if [ -d "${D}" ]
+  then
+    cp -R $D taklimakan-alpha/
+  else
+    cp $D taklimakan-alpha/
+  fi
+fi
+done
+
+#zip deploy file
+zip -r taklimakan-alpha.zip taklimakan-alpha'''
+      archiveArtifacts 'taklimakan-alpha.zip'
+
         sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
           sh '''# Cleanup previous deploy (if any)
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpdeploy
