@@ -73,7 +73,7 @@ else
     cd ..
 fi
 
-remove git folder
+#remove git folder
 cd taklimakan-alpha
 rm -rf .git
 rm -f Jenkinsfile
