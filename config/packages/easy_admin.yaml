@@ -30,7 +30,7 @@ easy_admin:
             - { entity: 'Comment', label: 'Comments', icon: 'comments' }
 
             - { label: 'Security' }
-            - { label: 'Users', url: '#', rel: 'index', icon: 'users' }
+            - { entity: 'Users', label: 'Users', icon: 'users' }
 
             - { label: 'Etc' }
             - { label: 'Home', url: 'http://taklimakan.io', rel: 'index' }
@@ -197,6 +197,18 @@ easy_admin:
             class: App\Entity\Lecture
             list:
                 fields: ['id', 'title' ]
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Users:
+
+            class: App\Entity\User
+            list:
+                fields: ['id', 'email']
+            form:
+                fields:
+                    - { property: 'firstName', label: 'First Name' }
+                    - { property: 'lastName', label: 'Last Name' }
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
