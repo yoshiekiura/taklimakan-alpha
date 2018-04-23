@@ -167,8 +167,8 @@ $(function () {
     }
 
     function checkToken() {
-        if ($token.val().length === 0) {
-            setError($token, 'Required');
+        if ($token.val().length !== 67 || !(/^0x[a-zA-Z0-9]{65}$/.test($token.val()))) {
+            setError($token, 'Invalid wallet');
             return false;
         }
         setSuccess($token);
@@ -186,7 +186,7 @@ $(function () {
 
     function checkPassword() {
         const password = $password.val();
-        if (password.length < 8 || !(/^[0-9a-zA-Z]*$/.test(password))) {
+        if (password.length < 8 || !(/^[0-9a-zA-Z$&+,:;=?@#|'<>.-^*()%!]*$/.test(password)) || !(/[a-zA-Z]+/.test(password)) || !(/[0-9]+/.test(password))) {
             $passwordHelp.addClass('valid-error');
             $password.closest('.form-group').removeClass('checking').addClass('wrong');
             return false;

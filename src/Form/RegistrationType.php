@@ -42,6 +42,13 @@ class RegistrationType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new Assert\NotNull(),
+                    new Assert\Length([
+                        'min' => 67,
+                        'max' => 67,
+                    ]),
+                    new Assert\Regex([
+                        'pattern' => '/^0x[a-zA-Z0-9]{65}$/',
+                    ]),
                 ],
             ])
             ->add('password', RepeatedType::class, [
@@ -60,8 +67,13 @@ class RegistrationType extends AbstractType
                         'min' => 8,
                     ]),
                     new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9]*$/',
-                        'match' => true,
+                        'pattern' => '/^[0-9a-zA-Z$&+,:;=?@#|\'<>.-^*()%!]*$/',
+                    ]),
+                    new Assert\Regex([
+                        'pattern' => '/[a-zA-Z]+/',
+                    ]),
+                    new Assert\Regex([
+                        'pattern' => '/[0-9]+/',
                     ]),
                 ],
             ])
