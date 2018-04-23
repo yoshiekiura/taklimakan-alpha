@@ -71,8 +71,8 @@ echo "# Copy this file to .env file for development, create environment variable
 echo "# https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration" >> tmpenv
 echo " " >> tmpenv
 echo "###> symfony/framework-bundle ###" >> tmpenv
-echo "APP_ENV=dev" >> tmpenv
-echo "#APP_ENV=prod" >> tmpenv
+echo "#APP_ENV=dev" >> tmpenv
+echo "APP_ENV=prod" >> tmpenv
 echo "APP_SECRET=e3d9bc1b4ad39a7c6e025ee8e7d6f1d5" >> tmpenv
 echo "#TRUSTED_PROXIES=127.0.0.1,127.0.0.2" >> tmpenv
 echo "#TRUSTED_HOSTS=localhost,example.com" >> tmpenv
