@@ -68,7 +68,7 @@ easy_admin:
             class: App\Entity\News
             list:
                 # fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
-                fields: [ 'id', 'active', { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'provider', 'tags']
+                fields: [ 'id', { property: 'active', type: 'toggle' }, { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'provider', 'tags']
             form:
                 fields:
                 - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }

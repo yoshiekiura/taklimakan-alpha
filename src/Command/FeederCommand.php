@@ -1,5 +1,9 @@
 <?php
 
+// News Feeder
+// CLI : php bin/console app:feeder
+// CRON :
+
 namespace App\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -205,6 +209,7 @@ class FeederCommand extends ContainerAwareCommand
                 $news->setTags($tags);
                 $news->setSource($source);
                 $news->setDate($date);
+                $news->setActive(false);                
 
                 $path_parts = pathinfo($image);
                 $ext = $path_parts['extension'];
