@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Doctrine\ORM\Mapping\Index;
+use Doctrine\ORM\Mapping\UniqueConstraint;
+
 use Doctrine\Common\Collections\ArrayCollection;
 
 use App\Entity\Likes;
@@ -13,7 +16,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
- * @ORM\Table(name="news", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
+ * @ORM\Table(name="news", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"}, uniqueConstraints={@UniqueConstraint(name="source_idx", columns={"source"})})
  * @Vich\Uploadable
  */
 class News
@@ -73,6 +76,10 @@ class News
     {
         $this->text = $text;
     }
+
+    // We have to limit source to 191 letters to enable index on it with ut8mb4
+    // https://stackoverflow.com/questions/1814532/1071-specified-key-was-too-long-max-key-length-is-767-bytes/1814594#1814594
+    // * @ORM\Column(type="string", length=191, nullable=true)
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

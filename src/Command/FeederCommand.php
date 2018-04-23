@@ -45,26 +45,28 @@ class FeederCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Genereate folder names for images and create them if necessary
+
+        $monthDir = (new \DateTime())->format('Ym');
+        $imageDir = $this->getContainer()->get('kernel')->getProjectDir() . '/public/images/news/';
+
+        if (!file_exists ($imageDir . $monthDir))
+            if (!mkdir($imageDir . $monthDir, 0777, true))
+                die("[ERR] Cant create " . $imageDir . $monthDir . " folder");
 
         $em = $this->getContainer()->get('doctrine')->getManager();
 
-//var_dump(openssl_get_cert_locations());
-//die();
-//..curl_setopt($process, CURLOPT_SSL_VERIFYPEER, false);
-
-        //$store = new SemaphoreStore();
         $store = new FlockStore(sys_get_temp_dir());
         $factory = new Factory($store);
 
-        $lock = $factory->createLock('pdf-invoice-generation');
-
+        $lock = $factory->createLock('news-feeder-lock');
         if (!$lock->acquire())
             die("[ERR] The Feeder instance already running. Please wait before launch another one");
 
         // Scan all RSS feeds to find latest news
         foreach ($this->feeds as $provider => $url) {
 
-echo "\n\n --- $provider ---------------------------------------------------------------------------------- \n";
+            echo "\n\n--- [PROVIDER] $provider ---\n";
 
             $guzzle = new GuzzleClient([ 'verify' => false ]);
             $client = new Client($guzzle);
@@ -72,196 +74,177 @@ echo "\n\n --- $provider -------------------------------------------------------
             // Logger::ERROR ignores all INFO, NOTICE and DEBUG messages
             $logger = new Logger('default', [new StreamHandler('php://stdout', Logger::ERROR)]);
             $feeder = new FeedIo($client, $logger);
+            $modifiedSince = new \DateTime('-2 hours');
 
-            // $feedIo = $this->getContainer()->get('feedio');
-            $modifiedSince = new \DateTime('-48 hours');
-            // $feed = $feedIo->read($url, new \Acme\Entity\Feed, $modifiedSince)->getFeed();
-            //$feed = $feedIo->read($url)->getFeed();
-
-            $feed = $feeder->readSince($url, $modifiedSince)->getFeed();
+            // Trying to get news feed up to 3 times
+            $feed = null; $count = 0;
+            while (!$feed) {
+                $count ++;
+                try {
+                    $feed = $feeder->readSince($url, $modifiedSince)->getFeed();
+                }
+                catch(\Exception $e) {
+                    echo("\n[ERR] Can't get news feed from $url for the $count'st try");
+                    if ($count > 3) break;
+                    else sleep(60);
+                }
+            }
+            if (!$feed) continue; // If there are some network problems. proceed with the next provider
 
             foreach ($feed as $item) {
 
                 $title = $lead = $text = $image = $tags = $date = $source = '';
 
-//var_dump($item);
-
                 $title = $item->getTitle();
 
                 // NB! After we got item, purge unnecessary tags from it with str_replace
                 $lead = trim($item->getDescription());
-//echo "\nLEAD-FULL = $lead";
+
                 $lead = trim(str_replace(
                     ['![CDATA[<', '</p>]]>', '></p>]]', '</p>', '<p>', '#NEWS', '#ANALYSIS', '#SPONSORED', '#RECAP', '#EXPERT_TAKE', '#EXPLAINED]', ],
                     ['', '', '', '', '', '', '', '', '', '', '', ],
                     $lead));
-//echo "\nLEAD-TRIM = $lead";
+
                 // NB! And after that we have to remove some more complex staff too (divs, images and so on)
                 // ...
 
                 $source = $item->getLink();
-                //$date = $item->getLastModified()->format("Y-m-d H:i:s");
                 $date = $item->getLastModified();
-                //$date = $item->getDate();
 
-//var_dump($lead);
-
-//echo "\nTITLE = $title";
-//echo "\nLEAD = $lead";
-echo "\nSOURCE = $source";
-//echo "\nDATE = $date";
-
-//echo "[TAGS]";
                 $tags = "";
                 foreach ($item->getCategories() as $tag)
                     $tags .= trim($tag->getLabel()) . ', ';
                 $tags = trim($tags, ', ');
 
-            // NB! And we have to get FULL TEXT somewhere
-            // ...
-            // FIXME Handle errors here!
-            $response = $guzzle->get($source);
-            $html = (string) $response->getBody();
-//var_dump($html);
+                // NB! And we have to get FULL TEXT somewhere
+                // ...
+                // FIXME Handle errors here!
+                $response = $guzzle->get($source);
+                $html = (string) $response->getBody();
 
+                // NB! And we have to get IMAGE somewhere too
 
-
-
-//var_dump($crawler->filter('body')->children());
-//die();
-
-
-            // NB! And we have to get IMAGE somewhere too
-            // ...
-
-            if ($item->hasMedia()) {
-                $medias = $item->getMedias();
-                foreach ($medias as $m) {
-                    //var_dump($m);
-                    $type = $m->getType();
-                    //echo "\nMEDIA-TYPE $type";
-                    //$url = $m->getUrl();
-                    //echo "\nMEDIA-URL $url";
-                    $image = $m->getUrl();
-//var_dump($image);
+                if ($item->hasMedia()) {
+                    $medias = $item->getMedias();
+                    foreach ($medias as $m) {
+                        $type = $m->getType();
+                        $image = $m->getUrl();
+                    }
                 }
-            }
 
-            if ($provider == 'cointelegraph') {
-                // Remove image from lead
-                preg_match('/<img.*>(.*)/usi', $lead, $matches);
-                $lead = count($matches) ? $matches[1] : '';
-//var_dump($matches);
-//die();
-                $crawler = new Crawler($html);
-                $crawler = $crawler->filter('.post-full-text');
-                $text = $crawler->html();
+                if ($provider == 'cointelegraph') {
+                    // Remove image from lead
+                    preg_match('/<img.*>(.*)/usi', $lead, $matches);
+                    $lead = count($matches) ? $matches[1] : '';
 
-                // FIXME Remove from the end of HTML : <div id="quiz"></div>
+                    $crawler = new Crawler($html);
+                    $crawler = $crawler->filter('.post-full-text');
+                    $text = $crawler->html();
 
-//var_dump($text_html);
-//die();
-            }
+                    // FIXME Remove from the end of HTML : <div id="quiz"></div>
 
-            if ($provider == 'bitcoinist') {
+    //var_dump($text_html);
+    //die();
+                }
 
-                // Narrow search area to header DIV
-                $crawler = new Crawler($html);
-                $crawler = $crawler->filter('.post-header');
-                $head_html = $crawler->html();
+                if ($provider == 'bitcoinist') {
 
-                // Get link for JPEG image
-                // preg_match('/<!-- Image Wrap -->.*(http.*\.jpg).*<!-- End Image Wrap -->/usi', $html, $matches);
-                preg_match('/http.*\.(jpg|jpeg|png)/usi', $head_html, $matches);
-                $image = count($matches) ? $matches[0] : '';
-//var_dump($matches);
-//var_dump($image);
-//die();
+                    // Narrow search area to header DIV
+                    $crawler = new Crawler($html);
+                    $crawler = $crawler->filter('.post-header');
+                    $head_html = $crawler->html();
 
-                preg_match('/<!-- Content -->(.*)<!-- End Content -->/usi', $html, $matches);
-                $text = count($matches) ? $matches[1] : '';
+                    // Get link for JPEG image
+                    // preg_match('/<!-- Image Wrap -->.*(http.*\.jpg).*<!-- End Image Wrap -->/usi', $html, $matches);
+                    preg_match('/http.*\.(jpg|jpeg|png)/usi', $head_html, $matches);
+                    $image = count($matches) ? $matches[0] : '';
 
-//var_dump($matches);
-//die();
-            }
+                    preg_match('/<!-- Content -->(.*)<!-- End Content -->/usi', $html, $matches);
+                    $text = count($matches) ? $matches[1] : '';
 
-            if ($provider == 'cryptovest') {
+                }
 
+                if ($provider == 'cryptovest') {
 
-                // Narrow search area to header DIV
-                $crawler = new Crawler($html);
-                //$crawler = $crawler->filter('.arcticle-start-img');
-                //$image_html = $crawler->html();
-                $image = $crawler->filter('.arcticle-start-img')->attr('src');
+                    // Narrow search area to header DIV
+                    $crawler = new Crawler($html);
+                    $image = $crawler->filter('.arcticle-start-img')->attr('src');
 
-                // Narrow search area to header DIV
-                $crawler = new Crawler($html);
-                $crawler = $crawler->filter('.twitterembedcontainer');
-                $text = $crawler->html();
+                    // Narrow search area to header DIV
+                    $crawler = new Crawler($html);
+                    $crawler = $crawler->filter('.twitterembedcontainer');
+                    $text = $crawler->html();
 
-//    var_dump($image);
-//    var_dump($text);
-//    die();
+                }
 
-//                preg_match('/<!-- Content -->(.*)<!-- End Content -->/usi', $html, $matches);
-//                $text = count($matches) ? $matches[1] : '';
+                if ($provider == 'coindesk') {
 
-//var_dump($matches);
-//die();
-            }
+                    // Narrow search area to header DIV
+                    $crawler = new Crawler($html);
+                    $head_html = $crawler->filter('.article-top-image-section')->attr('style');
 
-            if ($provider == 'coindesk') {
+                    preg_match('/http.*\.(jpg|jpeg|png)/usi', $head_html, $matches);
+                    $image = count($matches) ? $matches[0] : '';
 
+                    // Narrow search area to header DIV
+                    $crawler = new Crawler($html);
+                    $crawler = $crawler->filter('.article-content-container');
+                    $text = $crawler->html();
 
-                // Narrow search area to header DIV
-                $crawler = new Crawler($html);
-                $head_html = $crawler->filter('.article-top-image-section')->attr('style');
-//var_dump($head_html);
-                preg_match('/http.*\.(jpg|jpeg|png)/usi', $head_html, $matches);
-                $image = count($matches) ? $matches[0] : '';
+                }
 
-                // Narrow search area to header DIV
-                $crawler = new Crawler($html);
-                $crawler = $crawler->filter('.article-content-container');
-                $text = $crawler->html();
+                // NB! Set provider / THAT FOR LATER!
+                // ...
 
-//    var_dump($image);
-//    var_dump($text);
-//    die();
+                echo "\n$source";
 
-//                preg_match('/<!-- Content -->(.*)<!-- End Content -->/usi', $html, $matches);
-//                $text = count($matches) ? $matches[1] : '';
+                $news = new News();
+                $news->setTitle($title);
+                $news->setLead($lead);
+                $news->setText($text);
+                $news->setTags($tags);
+                $news->setSource($source);
+                $news->setDate($date);
 
-//var_dump($matches);
-//die();
-            }
+                $path_parts = pathinfo($image);
+                $ext = $path_parts['extension'];
+                $newImage = $monthDir . '/' . uniqid() . '.' . $ext;
+                $newImageFull = $imageDir . $newImage;
+//var_dump($newImage);
+//var_dump($newImageFull);
+                // If we could copy remote image to our server, set it as the origin for our image
+                if (copy ($image, $newImageFull))
+                    $news->setImage($newImage);
+                else
+                    $news->setImage($image);
 
-
-
-            // NB! Set provider / THAT FOR LATER!
-            // ...
-
-            // Are there the exact same News in the DB already? If yes, just skip it
-            // ...
-
-            // If no, save the news item to DB
-
-            $news = new News();
-            $news->setTitle($title);
-            $news->setLead($lead);
-            $news->setText($text);
-            $news->setImage($image);
-            $news->setTags($tags);
-            $news->setSource($source);
-            $news->setDate($date);
-
-            $em->persist($news);
-            $em->flush();
+                // Trying to store news into the DB
+                try {
+                    $em->persist($news);
+                    $em->flush();
+                    echo " [NEW]";
+                }
+                // Is it already stored in DB ? Continue to the next record or die in any other case
+                catch (\Exception $e) {
+                    if (strpos($e, 'SQLSTATE[23000]')) {
+                        echo " [DUPLICATE]";
+                        unlink($newImageFull);
+                        // После исключения Entity Manager закрывается, надо открывать новое соединение
+                        $em = $this->getContainer()->get('doctrine')->getManager();
+                        if (!$em->isOpen())
+                            $em = $em->create($em->getConnection(), $em->getConfiguration());
+                        continue;
+                    }
+                    else {
+                        echo $e->getMessage();
+                        die();
+                    }
+                }
 
             }
-
         }
 
         $lock->release();
     }
+
 }
