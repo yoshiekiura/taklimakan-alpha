@@ -97,6 +97,15 @@ fi
 
 mkdir taklimakan-alpha
 
+if [ -f ".env" ]
+then
+  cp .env taklimakan-alpha/
+else
+  echo "For unknown reason .env not exist"
+  dir
+
+fi
+
 for D in *; do
 if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ]
 then
