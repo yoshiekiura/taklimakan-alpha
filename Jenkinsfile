@@ -142,6 +142,7 @@ ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -fr /var/www/
 
 echo "Move unzipped files into target"
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mv /home/tkln/tmpwww/taklimakan-alpha/* /var/www/
+ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mv /home/tkln/tmpwww/taklimakan-alpha/.env /var/www/.env
 
 echo "install composer in /var/www folder"
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT \' cd /var/www/; composer install\'
