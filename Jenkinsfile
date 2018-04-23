@@ -135,7 +135,7 @@ echo "Move unzipped files into target"
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mv /home/tkln/tmpwww/taklimakan-alpha/* /var/www/
 
 echo "install composer in /var/www folder"
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT \' cd /var/www/; compose install\''''
+ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT \' cd /var/www/; composer install\''''
         }
 
         sh '''#!/bin/bash
