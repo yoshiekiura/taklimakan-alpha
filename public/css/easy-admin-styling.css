@@ -1,7 +1,46 @@
+/* https://google-webfonts-helper.herokuapp.com/fonts/alegreya-sans-sc?subsets=latin,cyrillic */
+
+/* alegreya-sans-sc-regular - cyrillic_latin */
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Alegreya Sans SC Regular'), local('AlegreyaSansSC-Regular'),
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* alegreya-sans-sc-italic - cyrillic_latin */
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Alegreya Sans SC Italic'), local('AlegreyaSansSC-Italic'),
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* alegreya-sans-sc-700 - cyrillic_latin */
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Alegreya Sans SC Bold'), local('AlegreyaSansSC-Bold'),
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* alegreya-sans-sc-700italic - cyrillic_latin */
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Alegreya Sans SC Bold Italic'), local('AlegreyaSansSC-BoldItalic'),
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-700italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-700italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
 /* Easy Admin Styling */
 
 body { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; font-size: 1.6em; color: #555; }
-body.list table thead th a, body.list table thead th span { color: /*#666*/ #fff; background-color: /*#E9ECEF*/ /*#6f42c1*/ #1CAF9A; }
+body.list table thead th a, body.list table thead th span { color: /*#666*/ #fff; background-color: /*#E9ECEF*/ #6f42c1 /*#1CAF9A*/; }
 .form-control, .form-inline .form-control { color: #000; }
 .content-wrapper { background: /*#F5F5F5*/ #E9ECEF; }
 body.list table { /* background: #FFFFFF; */ border: 1px solid /*#888*/ #888; }
