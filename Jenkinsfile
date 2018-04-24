@@ -12,9 +12,7 @@ pipeline {
               name: 'CommitId'),
             ])
 
-            //            echo("${commitId}")
             def command = "git cat-file -t ${commitId}"
-            //            echo("${command}")
             def commitExist=sh(returnStdout: true, script: command)
             echo("commitExist= \"${commitExist}\"; commitId= \"${commitId}\"")
             assert commitExist != "commit" && commitId != "": "Branch with commit Id: ${commitId} not exist"
@@ -26,10 +24,10 @@ pipeline {
       stage('get github data') {
         steps {
           checkout([$class: 'GitSCM',
-                                                                                                                                                                                                                              branches: [[name: commitId ]],
-                                                                                                                                                                                                                                userRemoteConfigs: [[
-                                                                                                                                                                                                                                                                            credentialsId: 'deploy key for your repo', 
-                                                                                                                                                                                                                                                                              url: 'https://github.com/usetech-llc/taklimakan-alpha']]])
+                                                                                                                                                                                                                                                  branches: [[name: ${commitId} ]],
+                                                                                                                                                                                                                                                    userRemoteConfigs: [[
+                                                                                                                                                                                                                                                                                                    credentialsId: 'deploy key for your repo', 
+                                                                                                                                                                                                                                                                                                      url: 'https://github.com/usetech-llc/taklimakan-alpha']]])
             sh '''dir
 
 if [ -d taklimakan-alpha ]
