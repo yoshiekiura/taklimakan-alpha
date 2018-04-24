@@ -23,10 +23,14 @@ pipeline {
       }
       stage('get github data') {
         steps {
-          sh '''dir
-git fetch
-git checkout $commitId
-echo "display git branch info to make sure that branch is switch to Commit"
+          script {
+            echo("${commitId}")
+            sh(returnStdout: false, script: 'git fetch')
+            def command = "git checkout ${commitId}"
+            sh(returnStdout: true, script: command)
+          }
+
+          sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch
 
 if [ -d taklimakan-alpha ]
