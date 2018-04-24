@@ -1,9 +1,28 @@
 pipeline {
   agent any
   stages {
-    stage('get github data') {
+    stage('Ask for Branch Id') {
       steps {
-        sh '''dir
+        script {
+          def inputCommit
+          def userInput = input(
+            id: 'userInput', message: 'Enter branch commit ID (Empty for latest)?',
+            parameters: [
+              string(defaultValue: '',
+              description: 'Branch commit ID',
+              name: 'CommitId'),
+            ])
+
+            inputCommit= userInput.CommitId?:''
+
+            echo("${inputCommit}")
+          }
+
+        }
+      }
+      stage('get github data') {
+        steps {
+          sh '''dir
 
 if [ -d taklimakan-alpha ]
 then
@@ -35,12 +54,12 @@ cd ..
 
 zip -r taklimakan-alpha.zip taklimakan-alpha
 '''
+        }
       }
-    }
-    stage('Archive') {
-      steps {
-        archiveArtifacts '*.zip'
+      stage('Archive') {
+        steps {
+          archiveArtifacts '*.zip'
+        }
       }
     }
   }
-}
