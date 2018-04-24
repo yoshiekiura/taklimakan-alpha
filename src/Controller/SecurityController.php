@@ -9,8 +9,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validation;
 
 class SecurityController extends Controller
 {
@@ -101,6 +102,8 @@ class SecurityController extends Controller
         $em->persist($user);
         $em->flush();
 
+        $request->getSession()->remove('registration_data');
+
         $request->getSession()->invalidate();
         $this->get('security.token_storage')->setToken(null);
 
@@ -141,6 +144,172 @@ class SecurityController extends Controller
             ]);
         }
 
+        $request->getSession()->invalidate();
+        $this->get('security.token_storage')->setToken(null);
+
+        $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+        $this->get('security.token_storage')->setToken($token);
+        $event = new InteractiveLoginEvent($request, $token);
+        $this->get('event_dispatcher')->dispatch('security.interactive_login', $event);
+
+        return $this->json([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * @Route("/forgot-password")
+     * @Method(methods={"POST"})
+     */
+    public function forgotPasswordAction(Request $request)
+    {
+        $email = $request->request->get('email');
+        if (is_null($email) || !is_string($email) || strlen(trim($email)) < 6) {
+            return $this->json([
+                'success' => false,
+            ]);
+        }
+
+        $doctrine = $this->getDoctrine();
+        $user = $doctrine->getRepository('App:User')
+            ->findOneBy(['email' => $request->request->get('email')]);
+
+        if (!$user) {
+            return $this->json([
+                'success' => false,
+            ]);
+        }
+
+        try {
+            $code = random_int(100000, 999999);
+        } catch (\Exception $e) {
+            $code = mt_rand(100000, 999999);
+        }
+
+        $message = (new \Swift_Message('Hello Email'))
+            ->setFrom('noreply@taklimakan.network')
+            ->setTo($email)
+            ->setBody(
+                $this->renderView(
+                    'emails/confirm-email.html.twig',
+                    ['code' => $code]
+                ),
+                'text/html'
+            )
+        ;
+
+        $this->get('mailer')->send($message);
+
+        $em = $doctrine->getManager();
+        $user->setConfirmationCode($code);
+        $em->persist($user);
+        $em->flush();
+
+        $request->getSession()->set('restored_email', $email);
+
+        return $this->json([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * @Route("/confirmRestoreCode")
+     * @Method(methods={"POST"})
+     */
+    public function confirmRestoreCodeAction(Request $request)
+    {
+        $email = $request->getSession()->get('restored_email');
+        if (!$email) {
+            return $this->json([
+                'success' => false,
+            ]);
+        }
+
+        $code = (string)$request->request->get('code');
+
+        $doctrine = $this->getDoctrine();
+        $user = $doctrine->getRepository('App:User')->findOneBy([
+            'email' => $email,
+            'confirmationCode' => $code,
+        ]);
+
+        if (!$user) {
+            return $this->json([
+                'success' => false,
+            ]);
+        }
+
+        $user->setConfirmationCode(null);
+
+        $em = $doctrine->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * @Route("/change-password")
+     * @Method(methods={"POST"})
+     */
+    public function changePasswordAction(Request $request)
+    {
+        $email = $request->getSession()->get('restored_email');
+        if (!$email) {
+            return $this->json([
+                'success' => false,
+            ]);
+        }
+
+        $password = $request->request->get('password_first');
+        $repeatedPassword = $request->request->get('password_second');
+
+        $validator = Validation::createValidator();
+        $violations = $validator->validate($password, [
+            new Assert\NotNull(),
+            new Assert\NotNull(),
+            new Assert\Length([
+                'min' => 8,
+            ]),
+            new Assert\Regex([
+                'pattern' => '/^[0-9a-zA-Z$&+,:;=?@#|\'<>.-^*()%!]*$/',
+            ]),
+            new Assert\Regex([
+                'pattern' => '/[a-zA-Z]+/',
+            ]),
+            new Assert\Regex([
+                'pattern' => '/[0-9]+/',
+            ]),
+        ]);
+
+        if (count($violations) !== 0 || $password !== $repeatedPassword) {
+            return $this->json([
+                'success' => false,
+            ]);
+        }
+
+        $doctrine = $this->getDoctrine();
+        $user = $doctrine->getRepository('App:User')->findOneBy([
+            'email' => $email,
+        ]);
+
+        if (!$user || $user->getConfirmationCode() !== null) {
+            return $this->json([
+                'success' => false,
+            ]);
+        }
+
+        $user->setPassword(
+            $this->get('security.password_encoder')->encodePassword($user, $password)
+        );
+
+        $em = $doctrine->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        $request->getSession()->remove('restored_email');
         $request->getSession()->invalidate();
         $this->get('security.token_storage')->setToken(null);
 

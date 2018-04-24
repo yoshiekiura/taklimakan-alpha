@@ -169,6 +169,109 @@
         </div>
         <!-- /.Форма входа -->
 
+        <!-- Восстановление пароля. Email -->
+        <div class="modal fade" id="forgotPass" tabindex="-1" role="dialog" aria-labelledby="forgotPass" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form id="forgot_password_form" action="{{ path('app_security_forgotpassword') }}" method="post">
+                    <div class="modal-content bg-white">
+                        <div class="modal-header">
+                            <h5 class="modal-title reg-title" id="exampleModalLabel">Forgot password?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Fill in the form below to recover your forgotten password</p>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="forgot_password_email">Enter your email</label>
+                                        <input type="email" class="form-control" id="forgot_password_email" value="" placeholder="Enter email">
+                                        <small class="form-text text-muted valid-error" style="display: none;"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-buy btn-block" value="Send code" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.Восстановление пароля. Email -->
+
+        <!-- Восстановление пароля. Верификация Email -->
+        <div class="modal fade" id="recover-pass" tabindex="-1" role="dialog" aria-labelledby="recover-pass" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form action="{{ path('app_security_confirmrestorecode') }}" method="post" id="confirmRstoreCodeForm" novalidate>
+                    <div class="modal-content bg-white">
+                        <div class="modal-header">
+                            <h5 class="modal-title reg-title" id="exampleModalLabel">Email Verification</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <p>Please enter 6-digit code we have sent to your e-mail</p>
+                                </div>
+                                <div class="col-lg-6 offset-lg-3">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="recover_code" placeholder="342511">
+                                        <small id="emailHelp" class="form-text text-muted valid-error" style="display: none"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-buy btn-block" value="Change password" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.Восстановление пароля. Верификация Email -->
+
+        <!-- Восстановление пароля. Смена пароля -->
+        <div class="modal fade" id="change-pass" tabindex="-1" role="dialog" aria-labelledby="change-pass" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form id="changePasswordForm" action="{{ path('app_security_changepassword') }}" method="post">
+                    <div class="modal-content bg-white">
+                        <div class="modal-header">
+                            <h5 class="modal-title reg-title" id="exampleModalLabel">Change password</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="change-pass-1">Enter your new password</label>
+                                        <input type="password" class="form-control" id="change-pass-1" placeholder="Password" value="">
+                                        <small id="changePasswordHelp" class="form-text text-muted">Latin, number and special characters only. Minimum 8 characters, must contain numbers and letters.</small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="change-pass-2">Confirm your password</label>
+                                        <input type="password" class="form-control" id="change-pass-2" placeholder="Repeat password" value="">
+                                        <small id="emailHelp" class="form-text text-muted valid-error" style="display: none"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-buy btn-block" value="Submit" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.Восстановление пароля. Смена пароля -->
+
         <div class="slider">
             <div class="row">
                 <div class="col-xl-6 col-md-6">

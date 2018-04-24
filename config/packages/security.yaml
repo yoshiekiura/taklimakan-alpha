@@ -28,7 +28,7 @@ security:
             pattern: ^/(_(profiler|wdt)|images|img|icons|js|css|john|lib|bundles)/
             security: false
         admin:
-            pattern:            /admin(.*)
+            pattern: /admin(.*)
             provider: in_memory
             anonymous: true
             http_basic: ~

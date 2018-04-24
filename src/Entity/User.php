@@ -21,6 +21,8 @@ class User implements UserInterface, \Serializable
         self::ROLE_ADMIN,
     ];
 
+    const PASSWORD_RAGEXP_VALIDATOR = '';
+
     /**
      * @var int
      *
@@ -78,6 +80,13 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="string", nullable=false)
      */
     protected $role;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=6, nullable=true)
+     */
+    protected $confirmationCode;
 
     public function __construct()
     {
@@ -231,6 +240,25 @@ class User implements UserInterface, \Serializable
     public function getRoles(): array
     {
         return [$this->role];
+    }
+
+    /**
+     * @param string $confirmationCode
+     * @return User
+     */
+    public function setConfirmationCode($confirmationCode): User
+    {
+        $this->confirmationCode = $confirmationCode;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfirmationCode()
+    {
+        return $this->confirmationCode;
     }
 
     /**
