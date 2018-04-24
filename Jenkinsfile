@@ -24,8 +24,8 @@ pipeline {
       stage('get github data') {
         steps {
           sh '''dir
-git git fetch
-git git checkout $commitId
+git fetch
+git checkout $commitId
 
 if [ -d taklimakan-alpha ]
 then
