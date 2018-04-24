@@ -13,9 +13,9 @@ pipeline {
             ])
 
             echo("${commitId}")
-            def command = "git cat-file -t \"${commitId}\"".execute()
+            "git cat-file -t \"${commitId}\"".execute()
 
-            echo("${command}")
+
           }
 
         }
@@ -23,10 +23,10 @@ pipeline {
       stage('get github data') {
         steps {
           checkout([$class: 'GitSCM',
-                                                                                                                                                        branches: [[name: commitId ]],
-                                                                                                                                                          userRemoteConfigs: [[
-                                                                                                                                                                                        credentialsId: 'deploy key for your repo', 
-                                                                                                                                                                                          url: 'https://github.com/usetech-llc/taklimakan-alpha']]])
+                                                                                                                                                                  branches: [[name: commitId ]],
+                                                                                                                                                                    userRemoteConfigs: [[
+                                                                                                                                                                                                    credentialsId: 'deploy key for your repo', 
+                                                                                                                                                                                                      url: 'https://github.com/usetech-llc/taklimakan-alpha']]])
             sh '''dir
 
 if [ -d taklimakan-alpha ]
