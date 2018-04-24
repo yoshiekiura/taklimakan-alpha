@@ -23,12 +23,9 @@ pipeline {
       }
       stage('get github data') {
         steps {
-          checkout([$class: 'GitSCM',
-                                                                                                                                                                                                                                                  branches: [[name: ${commitId} ]],
-                                                                                                                                                                                                                                                    userRemoteConfigs: [[
-                                                                                                                                                                                                                                                                                                    credentialsId: 'deploy key for your repo', 
-                                                                                                                                                                                                                                                                                                      url: 'https://github.com/usetech-llc/taklimakan-alpha']]])
-            sh '''dir
+          sh '''dir
+git git fetch
+git git checkout $commitId
 
 if [ -d taklimakan-alpha ]
 then
@@ -60,12 +57,12 @@ cd ..
 
 zip -r taklimakan-alpha.zip taklimakan-alpha
 '''
-          }
         }
-        stage('Archive') {
-          steps {
-            archiveArtifacts '*.zip'
-          }
+      }
+      stage('Archive') {
+        steps {
+          archiveArtifacts '*.zip'
         }
       }
     }
+  }
