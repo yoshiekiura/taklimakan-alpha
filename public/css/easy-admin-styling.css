@@ -1,17 +1,80 @@
+/* https://google-webfonts-helper.herokuapp.com/fonts/alegreya-sans-sc?subsets=latin,cyrillic */
+
+/* alegreya-sans-sc-regular - cyrillic_latin */
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Alegreya Sans SC Regular'), local('AlegreyaSansSC-Regular'),
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* alegreya-sans-sc-italic - cyrillic_latin */
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Alegreya Sans SC Italic'), local('AlegreyaSansSC-Italic'),
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* alegreya-sans-sc-700 - cyrillic_latin */
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Alegreya Sans SC Bold'), local('AlegreyaSansSC-Bold'),
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* alegreya-sans-sc-700italic - cyrillic_latin */
+@font-face {
+  font-family: 'Alegreya Sans SC';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Alegreya Sans SC Bold Italic'), local('AlegreyaSansSC-BoldItalic'),
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-700italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/fonts/alegreya-sans-sc-v7-cyrillic_latin-700italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
 /* Easy Admin Styling */
 
-body { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; font-size: 1.6em; }
+body { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; font-size: 1.6em; color: #555; }
+body.list table thead th a, body.list table thead th span { color: /*#666*/ #fff; background-color: /*#E9ECEF*/ #6f42c1 /*#1CAF9A*/; }
+.form-control, .form-inline .form-control { color: #000; }
+.content-wrapper { background: /*#F5F5F5*/ #E9ECEF; }
+body.list table { /* background: #FFFFFF; */ border: 1px solid /*#888*/ #888; }
+body.list table tbody td.sorted { background: #E9ECEF; border-color: #DDD; }
+body.list table thead th a, body.list table thead th span { padding: 8px 16px 8px 4px; border-color: #000; }
+body.list table thead th { background: /*#6f42c1*/ /*#1CAF9A*/ #0866C6; padding: 0; }
+body.list table tbody td { border-bottom: 0; border-top: 1px solid #888; display: table-cell; }
+body.list table tbody td.sorted { background: #E9ECEF; border-color: /*#DDD*/ #888; border-bottom: 0px; }
+body.list .table thead tr th.sorted {  border-top: 0px; border-bottom: /*2px outset #6f42c1*/ 0px; }
+body.list .table thead tr th:first-child.sorted { border-left: /*1px solid #6f42c1*/ 0px; border-top: /*1px solid #6f42c1*/ 0px; border-bottom: 0px; }
+body.list table thead th i { color: /*#AAA*/ #eee; padding: 0 4px; }
+body.list .table thead tr th.sorted { border-bottom: /*2px outset #6f42c1*/ 1px outset #bbb; }
+
 h1, h2, h3, h4, h5 { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; font-weight: 700; }
 p, a, .main-header .logo { font-family: 'Alegreya Sans SC', Helvetica, sans-serif; }
-.main-header > .navbar { background-color: #564fd9; }
-.main-sidebar, .wrapper { background-color: #564fd9; }
-.sidebar-menu > li > a, .sidebar-menu .treeview-menu > li > a { background: #564fd9; color: #eee; }
-.sidebar-menu li.header { color: #bbb; font-size: 12px; font-weight: bold; text-transform: uppercase; }
-.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:hover { background-color: /*#205081*/ #564fd9; border-color: transparent; color: #FFFFFF; }
-/* @media (min-width: 768px) body.list table thead th.sorted, body.list table thead th.sorted a { background: #564fd9; color: #FFFFFF; }
-@media (min-width: 768px) body.list .table thead tr th.sorted { border-bottom: 2px outset #564fd9; } */
+
+.main-header > .navbar { background-color: /*#564fd9*/ #1D2939; }
+.main-sidebar, .wrapper { background-color: /*#564fd9*/ #1D2939; }
+.sidebar-menu > li > a, .sidebar-menu .treeview-menu > li > a { background: /*#564fd9*/ #1D2939; color: /*#eee*/ #fff; }
+.sidebar-menu li.header { color: /*#bbb*/ #aaa ; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:hover { background-color: /*#205081*/ /*#564fd9*/ /*#17A2B8*/ #6f42c1 !important; border-color: transparent; color: #FFFFFF; }
+
 .sidebar-menu > li:hover > a, .sidebar-menu .treeview-menu > li:hover > a, .sidebar-menu > li.active > a, .sidebar-menu .treeview-menu > li.active > a, .sidebar-collapse .sidebar-menu > li.active.submenu-active > a, .sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li.active > a 
-{ color: #FFFFFF; background: #333; border-left-color: #bbb; }
+{ color: #FFFFFF; background: /*#333*/ /*#17A2B8*/ /* #DC3545 */ #6f42c1; border-left-color: /*#bbb*/ #fff;  }
+
+.nav-tabs-custom>.nav-tabs>li.active { border-top-color: /*#3c8dbc*/ #6f42c1; }
+
+.box-header>.fa, .box-header>.glyphicon, .box-header>.ion, .box-header .box-title { color: #666; }
+
+.label:not([class*=label-]) { background: /*#252525*/ #666; }
+
+.btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus, .btn-success:active:hover { background-color: /*#006B2E*/ /*#17A2B8*/ #1CAF9A; border-color: transparent; color: #FFFFFF; }
+.btn-danger.active, .btn-danger:active, .open>.dropdown-toggle.btn-danger { color: #fff; background-color: /*#c9302c*/ #DC3545; border-color: #ac2925; }
+
 
 /* Froala Editor Styling */
 

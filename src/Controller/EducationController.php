@@ -58,6 +58,17 @@ class EducationController extends Controller
         $filter = [];
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
         $courses = $courseRepo->getCourses($filter);
+        foreach ($courses as &$course)
+            $course['type'] = 'course';
+
+        $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
+        $standaloneLectures = $lectureRepo->findBy([ 'course' => null]);
+//echo (count($standaloneLectures)) ; die();
+
+        foreach ($standaloneLectures as $lecture) {
+        //    $lecture['type'] = 'lecture';
+            $courses[] = $lecture;
+        }
 
         return $this->render('edu/courses.html.twig', [
             'menu' => 'edu',
@@ -144,12 +155,17 @@ die("KEK");
             throw $this->createNotFoundException('Sorry, this lecture does not exist!');
 
         $tags = array_map('trim', explode(',', $lecture->getTags()));
-//echo $lecture->getId(); die();
-        $courseRepo = $this->getDoctrine()->getRepository(Course::class);
-        $course = $courseRepo->findOneBy([ 'id' => $lecture->getCourse() ]);
 
-        $lectures = $course->getLectures();
-
+        // If there course and other lectures, get them all. Otherwise it's just a standalone lecture
+        if ($lecture->getCourse()) {
+            $courseRepo = $this->getDoctrine()->getRepository(Course::class);
+            $course = $courseRepo->findOneBy([ 'id' => $lecture->getCourse() ]);
+            $lectures = $course->getLectures();
+        }
+        else {
+            $course = null;
+            $lectures = null;
+        }
 
 //        $joinerRepo = $this->getDoctrine()->getRepository(Joiner::class);
 //        $joiners = $joinerRepo->findBy([ 'fromType' => 'course', 'toType' => 'lecture', 'fromId' => $id ]);
@@ -162,10 +178,10 @@ die("KEK");
         return $this->render('lectures/show.html.twig', [
             'menu' => 'edu',
             'show_welcome' => $showWelcome,
-            'course' => $course, // ???
+            'course' => $course,
             'lecture' => $lecture,
             'lectures' => $lectures,
-            'tags' => $tags, // ???
+            'tags' => $tags, 
         ]);
     }
 

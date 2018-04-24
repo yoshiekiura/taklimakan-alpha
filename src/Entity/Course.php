@@ -241,10 +241,10 @@ class Course
 
 
     // There are common Categories between News, Analytics section and Courses?
-
-    /**
+/*
+    / * *
      * @ORM\ManyToOne(targetEntity="Category")
-     */
+     * /
     private $category;
     public function getCategory()
     {
@@ -254,7 +254,7 @@ class Course
     {
         $this->category = $category;
     }
-
+*/
 
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default": false})
