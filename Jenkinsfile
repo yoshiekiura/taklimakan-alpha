@@ -14,9 +14,11 @@ pipeline {
 
             echo("${commitId}")
             def command = 'git cat-file -t ${commitId}'
-            def aaa = command.execute()
-            echo("${aaa}")
-            def verifyCommit = command.execute().text
+            command.consumeProcessOutput(sout, serr)
+            command.waitForOrKill(1000)
+
+            echo("$out")
+            def verifyCommit = out
 
             assert verifyCommit != "commit" && verifyCommit != "" : "Commit ${commitId} not found"
           }
@@ -26,10 +28,10 @@ pipeline {
       stage('get github data') {
         steps {
           checkout([$class: 'GitSCM',
-                                                                                            branches: [[name: commitId ]],
-                                                                                              userRemoteConfigs: [[
-                                                                                                                credentialsId: 'deploy key for your repo', 
-                                                                                                                  url: 'https://github.com/usetech-llc/taklimakan-alpha']]])
+                                                                                                      branches: [[name: commitId ]],
+                                                                                                        userRemoteConfigs: [[
+                                                                                                                            credentialsId: 'deploy key for your repo', 
+                                                                                                                              url: 'https://github.com/usetech-llc/taklimakan-alpha']]])
             sh '''dir
 
 if [ -d taklimakan-alpha ]
