@@ -26,6 +26,8 @@ pipeline {
           sh '''dir
 git fetch
 git checkout $commitId
+echo "display git branch info to make sure that branch is switch to Commit"
+git branch
 
 if [ -d taklimakan-alpha ]
 then
