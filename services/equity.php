@@ -14,7 +14,7 @@ date_default_timezone_set("UTC"); // All data have to be stored in UTC time vs d
 $startDate = '2017-01-01';
 $fredApiBase = 'https://api.stlouisfed.org/fred/series/observations';
 $writeToDB = true;
-$listOfSymbols = ["SP500", "DJIA", "RU2000PR", "NASDAQ100", "NIKKEI225", "BAMLHYH0A0HYM2TRIV", "BAMLHE00EHYITRIV", "PALLFNFINDEXQ", "POILWTIUSDM", "POILBREUSDM"];
+$listOfSymbols = ["SP500", "DJIA", "RU2000PR", "NASDAQ100", "NIKKEI225", "BAMLHYH0A0HYM2TRIV", "BAMLHE00EHYITRIV", "PALLFNFINDEXQ", "POILWTIUSDM", "POILBREUSDM", "VIXCLS"];
 $db_conn_str = "mysql:host=localhost;dbname=crypto";
 $db_user = "root";
 $db_table = "equity_rate";
