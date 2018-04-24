@@ -17,19 +17,18 @@ pipeline {
             echo("commitExist= \"${commitExist}\"; commitId= \"${commitId}\"")
             assert commitExist != "commit" && commitId != "": "Branch with commit Id: ${commitId} not exist"
             echo ("Commit exist. Proceed Deployment.")
+
+            echo("${commitId}")
+            def fetchcmd = sh(returnStdout: true, script: 'git fetch')
+            command = "git checkout ${commitId}"
+            def checkoutcmd = sh(returnStdout: true, script: command)
+            echo("${checkoutcmd}")
           }
 
         }
       }
       stage('get github data') {
         steps {
-          script {
-            echo("${commitId}")
-            sh(returnStdout: false, script: 'git fetch')
-            def command = "git checkout ${commitId}"
-            sh(returnStdout: true, script: command)
-          }
-
           sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch
 
