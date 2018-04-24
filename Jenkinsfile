@@ -4,7 +4,7 @@ pipeline {
     stage('Ask for Branch Id') {
       steps {
         script {
-          def inputCommit
+          def commitId
           def userInput = input(
             id: 'userInput', message: 'Enter branch commit ID (Empty for latest)?',
             parameters: [
@@ -13,16 +13,21 @@ pipeline {
               name: 'CommitId'),
             ])
 
-            inputCommit= userInput.CommitId?:''
+            commitId= userInput.CommitId?:''
 
-            echo("${inputCommit}")
+            echo("${commitId}")
           }
 
         }
       }
       stage('get github data') {
         steps {
-          sh '''dir
+          checkout([$class: 'GitSCM',
+                                branches: [[name: commitId ]],
+                                  userRemoteConfigs: [[
+                                        credentialsId: 'deploy key for your repo', 
+                                          url: 'https://github.com/usetech-llc/taklimakan-alpha']]])
+            sh '''dir
 
 if [ -d taklimakan-alpha ]
 then
@@ -54,12 +59,12 @@ cd ..
 
 zip -r taklimakan-alpha.zip taklimakan-alpha
 '''
+          }
         }
-      }
-      stage('Archive') {
-        steps {
-          archiveArtifacts '*.zip'
+        stage('Archive') {
+          steps {
+            archiveArtifacts '*.zip'
+          }
         }
       }
     }
-  }
