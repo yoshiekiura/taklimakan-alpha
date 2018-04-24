@@ -251,6 +251,7 @@ $(function () {
                         setError($email, 'User with that email not found');
                         return;
                     }
+                    setSuccess($email);
                     $('#forgotPass').modal('hide');
                     $('#recover-pass').modal();
                 });
@@ -281,6 +282,7 @@ $(function () {
                     setError($code, 'Invalid code');
                     return;
                 }
+                setSuccess($code);
                 $('#recover-pass').modal('hide');
                 $('#change-pass').modal();
             });
