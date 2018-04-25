@@ -120,7 +120,7 @@ class SecurityController extends Controller
     /**
      * @Route("/login", name="login")
      */
-    public function login(Request $request)
+    public function loginAction(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
             throw $this->createAccessDeniedException();
