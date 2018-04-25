@@ -6,6 +6,7 @@
         "ext-iconv": "*",
         "alterphp/easyadmin-extension-bundle": "^1.2",
         "debril/rss-atom-bundle": "^4.1",
+        "deployer/deployer": "^6.2",
         "doctrine/doctrine-bundle": "^1.8",
         "easycorp/easyadmin-bundle": "^1.17",
         "sensio/framework-extra-bundle": "^5.1",
