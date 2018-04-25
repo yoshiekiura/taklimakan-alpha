@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use function PHPSTORM_META\type;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -17,6 +18,7 @@ class ProfileController extends Controller
     {
         return $this->render('profile/view.html.twig', [
             'hide_footer' => true,
+            'last_news' => $this->getDoctrine()->getRepository('App:News')->getLastNews(3),
         ]);
     }
 }
