@@ -114,7 +114,7 @@ $(function () {
         });
 
         function checkFirstName() {
-            if ($firstName.val().length === 0) {
+            if ($firstName.val().trim().length === 0) {
                 setError($firstName, 'Required');
                 return false;
             }
@@ -123,7 +123,7 @@ $(function () {
         }
 
         function checkLastName() {
-            if ($lastName.val().length === 0) {
+            if ($lastName.val().trim().length === 0) {
                 setError($lastName, 'Required');
                 return false;
             }
@@ -132,7 +132,7 @@ $(function () {
         }
 
         function checkToken() {
-            if ($token.val().length !== 67 || !(/^0x[a-zA-Z0-9]{65}$/.test($token.val()))) {
+            if (!(/^[a-zA-Z0-9]{40,}$/.test($token.val().trim()))) {
                 setError($token, 'Invalid wallet');
                 return false;
             }
