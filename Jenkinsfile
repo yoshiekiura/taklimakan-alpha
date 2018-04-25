@@ -2,6 +2,9 @@ pipeline {
   agent any
   stages {
     stage('Ask for Branch Id') {
+      when {
+        branch 'release/**'
+      }
       steps {
         script {
           def commitId = input(
