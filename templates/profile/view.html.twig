@@ -16,28 +16,25 @@
                 </div>
                 <div class="col-xl-9 col-lg-9 col-md-4 order-md-4 col-sm-4 order-sm-4 col-5 order-5 text-right hidden-xs">
                     <div class="investor-pic">
-                        <h2>Evgeniy Konstantinopolskiy</h2>
+                        <h2>{{ app.user.firstName }} {{ app.user.lastName }}</h2>
                         <h5>Investor profile</h5>
                     </div>
                 </div>
             </div>
         </div>
-
     </header>
-
     <div class="left-side">
         <div class="investor-pic d-xl-none d-lg-none d-md-none d-sm-none">
-            <h2>Evgeniy Konstantinopolskiy</h2>
+            <h2>{{ app.user.firstName }} {{ app.user.lastName }}</h2>
             <h5>Investor profile</h5>
         </div>
         <ul class="left-side-menu">
-            <li><a href="#">News</a></li>
-            <li><a href="#">Education</a></li>
-            <li><a href="#">Analytics</a></li>
+            <li><a href="#collapseOne">News</a></li>
+            <li><a href="#collapseThree">Education</a></li>
+            <li><a href="#collapseTwo">Analytics</a></li>
             <li><a href="#">Manage my profile</a></li>
         </ul>
     </div>
-
     <section class="main-content">
         <div class="container-fluid">
             <!--
@@ -66,14 +63,11 @@
                                         </h5>
                                     </div>
                                     <div class="col-xl-5 col-lg-5 col-md-5 col-sm-2 col-2 text-right">
-                                        <a href="#" class="pull-right"><i class="fa fa-angle-down pull-right" aria-hidden="true"></i></a>
+                                        <a href="#" class="pull-right arrow-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="fa fa-angle-down pull-right" aria-hidden="true"></i></a>
                                         <!--                                 <a href="#" class="pull-right"><h5 class="mb-0"><i class="fa fa-plus"></i> Manage my subscriptions</h5></a>-->
                                     </div>
-
                                 </div>
-
                             </div>
-
                             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                                 <div class="card-body">
                                     <div class="row">
@@ -84,24 +78,23 @@
                                                         {% if 'http://' in news.image or 'https://' in news.image %}
                                                             <img src="{{news.image}}" alt="">
                                                         {% else %}
-                                                            <img src="/images/news/{{el.image}}" alt="">
+                                                            <img src="/images/news/{{news.image}}" alt="">
                                                         {% endif %}
                                                         <a class="news-date" href="#">{{ news.date|date("F jS \\a\\t g:ia") }}</a>
                                                         <a class="news-source" href="{{ news.source }}">Source: <span>{{ news.source|source }}</span></a>
                                                     </div>
                                                     <div class="news-body">
-                                                        <a href="/news/{{el.id}}/{{el.title|translit}}">
-                                                            <h3>{{ el.title|truncate(45, true) }}</h3>
-                                                        </a>
-                                                        <p>{{ el.lead|truncate(150,true) }}</p>
+                                                        <a href="/news/{{news.id}}/{{news.title|translit}}"><h3>{{ news.title|truncate(45,true) }}</h3></a>
+                                                        <p>{{ news.lead|truncate(150,true) }}</p>
                                                         {#<ul class="list-inline news-likes">
                                                             <li class="list-inline-item"><a href="#"><img src="/john/images/i/bubble.svg" alt=""> 20 comments</a></li>
                                                             <li class="list-inline-item"><a href="#"><img src="/john/images/i/like.svg" alt=""> 10 likes</a></li>
                                                         </ul>#}
                                                         <ul class="list-inline news-tags">
                                                             <li class="list-inline-item">Tags:</li>
-                                                            {% for tag in el.tags %}
-                                                                <li class="list-inline-item"><a href="/news?tags={{tag}}">{{tag}}</a></li>
+                                                            <li class="list-inline-item">Tags:</li>
+                                                            {% for tag in news.tags %}
+                                                                <li class="list-inline-item"><a href="?tags={{tag}}">{{tag}}</a></li>
                                                             {% endfor %}
                                                         </ul>
                                                     </div>
@@ -125,7 +118,7 @@
                                         </h5>
                                     </div>
                                     <div class="col-xl-5 col-lg-5 col-md-5 col-sm-2 col-2 text-right">
-                                        <a href="#" class="pull-right"><i class="fa fa-angle-down pull-right" aria-hidden="true"></i></a>
+                                        <a href="#" class="pull-right arrow-link" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree"><i class="fa fa-angle-down pull-right" aria-hidden="true"></i></a>
                                         <!--                                 <a href="#" class="pull-right"><h5 class="mb-0"><i class="fa fa-plus"></i> Add material</h5></a>-->
                                     </div>
                                 </div>
@@ -151,7 +144,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="row mb-15">
                                                     <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-7">
                                                         <div class="cource-category">
@@ -169,11 +161,8 @@
                                                         <a href="#" class="btn btn-buy-inv btn-block br-30">Continue</a>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
-
-
                                         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="cource-box">
                                                 <div class="row mb-15">
@@ -192,7 +181,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="row mb-15">
                                                     <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-7">
                                                         <div class="cource-category">
@@ -210,10 +198,8 @@
                                                         <a href="#" class="btn btn-buy-inv btn-block btn-start br-30">Start</a>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
-
                                         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="cource-box">
                                                 <div class="row mb-15">
@@ -232,7 +218,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="row mb-15">
                                                     <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-7">
                                                         <div class="cource-category">
@@ -250,10 +235,8 @@
                                                         <a href="#" class="btn btn-buy-inv btn-block btn-grey br-30">Completed</a>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
-
                                         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="cource-box dashed">
                                                 <a href="#">
@@ -262,22 +245,11 @@
                                                 </a>
                                             </div>
                                         </div>
-
-
-
-
-
-
-
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-
-
                     <div id="accordion">
                         <div class="card">
                             <div class="card-header" id="headingTwo">
@@ -290,19 +262,14 @@
                                         </h5>
                                     </div>
                                     <div class="col-xl-5 col-lg-5 col-md-5 col-sm-2 col-2 text-right">
-                                        <a href="#" class="pull-right"><i class="fa fa-angle-down pull-right" aria-hidden="true"></i></a>
+                                        <a href="#" class="pull-right arrow-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"><i class="fa fa-angle-down pull-right" aria-hidden="true"></i></a>
                                         <!--                                 <a href="#" class="pull-right"><h5 class="mb-0"><i class="fa fa-plus"></i> Add material</h5></a>-->
                                     </div>
-
-
                                 </div>
-
                             </div>
-
                             <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
                                 <div class="card-body">
                                     <div class="row">
-
                                         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="analytics-card">
                                                 <div class="row mb-15">
@@ -475,12 +442,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
-
-
-                                    </div>
-                                    <div class="row">
-
                                         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="analytics-card">
                                                 <div class="row mb-15">
@@ -671,15 +632,14 @@
             $(".btn-menu").click(function(){
                 $(".left-side").toggleClass("active");
                 $(".main-content").toggleClass("active");
-                $("body").toggleClass("over");
                 return false;
             });
-        });
-
-        $(document).ready(function() {
-            if(outerWidth < 992) {
-                $('.collapse.show').removeClass('show');
-            }
+//        if(outerWidth < 992) {
+//            $('.collapse.show').removeClass('show');
+//        }
+            $(document).click(function(event) {
+                $('.left-side.active').removeClass('active');
+            });
         });
     </script>
 {% endblock %}
