@@ -11,18 +11,23 @@ pipeline {
               description: 'Branch commit ID',
               name: 'CommitId'),
             ])
+            if (commitId != "") {
+              def command = "git cat-file -t ${commitId}"
+              def commitExist=sh(returnStdout: true, script: command)
+              echo("commitExist= \"${commitExist}\"; commitId= \"${commitId}\"")
+              assert commitExist != "commit" && commitId != "": "Branch with commit Id: ${commitId} not exist"
+              echo ("Commit exist. Proceed Deployment.")
 
-            def command = "git cat-file -t ${commitId}"
-            def commitExist=sh(returnStdout: true, script: command)
-            echo("commitExist= \"${commitExist}\"; commitId= \"${commitId}\"")
-            assert commitExist != "commit" && commitId != "": "Branch with commit Id: ${commitId} not exist"
-            echo ("Commit exist. Proceed Deployment.")
-
-            echo("${commitId}")
-            def fetchcmd = sh(returnStdout: true, script: 'git fetch')
-            command = "git checkout ${commitId}"
-            def checkoutcmd = sh(returnStdout: true, script: command)
-            echo("${checkoutcmd}")
+              echo("${commitId}")
+              def fetchcmd = sh(returnStdout: true, script: 'git fetch')
+              command = "git checkout ${commitId}"
+              def checkoutcmd = sh(returnStdout: true, script: command)
+              echo("${checkoutcmd}")
+            }
+            else
+            {
+              echo("Use HEAD revision")
+            }
           }
 
         }
