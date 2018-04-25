@@ -132,7 +132,7 @@ $(function () {
         }
 
         function checkToken() {
-            if (!(/^0x[a-zA-Z0-9]{40,}$/.test($token.val().trim()))) {
+            if (!(/^[a-zA-Z0-9]{40,}$/.test($token.val().trim()))) {
                 setError($token, 'Invalid wallet');
                 return false;
             }

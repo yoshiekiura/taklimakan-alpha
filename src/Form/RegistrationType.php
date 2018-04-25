@@ -47,7 +47,7 @@ class RegistrationType extends AbstractType
                         'max' => 67,
                     ]),
                     new Assert\Regex([
-                        'pattern' => '/^0x[a-zA-Z0-9]{65}$/',
+                        'pattern' => '/^[a-zA-Z0-9]{40,}$/',
                     ]),
                 ],
             ])
