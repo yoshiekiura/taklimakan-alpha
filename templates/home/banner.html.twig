@@ -16,7 +16,7 @@
                             <li class="nav-item"><a class="nav-link" href="/charts/all">Analytics</a></li>
                             <li class="nav-item"><a class="nav-link" href="/edu">Education</a></li>
                             {% if app.user %}
-                                <li class="nav-item"><a class="nav-link" href="{{ path('app_profile_index') }}"><img src="images/i/userpic.svg" alt=""> Profile</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{ path('app_profile_view') }}"><img src="images/i/userpic.svg" alt=""> Profile</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{{ path('logout') }}"> Log Out</a></li>
                             {% else %}
                                 <li class="nav-item"><a class="nav-link" href="#" data-toggle="modal" data-target="#LogIn"><img src="images/i/userpic.svg" alt=""> Log In</a></li>
