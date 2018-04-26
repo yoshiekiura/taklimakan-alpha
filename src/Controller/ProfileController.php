@@ -18,7 +18,10 @@ class ProfileController extends Controller
     {
         return $this->render('profile/view.html.twig', [
             'hide_footer' => true,
-            'last_news' => $this->getDoctrine()->getRepository('App:News')->getLastNews(3),
+            'news_list' => $this->getDoctrine()->getRepository('App:News')->getLastNews(3),
+            'courses' => $this->getDoctrine()->getRepository('App:Course')->getCourses([
+                'limit' => 4,
+            ]),
         ]);
     }
 }
