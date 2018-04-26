@@ -301,9 +301,16 @@ class SecurityController extends Controller
             ]);
         }
 
-        $user->setPassword(
-            $this->get('security.password_encoder')->encodePassword($user, $password)
-        );
+        $encoder = $this->get('security.password_encoder');
+
+        if ($encoder->isPasswordValid($user, $password)) {
+            return $this->json([
+                'success' => false,
+                'equal_previous_password' => true,
+            ]);
+        }
+
+        $user->setPassword($encoder->encodePassword($user, $password));
 
         $em = $doctrine->getManager();
         $em->persist($user);
