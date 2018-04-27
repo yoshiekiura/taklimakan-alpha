@@ -17,7 +17,7 @@
                                     {% if course.type == 'course' %}
                                         <a href="/courses/{{course.id}}/{{course.title|translit}}">
                                     {% else %}
-                                        <a href="/lectures/{{course.id}}/{{course.title|translit}}">                     
+                                        <a href="/lectures/{{course.id}}/{{course.title|translit}}">
                                     {% endif %}
                                     <h3>{{course.title}}</h3>
                                 </a>
@@ -26,7 +26,7 @@
                                 {% if course.type == 'course' %}
                                     <span class="category-course">Course{# {{course.category.title}} #}</span>
                                 {% else %}
-                                    <span class="category-course">Lecture</span>
+                                    <span class="category-course">Article</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -47,22 +47,34 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
                                 <h3 class="main-price" style="margin-top: 12px;">
                                     {{course.price|price}}
                                 </h3>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-6 col-md-6 col-sm-6 col-6 text-right">
-<!--                                    <a href="#" class="btn btn-buy btn-buy-sm"><img src="images/i/cart.svg" alt=""> Buy</a>-->
+                            <div class="col-xl-8 col-lg-8 col-8 col-md-8 col-sm-8 col-8 text-right"  style="padding-top: 28px; padding-right: 28px;">
+                                <!-- <a href="#" class="btn btn-buy btn-buy-sm"><img src="images/i/cart.svg" alt=""> Buy</a> -->
+
+                                <ul class="list-inline news-tags">                                                            
+
+                                {% for tag in course.tags|split(',') %}
+                                    <li class="list-inline-item"><a href="/news?tag={{tag|trim}}">{{tag|trim}}</a></li>
+                                {% endfor %}
+
+                                </ul>
                             </div>
                         </div>
+
+{#
                         <div class="row">
                             <div class="col-xl-12 col-lg-12 col-12 col-md-12 col-sm-12 col-12 text-right">
                                 {% for tag in course.tags|split(',') %}
                                     <a href="/news?tag={{tag|trim}}">{{tag|trim}}</a>
                                 {% endfor %}
+                            </div>
                         </div>
-                        </div>
+#}
+
                     </div>
                 </div>
             </div>

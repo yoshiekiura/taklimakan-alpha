@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\News;
+use App\Entity\Course;
+use App\Entity\Lecture;
 use App\Entity\Likes;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -53,6 +55,52 @@ class IndexController extends Controller
 
 
 
+
+
+
+    //
+/*
+    $tags = $request->query->get('tags') ? explode(',', $request->query->get('tags')) : [];
+    if ($tags) $filter['tags'] = $tags;
+
+    $page = $request->query->get('page') ? intval($request->query->get('page')) : 1;
+    if ($page) $filter['page'] = $page - 1;
+
+    $limit = $request->query->get('limit') ? intval($request->query->get('limit')) : 6;
+    if ($limit) $filter['limit'] = $limit;
+
+    $level = $request->query->get('level') ? intval($request->query->get('level')) : null;
+    if ($level) $filter['level'] = $level;
+*/
+
+    // NB! We have to show total of 3 courses and lectures
+
+    $filter['limit'] = 3;
+    $courseRepo = $this->getDoctrine()->getRepository(Course::class);
+    $courses = $courseRepo->getCourses($filter);
+    foreach ($courses as &$course)
+        $course['type'] = 'course';
+
+    $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
+    $filter['course'] = null;
+    $standaloneLectures = $lectureRepo->getLectures($filter);
+
+    foreach ($standaloneLectures as $lecture) {
+    //    $lecture['type'] = 'lecture';
+        $courses[] = $lecture;
+    }
+
+//    $tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
+//    $allTags = $tagsRepo->findAll();
+
+    $courses = array_slice($courses, 0, $filter['limit']);
+
+
+
+
+
+
+
 // just setup a fresh $task object (remove the dummy data)
 //    $task = new Task();
 
@@ -87,6 +135,7 @@ class IndexController extends Controller
             'menu' => 'home',
             'show_welcome' => $showWelcome,
             'news' => $news,
+            'courses' => $courses,
             'form' => $form->createView(),
         ]);
 
