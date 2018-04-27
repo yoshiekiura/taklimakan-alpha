@@ -146,9 +146,10 @@ zip -r taklimakan-alpha.zip taklimakan-alpha
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 dir
+echo "Before: $DEPLOY_DEV_HOST"
 if [ $env.BRANCH_NAME == \'master\' ]
 then
-  DEPLOY_DEV_HOST="192.168.100.125"
+  DEPLOY_DEV_HOST="192.168.100.127"
   DEPLOY_DEV_PORT="8022"
 else
   if [ $env.BRANCH_NAME == \'develop\' ]
@@ -161,6 +162,7 @@ else
     DEPLOY_DEV_PORT="8022"
   fi
 fi
+echo "After: $DEPLOY_DEV_HOST"
 
 echo "Cleanup previous deploy (if any)"
 ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpdeploy
