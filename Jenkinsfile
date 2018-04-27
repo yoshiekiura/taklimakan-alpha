@@ -158,7 +158,7 @@ exit 0'''
       }
     }
     environment {
-      DEPLOY_DEV_HOST = '192.168.100.125'
+      DEPLOY_DEV_HOST = '192.168.100.126'
       DEPLOY_DEV_PORT = '8022'
     }
   }
