@@ -20,6 +20,12 @@
             "ref": "2c23ed747eda9f4c13f5e7eb55fffa1091fdd505"
         }
     },
+    "deployer/deployer": {
+        "version": "v6.2.0"
+    },
+    "deployer/phar-update": {
+        "version": "v2.1.0"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -86,6 +92,9 @@
             "ref": "66070ea553247b0cd5275e21d0fe5399a25f40be"
         }
     },
+    "egulias/email-validator": {
+        "version": "2.1.4"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.3.2"
     },
@@ -115,6 +124,9 @@
     },
     "pagerfanta/pagerfanta": {
         "version": "v1.0.5"
+    },
+    "pimple/pimple": {
+        "version": "v3.2.3"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -148,6 +160,9 @@
             "version": "4.0",
             "ref": "e65a105bf4cd5b1b79012ba029954927f05922e8"
         }
+    },
+    "swiftmailer/swiftmailer": {
+        "version": "v6.0.2"
     },
     "symfony/apache-pack": {
         "version": "1.0",
@@ -313,6 +328,15 @@
     },
     "symfony/stopwatch": {
         "version": "v4.0.6"
+    },
+    "symfony/swiftmailer-bundle": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "3db029c03e452b4a23f7fc45cec7c922c2247eb8"
+        }
     },
     "symfony/templating": {
         "version": "v4.0.8"

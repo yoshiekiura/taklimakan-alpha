@@ -5,6 +5,7 @@ easy_admin:
     design:
 
         form_theme: 'vertical'
+        brand_color: '#6f42c1' # '#1CAF9A' '#1D2939' #205081
 
         templates:
             # Used to decorate the main templates (list, edit, new and show)
@@ -30,7 +31,7 @@ easy_admin:
             - { entity: 'Comment', label: 'Comments', icon: 'comments' }
 
             - { label: 'Security' }
-            - { label: 'Users', url: '#', rel: 'index', icon: 'users' }
+            - { entity: 'Users', label: 'Users', icon: 'users' }
 
             - { label: 'Etc' }
             - { label: 'Home', url: 'http://taklimakan.io', rel: 'index' }
@@ -68,7 +69,8 @@ easy_admin:
             class: App\Entity\News
             list:
                 # fields: ['id', 'active', { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'lead', 'provider', 'tags']
-                fields: [ 'id', 'active', { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', format: 'Y-m-d' }, 'title', 'provider', 'tags']
+                # fields: [ { property: 'id', label: '#' }, { property: 'source', label: 'url', template: '/easy-admin.source.html.twig'}, { property: 'active', type: 'toggle' }, { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', label: 'Date', format: 'Y-m-d H:i' }, 'title', 'provider', 'tags']
+                fields: [ { property: 'id', label: '#' }, { property: 'active', type: 'toggle' }, { property: 'image', type: 'image', base_path: '/images/news' }, { property: 'date', label: 'Date', format: 'Y-m-d / H:i' }, 'title', 'provider', 'tags']
             form:
                 fields:
                 - { type: 'tab' , label: 'Summary', icon: 'newspaper-o' }
@@ -197,6 +199,18 @@ easy_admin:
             class: App\Entity\Lecture
             list:
                 fields: ['id', 'title' ]
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Users:
+
+            class: App\Entity\User
+            list:
+                fields: ['id', 'email']
+            form:
+                fields:
+                    - { property: 'firstName', label: 'First Name' }
+                    - { property: 'lastName', label: 'Last Name' }
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
