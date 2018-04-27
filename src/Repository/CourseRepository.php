@@ -24,6 +24,8 @@ class CourseRepository extends ServiceEntityRepository
 
         $filterTags = isset($filter['tags']) ? $filter['tags'] : [];
         $filterLimit = isset($filter['limit']) ? intval($filter['limit']) : null;
+        $filterLevel = isset($filter['level']) ? intval($filter['level']) : null;
+        $filterPage = isset($filter['page']) ? intval($filter['page']) : null;
 
         // Get Courses by Filter including Tags and count of Likes & Comments
 
@@ -42,10 +44,18 @@ class CourseRepository extends ServiceEntityRepository
                 AND active = true
                 ORDER BY date DESC';
         } else */
-            $sql .= ' WHERE active = true
-            ORDER BY date DESC';
+        $sql .= ' WHERE active = true';
 
-        if ($filterLimit)
+        if ($filterLevel)
+            $sql .= " AND level = $filterLevel";
+
+        $sql .= ' ORDER BY date DESC';
+
+        if ($filterPage && $filterLimit) {
+            $offset = $filterPage * $filterLimit;
+            $sql .= " LIMIT $filterLimit OFFSET $offset";
+        }
+        else if ($filterLimit)
             $sql .= " LIMIT $filterLimit";
 
         $query = $conn->prepare($sql);

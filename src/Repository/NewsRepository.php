@@ -59,6 +59,7 @@ class NewsRepository extends ServiceEntityRepository
 
         $filterTags = isset($filter['tags']) ? $filter['tags'] : [];
         $filterLimit = isset($filter['limit']) ? intval($filter['limit']) : null;
+        $filterPage = isset($filter['page']) ? intval($filter['page']) : null;
 
         // Get News by Filter including Tags and count of Likes & Comments
 
@@ -70,22 +71,6 @@ class NewsRepository extends ServiceEntityRepository
             FROM news n';
 
         if (count($filterTags)) {
-/*
-            $sql .=
-                ' JOIN news_tags nt on nt.news_id = n.id
-                JOIN tags t on t.id = nt.tags_id
-                WHERE t.tag in (:tags)
-                GROUP BY n.id';
-*/
-/*
-            $sql .=
-                ' JOIN news_tags nt on nt.news_id = n.id
-                JOIN tags t on t.id = nt.tags_id
-                WHERE t.tag in (:tags)
-                AND active = true
-                ORDER BY date DESC';
-*/
-//                ' WHERE tags LIKE "%' . $filterTags[0] . '%"
             $sql .=
                 ' WHERE tags LIKE :tags
                 AND active = true
@@ -94,7 +79,11 @@ class NewsRepository extends ServiceEntityRepository
             $sql .= ' WHERE active = true
             ORDER BY date DESC';
 
-        if ($filterLimit)
+        if ($filterPage && $filterLimit) {
+            $offset = $filterPage * $filterLimit;
+            $sql .= " LIMIT $filterLimit OFFSET $offset";
+        }
+        else if ($filterLimit)
             $sql .= " LIMIT $filterLimit";
 
         $query = $conn->prepare($sql);
@@ -102,7 +91,7 @@ class NewsRepository extends ServiceEntityRepository
         // FIXME If there are a few tags we have to use looping here instead of implode
         if (count($filterTags))
             //$params = [ 'tags' => implode(', ', $filterTags) ];
-            $params = [ 'tags' => '%'.$filterTags[0].'%'];
+            $params = [ 'tags' => '%'.$filterTags[0].'%' ];
         $query->execute($params);
         $tagsCollection = new ArrayCollection(); // $em, Tags::class, []
         $rows = $query->fetchAll();
@@ -129,8 +118,6 @@ class NewsRepository extends ServiceEntityRepository
 
         return $rows;
     }
-
-
 
 
 //    /**

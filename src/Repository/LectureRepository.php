@@ -19,90 +19,38 @@ class LectureRepository extends ServiceEntityRepository
 
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
-/*
+
         $filterTags = isset($filter['tags']) ? $filter['tags'] : [];
         $filterLimit = isset($filter['limit']) ? intval($filter['limit']) : null;
+        $filterLevel = isset($filter['level']) ? intval($filter['level']) : null;
+        $filterPage = isset($filter['page']) ? intval($filter['page']) : null;
+        $filterCourse = isset($filter['course']) ? intval($filter['course']) : null;
 
-        // Get News by Filter including Tags and count of Likes & Comments
+        $sql = 'SELECT * FROM lectures l WHERE active = true';
 
-        $sql =
-            'SELECT *,
-            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = n.id) AS likes_count,
-            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = n.id) AS comments_count,
-            n.id as id
-            FROM news n';
+        if ($filterLevel)
+            $sql .= " AND level = $filterLevel";
 
-        if (count($filterTags)) {
-            $sql .=
-                ' JOIN news_tags nt on nt.news_id = n.id
-                JOIN tags t on t.id = nt.tags_id
-                WHERE t.tag in (:tags)
-                AND active = true
-                ORDER BY date DESC';
-        } else
-            $sql .= ' WHERE active = true
-            ORDER BY date DESC';
+        if ($filterCourse)
+            $sql .= " AND course_id = $filterCourse";
+        else
+            $sql .= " AND course_id IS NULL";
 
-        if ($filterLimit)
+        $sql .= ' ORDER BY date DESC';
+
+        if ($filterPage && $filterLimit) {
+            $offset = $filterPage * $filterLimit;
+            $sql .= " LIMIT $filterLimit OFFSET $offset";
+        }
+        else if ($filterLimit)
             $sql .= " LIMIT $filterLimit";
 
         $query = $conn->prepare($sql);
 
-        $params = [];
-
-        if (count($filterTags))
-            $params = [ 'tags' => implode(', ', $filterTags) ];
-
-        $query->execute($params);
-
-
-        $tagsCollection = new ArrayCollection();
-
+        $query->execute();
         $rows = $query->fetchAll();
 
-        $sql =
-            'SELECT tag
-            FROM tags t
-            INNER JOIN news_tags nt on nt.tags_id = t.id
-            WHERE nt.news_id = :news_id';
-
-        foreach ($rows as &$row) {
-
-            $query = $conn->prepare($sql);
-            $query->execute([
-                'news_id' => $row['id'],
-            ]);
-            $tags = $query->fetchAll();
-
-            $row['tags'] = $tags;
-        }
-
         return $rows;
-*/
     }
-
-/*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('n.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    public function findOneBySomeField($value): ?News
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-*/
 
 }

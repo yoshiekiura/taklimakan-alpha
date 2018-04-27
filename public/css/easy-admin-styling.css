@@ -64,7 +64,7 @@ p, a, .main-header .logo { font-family: 'Alegreya Sans SC', Helvetica, sans-seri
 .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:active:hover { background-color: /*#205081*/ /*#564fd9*/ /*#17A2B8*/ #6f42c1 !important; border-color: transparent; color: #FFFFFF; }
 
 .sidebar-menu > li:hover > a, .sidebar-menu .treeview-menu > li:hover > a, .sidebar-menu > li.active > a, .sidebar-menu .treeview-menu > li.active > a, .sidebar-collapse .sidebar-menu > li.active.submenu-active > a, .sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li.active > a 
-{ color: #FFFFFF; background: /*#333*/ /*#17A2B8*/ /* #DC3545 */ #6f42c1; border-left-color: /*#bbb*/ #fff;  }
+{ color: #FFFFFF; background: #6f42c1; border-left-color: #fff; /* background-image: linear-gradient(to left, #1CAF9A, #6f42c1); */ }
 
 .nav-tabs-custom>.nav-tabs>li.active { border-top-color: /*#3c8dbc*/ #6f42c1; }
 
