@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 import random
 import math
 from config import *
+import DataPoint
 
 
 def dpcov(a, b, window):
