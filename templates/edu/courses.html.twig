@@ -8,6 +8,8 @@
 
     {% include 'edu/breadcrumbs.html.twig' %}
 
+    {# Hide Courses Filter
+
     <div class="container hidden-lg hidden-xl">
         <div class="row">
             <div class="col-6">
@@ -28,10 +30,13 @@
         </div>
     </div>
 
+#}
 
-    <div class="collapse showFilter" id="filterNews">
+
+    {# <div class="collapse showFilter" id="filterNews"> #}
     {# <section class="news-filter all-cources"> #}
-    <section class="news-filter">
+
+    {# <section class="news-filter"> #}
         <div class="container">
 
 {# FIXME! Hide second header and search field
@@ -62,7 +67,11 @@
             </div>
 #}
 
+
+
         {% include 'courses/filters.html.twig' %}
+
+        </div>
 
 <!-- Courses Container -->
 
