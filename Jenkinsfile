@@ -146,45 +146,45 @@ zip -r taklimakan-alpha.zip taklimakan-alpha
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 dir
-echo "Branch Name $env.BRANCH_NAME"
-if [ $env.BRANCH_NAME == \'master\' ]
+echo "Branch Name: $BRANCH_NAME"
+if [ "$BRANCH_NAME" == "master" ]
 then
-  DEPLOY_DEV_HOST="192.168.100.127"
-  DEPLOY_DEV_PORT="8022"
+  DEPLOY_HOST="192.168.100.127"
+  DEPLOY_PORT="8022"
 else
-  if [ $env.BRANCH_NAME == \'develop\' ]
+  if [ "$BRANCH_NAME" == "develop" ]
   then
-    DEPLOY_DEV_HOST="192.168.100.125"
-    DEPLOY_DEV_PORT="8022"
+    DEPLOY_HOST="192.168.100.125"
+    DEPLOY_PORT="8022"
   else
     #release branch
-    DEPLOY_DEV_HOST="192.168.100.126"
-    DEPLOY_DEV_PORT="8022"
+    DEPLOY_HOST="192.168.100.126"
+    DEPLOY_PORT="8022"
   fi
 fi
-echo "Deploy Host: $DEPLOY_DEV_HOST:$DEPLOY_DEV_PORT"
+echo "Deploy Host: $DEPLOY_HOST:$DEPLOY_PORT"
 
 echo "Cleanup previous deploy (if any)"
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpdeploy
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -rf /home/tkln/tmpwww
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT rm -rf /home/tkln/tmpdeploy
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT rm -rf /home/tkln/tmpwww
 
 echo "Upload file to host"
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mkdir /home/tkln/tmpdeploy
-scp -P $DEPLOY_DEV_PORT taklimakan-alpha.zip tkln@$DEPLOY_DEV_HOST:/home/tkln/tmpdeploy/taklimakan-alpha.zip
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT mkdir /home/tkln/tmpdeploy
+scp -P $DEPLOY_PORT taklimakan-alpha.zip tkln@$DEPLOY_HOST:/home/tkln/tmpdeploy/taklimakan-alpha.zip
 
 echo "Unzip file into temp folder"
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mkdir /home/tkln/tmpwww
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT unzip /home/tkln/tmpdeploy/taklimakan-alpha.zip -d /home/tkln/tmpwww
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT mkdir /home/tkln/tmpwww
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT unzip /home/tkln/tmpdeploy/taklimakan-alpha.zip -d /home/tkln/tmpwww
 
 echo "Remove target folder"
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT rm -fr /var/www/
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT rm -fr /var/www/
 
 echo "Move unzipped files into target"
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mv /home/tkln/tmpwww/taklimakan-alpha/* /var/www/
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT mv /home/tkln/tmpwww/taklimakan-alpha/.env /var/www/.env
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT mv /home/tkln/tmpwww/taklimakan-alpha/* /var/www/
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT mv /home/tkln/tmpwww/taklimakan-alpha/.env /var/www/.env
 
 echo "install composer in /var/www folder"
-ssh tkln@$DEPLOY_DEV_HOST -p $DEPLOY_DEV_PORT \' cd /var/www/; composer install\'
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \' cd /var/www/; composer install\'
 
 #suppress error created by composer install
 exit 0'''
