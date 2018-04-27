@@ -93,18 +93,10 @@ echo "# https://symfony.com/doc/current/best_practices/configuration.html#infras
 echo " " >> tmpenv
 echo "###> symfony/framework-bundle ###" >> tmpenv
 echo "APP_ENV=dev" >> tmpenv
-echo "#APP_ENV=prod" >> tmpenv
 echo "APP_SECRET=e3d9bc1b4ad39a7c6e025ee8e7d6f1d5" >> tmpenv
-echo "#TRUSTED_PROXIES=127.0.0.1,127.0.0.2" >> tmpenv
-echo "#TRUSTED_HOSTS=localhost,example.com" >> tmpenv
-echo "###< symfony/framework-bundle ###" >> tmpenv
 echo " " >> tmpenv
-echo "###> doctrine/doctrine-bundle ###" >> tmpenv
-echo "# Format described at http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#connecting-using-a-url" >> tmpenv
-echo "# For an SQLite database, use: \'sqlite:///%kernel.project_dir%/var/data.db\'" >> tmpenv
-echo "# Configure your db driver and server_version in config/packages/doctrine.yaml" >> tmpenv
 echo "$JENKINS_PROPERTY" >> tmpenv
-echo "###< doctrine/doctrine-bundle ###" >> tmpenv
+echo "MAILER_URL=smtp://localhost:25" >> tmpenv
 echo " " >> tmpenv
 
 mv tmpenv .env'''
