@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="142px" height="142px" viewBox="0 0 142 142" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.1 (51147) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 4</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Color" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard-3" transform="translate(-325.000000, -580.000000)">
+            <g id="Group-4" transform="translate(326.000000, 581.000000)">
+                <circle id="Oval-5" stroke="#FFFFFF" stroke-width="2" cx="70" cy="70" r="70"></circle>
+                <g id="Group-2" transform="translate(40.000000, 40.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <path d="M6.77689309,54.2151447 L6.77689309,0 L0,0 L0,57.6035913 C0,59.4774022 1.51802405,60.9920378 3.38844655,60.9920378 L60.9920378,60.9920378 L60.9920378,54.2151447 L6.77689309,54.2151447 Z" id="Shape"></path>
+                    <path d="M27.1075724,31.9022242 L34.8772803,39.6719322 C36.2021629,40.9968148 38.3436611,40.9968148 39.6685437,39.6719322 L59.999223,19.3412529 L55.2079596,14.5499895 L37.272912,32.4816486 L29.5032041,24.7119407 C28.1783215,23.3904465 26.0368233,23.3904465 24.7119407,24.7119407 L11.1581545,38.2657269 L15.9494179,43.0569903 L27.1075724,31.9022242 Z" id="Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
