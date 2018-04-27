@@ -25,27 +25,6 @@ class NewsRepository extends ServiceEntityRepository
         parent::__construct($registry, News::class);
     }
 
-/*
-    public function getNews($limit = 0)
-    {
-        // FIXME We have to have more advanced filter here (limits, ranges, categories, etc)
-        // $sql = "SELECT name FROM user WHERE favorite_color = :color";
-        //  ORDER BY date DESC LIMIT
-
-        $sql =
-            'SELECT *,
-            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = news.id) AS likes_count,
-            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = news.id) AS comments
-            FROM news';
-//echo $sql; die();
-        // $params['color'] = blue;
-        $query = $this->getEntityManager()->getConnection()->prepare($sql);
-        // $query->execute($params);
-        $query->execute();
-
-        return $query->fetchAll();
-    }
-*/
     /**
      * @return News[] Returns an array of News objects NB! WITH LIKES
      */
@@ -119,10 +98,6 @@ class NewsRepository extends ServiceEntityRepository
         return $rows;
     }
 
-
-//    /**
-//     * @return News[] Returns an array of News objects
-//     */
     /*
     public function findByExampleField($value)
     {
@@ -137,15 +112,4 @@ class NewsRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?News
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -308,7 +308,10 @@ $(function () {
                     password_first: $password.val(),
                     password_second: $repeatedPassword.val()
                 }, function (response) {
-                    if (response.success) {
+                    if (!response.success && response.equal_previous_password) {
+                        setError($password);
+                        setError($repeatedPassword, 'The password must be different from the previous');
+                    } else if (response.success) {
                         window.location.href = '/profile';
                     }
                 });

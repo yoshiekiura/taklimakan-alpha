@@ -43,8 +43,7 @@ class RegistrationType extends AbstractType
                 'constraints' => [
                     new Assert\NotNull(),
                     new Assert\Length([
-                        'min' => 67,
-                        'max' => 67,
+                        'min' => 40,
                     ]),
                     new Assert\Regex([
                         'pattern' => '/^[a-zA-Z0-9]{40,}$/',
