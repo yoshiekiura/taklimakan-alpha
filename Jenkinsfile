@@ -146,6 +146,7 @@ zip -r taklimakan-alpha.zip taklimakan-alpha
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 dir
+echo "Branch Name $env.BRANCH_NAME"
 if [ $env.BRANCH_NAME == \'master\' ]
 then
   DEPLOY_DEV_HOST="192.168.100.127"
