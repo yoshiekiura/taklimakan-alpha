@@ -204,6 +204,7 @@ with DbConnection(True, config) as connector:
     def process_formula(f):
         for currency in Currency:
             dates = get_missing_analytics_dates(currency.get_pair_str(), f)
+            print(currency.name + " " + f.name + " " + str(dates))
             for date in sorted(dates):
                 date_start = date - timedelta(f.value.length)
                 date_end = date + timedelta(1)
@@ -233,6 +234,8 @@ with DbConnection(True, config) as connector:
     #print(format_list(list(map(lambda x: x.get_pair_str(CurrencyBase.USD), Currency.base_index()))))
     #process_index()
 
-    process_formula(Formula.Beta)
-    process_formula(Formula.Volatility)
+    for f in Formula:
+        if f == Formula.ExponentiallyWeightedSharpeRatio:#not in[Formula.Index, Formula.Price, Formula.Volume]:
+            process_formula(f)
+
 
