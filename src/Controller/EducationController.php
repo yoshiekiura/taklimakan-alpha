@@ -134,7 +134,7 @@ class EducationController extends Controller
 //var_dump(count($joiners)); die();
         // $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
 //        $lectures = $lectureRepo->findBy([ 'id' => $joiners ]);
-        $lectures = $course->getLectures();
+        $lectures = $course->getActiveLectures();
 
         return $this->render('courses/show.html.twig', [
             'menu' => 'edu',
@@ -154,7 +154,7 @@ class EducationController extends Controller
      */
     public function lectures(Request $request)
     {
-die("KEK");
+
         // https://stackoverflow.com/questions/10625491/symfony2-and-throwing-exception-error/35088605#35088605
         throw $this->createNotFoundException('This route does not exist!');
 
