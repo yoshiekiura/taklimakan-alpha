@@ -103,7 +103,7 @@ echo "###> doctrine/doctrine-bundle ###" >> tmpenv
 echo "# Format described at http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#connecting-using-a-url" >> tmpenv
 echo "# For an SQLite database, use: \'sqlite:///%kernel.project_dir%/var/data.db\'" >> tmpenv
 echo "# Configure your db driver and server_version in config/packages/doctrine.yaml" >> tmpenv
-echo "DATABASE_URL=mysql://root:pan01MAT1@127.0.0.1:3306/crypto" >> tmpenv
+echo "$JENKINS_PROPERTY" >> tmpenv
 echo "###< doctrine/doctrine-bundle ###" >> tmpenv
 echo " " >> tmpenv
 
