@@ -87,7 +87,8 @@ exit 0
         steps {
           sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch'''
-          sh '''echo "# This file is a "template" of which env vars need to be defined for your application" > tmpenv
+          sh '''#!/bin/bash -x
+echo "# This file is a "template" of which env vars need to be defined for your application" > tmpenv
 echo "# Copy this file to .env file for development, create environment variables when deploying to production" >> tmpenv
 echo "# https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration" >> tmpenv
 echo " " >> tmpenv
