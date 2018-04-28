@@ -1,6 +1,6 @@
 <div class="row bm-1">
 
-    <div class="col-xl-3">
+    <div class="col-xl-5">
         <div class="entries">
             <span>show</span>
             <select class="form-control" id="exampleFormControlSelect1" onchange="window.location.href='/news?page=1&limit=' + this.value + '&tags={{filter.tags}}'">
@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="col-xl-3 offset-xl-2">
+    <div class="col-xl-3 text-right">
        <div class="page">
         <nav aria-label="...">
           <ul class="pagination">
@@ -55,8 +55,10 @@
         </div>
     </div>
 
+    
     <div class="col-xl-4 text-right">
-        <span class="records">Total # News</span>
+        {# <span class="records">Total # News</span> #}
     </div>
+    
 
 </div>
