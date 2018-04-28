@@ -1,18 +1,16 @@
 <?php
 
-// CRONTAB: 0 17    * * *   root    php /var/www/services/rates.php --sync &
+// CRONTAB: 0 6     * * *   root    php /var/www/services/rates.php --sync >> /var/log/rates.log 2>&1
 // CLI RUN: php /var/www/services/rates.php --sync &
+
+// $db_host = getenv('DB_HOST');
+// $db_db   = getenv('DB_DATABASE');
+$db_user = getenv('DB_USER');
+$db_pass = getenv('DB_PASSWORD');
 
 date_default_timezone_set("UTC"); // All data have to be stored in UTC time vs date_default_timezone_set("Europe/Moscow");
 
-// There are different field set between Ubuntu and Windows 10
-// Ubuntu 17 : ["USER"] => "tkln" vs Windows 10 : ["USERNAME"] => "sgotsulyak"
-
-if(isset($_SERVER['USERNAME']) && $_SERVER['USERNAME'] == 'sgotsulyak')
-    $db = new PDO("mysql:host=localhost;dbname=crypto", "root", "usbw");
-else
-    $db = new PDO("mysql:host=localhost;dbname=crypto", "root", "pan01MAT1");
-
+$db = new PDO("mysql:host=localhost;dbname=crypto", $db_user, $db_pass);
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // We have to see ERRORS
 if (!$db) die("\n[ERROR] Can't connect to DB!");
 
