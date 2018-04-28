@@ -203,8 +203,13 @@ body {
 
 .news-img img {
     width: 100%;
-    height: auto;
+    height: /* auto */ 200px;
 }
+
+.news-img-include img {
+height: auto !important;
+}
+
 
 .news-img a.news-date {
     position: absolute;
