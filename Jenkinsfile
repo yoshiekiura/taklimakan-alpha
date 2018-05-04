@@ -203,7 +203,7 @@ echo "#folder DEPLOY/\\$versioId exist now just create SL" >> createSL.bash
 echo "#  for all files/folder in it except public" >> createSL.bash
 echo "#  create links for all objects in public folder" >> createSL.bash
 echo "#  except \\"images\\" it will remain the same as before" >> createSL.bash
-echo "for entry in `ls -d DEPLOY/\\$versionId/*`; do" >> createSL.bash
+echo "for entry in \\`ls -d DEPLOY/\\$versionId/*\\`; do" >> createSL.bash
 echo "  name=\\$(basename \\$entry)" >> createSL.bash
 echo "" >> createSL.bash
 echo "  if [ \\"\\$name\\" != \\"public\\" ] && [[ \\$name != *\\".zip\\"* ]]; then" >> createSL.bash
