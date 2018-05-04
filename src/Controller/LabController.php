@@ -11,11 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Bundle\MakerBundle\Validator;
 
-//use Symfony\Component\Form\AbstractType;
-//use Symfony\Component\Form\FormBuilderInterface;
-//use Symfony\Component\OptionsResolver\OptionsResolver;
-
-// use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class LabController extends Controller
 {
@@ -39,33 +35,6 @@ class LabController extends Controller
 
         $pair = $request->query->get('pair');
 
-/*
-        if (!in_array($pair, $allowed))
-            $pair = "BTC-USD";
-
-        $params['pair'] = $pair;
-
-        // --- Price 1 -------------------------------------------------
-
-        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "1" AND pair = "' . $pair . '"';
-        $query = $conn->prepare($sql);
-        $query->execute();
-        $rows = $query->fetchAll();
-
-        foreach ($rows as $row)
-            $data[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
-
-        // --- Volume 2 -------------------------------------------------
-
-        $sql = 'SELECT * from numerical_analytics where type_id="2" and pair="' . $pair . '"';
-        $query = $conn->prepare($sql);
-        $query->execute();
-        $rows = $query->fetchAll();
-
-        foreach ($rows as $row)
-            $volume[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
-*/
-
         // --------------------------------------------------------
 
         return $this->render('charts/lab.html.twig', [
@@ -73,21 +42,14 @@ class LabController extends Controller
             'params' => [], // $params,
             'show_welcome' => false,
             'allowed' => $allowed,
+            'types' => [], // $types,
             'pair' => $pair,
             'data' => [], // $data,
             'volume' => [], // $volume,
-/*            'volatility' => $volatility,
-            'alpha' => $alpha,
-            'beta' => $beta,
-            'sharpe' => $sharpe,
-            'crypto_index' => $crypto_index, */
-            'show_charts' => true,
+            'use_anycharts' => true,
         ]);
 
     }
-
-    /* @ Route("api/charts/{type}", name="api_charts")
-    public function getData($type, Request $request) */
 
     // NB! Input JSON should be stored within BODY and application/json HEADER is set up
 
@@ -97,15 +59,19 @@ class LabController extends Controller
     public function api(Request $request)
     {
 
+        if (!$request->isXMLHttpRequest())
+            throw new BadRequestHttpException("[ERR] Only AJAX requests are allowed!");
+
         $content = $request->getContent();
-        if(empty($content))
-            throw new BadRequestHttpException("[ERR] JSON is empty!");
+        // if(empty($content))
+        //    throw new BadRequestHttpException("[ERR] JSON is empty!");
         // if(!Validator::isValidJsonString($content))
         //    throw new BadRequestHttpException("[ERR] Content is not a valid JSON!");
         // $params = new ArrayCollection(json_decode($content, true));
 
         $params = json_decode($content, true);
         $pair = $params['pair'];
+        $type = $params['type'] > 0 ? $params['type'] : 1;
 
         $conn = $this->getDoctrine()->getConnection();
 
@@ -120,52 +86,19 @@ class LabController extends Controller
         if (!in_array($pair, $allowed))
             $pair = "BTC-USD";
 
-        $sql = 'SELECT dt, value FROM numerical_analytics WHERE type_id = "1" AND pair = "' . $pair . '" LIMIT 10';
+        $sql = 'SELECT dt, value FROM numerical_analytics WHERE type_id = "' . $type . '" AND pair = "' . $pair . '"';
         $query = $this->getDoctrine()->getConnection()->prepare($sql);
         $query->execute();
         $rows = $query->fetchAll();
 
         $data = [];
         foreach ($rows as $row)
-            $data[] = [ $row['dt'], $row['value'] ];
+            $data[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
 
-//var_dump($rows);
-//die();
-
-        $response = new JsonResponse(json_encode($data));
+        $response = new JsonResponse($data);
 
         return $response;
 
-                //$params['symbol'] = $symbol;
-        /*        $data = [
-                    ['2018-01-01', 10000],
-                    ['2018-02-02', 8000],
-                    ['2018-03-03', 7000],
-                ];
-        */
-
-
-//        $ChartsRepo = $this->getDoctrine()->getRepository(Charts::class);
-//        $Charts = $ChartsRepo->findAll();
-//var_dump($Charts);
-//die();
-        // $greeting = $generator->getRandomGreeting();
-        // $logger->info("Saying $greeting to $name!");
-
-        //        $logger->info("Saying hello to $name!");
-        //		return new Response("Hello $name!");
-
-
-//var_dump($request);
-//var_dump($type);
-//var_dump($symbol);
-//die();
-
-//        return $this->render('charts/price.html.twig', [
-//            //'controller_name' => 'ChartsController',
-//            'params' => $params,
-//            'data' => $data,
-//        ]);
     }
 
 }
