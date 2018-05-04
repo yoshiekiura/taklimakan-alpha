@@ -315,6 +315,7 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "/var/www/deploy.bash -p"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "/var/www/deploy.bash \'-p\'"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy.bash \'-p\'
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy.bash "-p"
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \'/var/www/deploy.bash -p\'
 '''
           }
 
