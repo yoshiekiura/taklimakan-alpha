@@ -264,7 +264,7 @@ fi
 mkdir taklimakan-alpha
 
 for D in *; do
-  if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ] && [ $D != *"pylint"* ]; then
+  if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ]; then
     # copy to taklimakan-alpha
     if [ -d "${D}" ]; then
       cp -R $D taklimakan-alpha/
@@ -309,7 +309,8 @@ echo "Run deploy script"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy.bash
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "/var/www/deploy.bash taklimakan-alpha $OUTPUT.$BUILD_NUMBER"'''
+#ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "/var/www/deploy.bash taklimakan-alpha $OUTPUT.$BUILD_NUMBER"
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \'cat | bash /dev/stdin taklimakan-alpha $OUTPUT.$BUILD_NUMBER\' < /var/www/deploy.bash'''
           }
 
         }
