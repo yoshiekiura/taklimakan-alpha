@@ -70,6 +70,7 @@
     <script src="/john/js/bootstrap.min.js"></script>
     <script src="/john/js/owl.carousel.min.js"></script>
 
+    {% if app.environment != 'dev' %}
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116479802-1"></script>
@@ -79,6 +80,8 @@
     gtag('js', new Date());
     gtag('config', 'UA-116479802-1');
     </script>
+
+    {% endif %}
 
     <!-- FIXME! We have to have conditional include here -->
 
@@ -205,4 +208,51 @@
 
 {% endif %}
 
+{#
+
 <script type="text/javascript" src="/js/security.js"></script>
+
+<!-- https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php -->
+
+<script>
+
+
+// Find all YouTube videos
+var $allVideos = $("iframe[src^='//www.youtube.com']"),
+
+    // The element that is fluid width
+    $fluidEl = $(".fr-video");
+
+// Figure out and save aspect ratio for each video
+$allVideos.each(function() {
+//alert("YT!");
+  $(this)
+    .data('aspectRatio', this.height / this.width)
+
+    // and remove the hard coded width/height
+    .removeAttr('height')
+    .removeAttr('width');
+
+});
+
+// When the window is resized
+$(window).resize(function() {
+//alert("YT!");
+  var newWidth = $fluidEl.width();
+
+  // Resize all videos according to their own aspect ratio
+  $allVideos.each(function() {
+
+    var $el = $(this);
+    $el
+      .width(newWidth)
+      .height(newWidth * $el.data('aspectRatio'));
+
+  });
+
+// Kick off one resize to fix all videos on page load
+}).resize();
+
+</script>
+
+#}
