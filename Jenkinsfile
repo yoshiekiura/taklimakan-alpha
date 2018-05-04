@@ -111,8 +111,6 @@ echo "  echo \\"Deploy is not successful. Wrong number of arguments\\"" >> deplo
 echo "  exit 1" >> deploy
 echo "fi" >> deploy
 echo "" >> deploy
-echo "dir" >> deploy
-echo "echo \\"arguments: \\$1 .. \\$2\\"" >> deploy
 echo "if [ ! -f DEPLOY/\\$1.zip ]; then" >> deploy
 echo "  echo \\"Deploy is not successful. Deploy file is not exist: \\$1.zip\\"" >> deploy
 echo "  exit 1" >> deploy
@@ -138,6 +136,8 @@ echo "  exit 1" >> deploy
 echo "fi" >> deploy
 echo "" >> deploy
 echo "#2. install composer" >> deploy
+echo "# copy .env to DEPLOY/<version> which is necessary for symphony" >> deploy
+echo "cp .env DEPLOY/\\$version_id/.env" >> deploy
 echo "cd DEPLOY/\\$version_id" >> deploy
 echo "composer install" >> deploy
 echo "" >> deploy
@@ -147,7 +147,7 @@ echo "" >> deploy
 echo "#3. (TODO) verify composer installation process (awk or grep log)" >> deploy
 echo "" >> deploy
 echo "#4. Create symlinks" >> deploy
-echo "./createSL \\$version_id" >> deploy
+echo "./createSL.bash \\$version_id" >> deploy
 '''
           sh '''echo "#!/bin/bash" > createSL.bash
 echo "#########################################################" >> createSL.bash
