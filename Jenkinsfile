@@ -302,7 +302,7 @@ echo "Deploy Host: $DEPLOY_HOST:$DEPLOY_PORT"
 echo "Upload file to host"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT mkdir -p /var/www/DEPLOY
 scp -P $DEPLOY_PORT taklimakan-alpha.zip tkln@$DEPLOY_HOST:/var/www/DEPLOY/taklimakan-alpha.zip
-scp -P $DEPLOY_PORT deploy.bash tkln@$DEPLOY_HOST:/var/www/deploy.bash
+scp -P $DEPLOY_PORT deploy tkln@$DEPLOY_HOST:/var/www/deploy
 scp -P $DEPLOY_PORT createSL.bash tkln@$DEPLOY_HOST:/var/www/createSL.bash
 
 echo "Run deploy script"
