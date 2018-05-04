@@ -236,6 +236,7 @@ echo "    cd public" >> createSL.bash
 echo "    # remove existing file/folder/symlink" >> createSL.bash
 echo "    if [ -f \\$shortname ]; then" >> createSL.bash
 echo "      # remove file or folder" >> createSL.bash
+echo "      echo \\" remove file or folder: \\$shortname \\"" >> createSL.bash
 echo "      rm -rf \\$shortname" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "" >> createSL.bash
