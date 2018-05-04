@@ -311,7 +311,8 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 #ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy \'taklimakan-alpha $OUTPUT.$BUILD_NUMBER\'
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "bash /var/www/deploy taklimakan-alpha $OUTPUT.$BUILD_NUMBER"
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "/var/www/deploy taklimakan-alpha $OUTPUT.$BUILD_NUMBER"
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy < taklimakan-alpha $OUTPUT.$BUILD_NUMBER
 #ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "/var/www/deploy taklimakan"
 #ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "/var/www/deploy \'taklimakan\'"
 #ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy \'taklimakan\'
