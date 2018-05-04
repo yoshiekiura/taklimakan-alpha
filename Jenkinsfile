@@ -318,7 +318,7 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT cat /var/www/deploy | bash /dev/stdin takl
 #ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy \'taklimakan\'
 #ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy "taklimakan"
 #ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \'/var/www/deploy taklimakan\'
-'''
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \'cat | bash /dev/stdin arg1 arg2 arg3\' < deploy '''
           }
 
         }
