@@ -309,7 +309,9 @@ echo "Run deploy script"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy.bash
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy.bash \'taklimakan-alpha $OUTPUT.$BUILD_NUMBER\'
+#ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy.bash \'taklimakan-alpha $OUTPUT.$BUILD_NUMBER\'
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy.bash aaa
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy.bash -p
 '''
           }
 
