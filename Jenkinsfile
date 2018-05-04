@@ -212,7 +212,7 @@ echo "  name=\\$(basename \\$entry)" >> createSL.bash
 echo "" >> createSL.bash
 echo "  if [ \\"\\$name\\" != \\"public\\" ] && [[ \\$name != *\\".zip\\"* ]]; then" >> createSL.bash
 echo "    if [ -f \\$entry ] || [ -d \\$entry ]; then" >> createSL.bash
-echo "      echo "Remove file or folder: $entry"" >> createSL.bash
+echo "      echo \\"Remove file or folder: \\$entry .. \\$name\\"" >> createSL.bash
 echo "      # remove file or folder" >> createSL.bash
 echo "      rm -rf \\$entry" >> createSL.bash
 echo "    fi" >> createSL.bash
