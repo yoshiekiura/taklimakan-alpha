@@ -110,7 +110,7 @@ echo "  echo \\"Deploy is not successful. Wrong number of arguments\\"" >> deplo
 echo "  exit 1" >> deploy
 echo "fi" >> deploy
 echo "" >> deploy
-echo "if [ ! -f DEPLOY/\\$1 ]; then" >> deploy
+echo "if [ ! -f DEPLOY/\\$1.zip ]; then" >> deploy
 echo "  echo \\"Deploy is not successful. Deploy file is not exist: \\$1.zip\\"" >> deploy
 echo "  exit 1" >> deploy
 echo "fi" >> deploy
