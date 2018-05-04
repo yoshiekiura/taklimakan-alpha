@@ -138,8 +138,8 @@ echo "" >> deploy
 echo "#2. install composer" >> deploy
 echo "# copy .env to DEPLOY/<version> which is necessary for symphony" >> deploy
 echo "cp .env DEPLOY/\\$version_id/.env" >> deploy
-echo "cd DEPLOY/\\$version_id" >> deploy
-echo "composer install" >> deploy
+#echo "cd DEPLOY/\\$version_id" >> deploy
+#echo "composer install" >> deploy
 echo "" >> deploy
 echo "# return to /var/www/ folder" >> deploy
 echo "cd /var/www/" >> deploy
@@ -244,6 +244,9 @@ echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
+echo "#install composer" >> createSL.bash
+echo "composer install" >> createSL.bash
+echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
 echo "for folderToZip in \\`ls -d *\\`; do" >> createSL.bash
@@ -251,6 +254,7 @@ echo "  if [ -d \\$folderToZip ]; then" >> createSL.bash
 echo "    if [ \\"\\$folderToZip\\" != \\"\\$versionId\\" ]; then" >> createSL.bash
 echo "      echo \\"zip previous version: \\$folderToZip\\"" >> createSL.bash
 echo "      zip -r -m -q  \\$folderToZip.zip \\$folderToZip" >> createSL.bash
+echo "      rm -rf \\$folderToZip" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
