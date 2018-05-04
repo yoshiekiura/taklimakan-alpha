@@ -110,6 +110,8 @@ echo "  echo \\"Deploy is not successful. Wrong number of arguments\\"" >> deplo
 echo "  exit 1" >> deploy
 echo "fi" >> deploy
 echo "" >> deploy
+echo "dir" >> deploy
+echo "echo \\"arguments: \\$1 .. \\$2\\"" >> deploy
 echo "if [ ! -f DEPLOY/\\$1.zip ]; then" >> deploy
 echo "  echo \\"Deploy is not successful. Deploy file is not exist: \\$1.zip\\"" >> deploy
 echo "  exit 1" >> deploy
@@ -307,14 +309,7 @@ echo "Run deploy script"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $OUTPUT.$BUILD_NUMBER
-#ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "/var/www/deploy taklimakan-alpha $OUTPUT.$BUILD_NUMBER"
-#ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT cat /var/www/deploy | bash /dev/stdin taklimakan-alpha $OUTPUT.$BUILD_NUMBER
-#ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT "/var/www/deploy taklimakan"
-#ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy \'taklimakan\'
-#ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy "taklimakan"
-#ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \'/var/www/deploy taklimakan\'
-#ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \'cat | bash /dev/stdin arg1 arg2 arg3\' < deploy '''
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $OUTPUT.$BUILD_NUMBER'''
           }
 
         }
