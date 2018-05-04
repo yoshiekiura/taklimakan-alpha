@@ -227,7 +227,7 @@ echo "  mkdir public" >> createSL.bash
 echo "  mkdir public/images" >> createSL.bash
 echo "fi" >> createSL.bash
 echo "" >> createSL.bash
-echo "for public_entry in `ls -d DEPLOY/\\$versionId/public/*`; do" >> createSL.bash
+echo "for public_entry in \\`ls -d DEPLOY/\\$versionId/public/*\\`; do" >> createSL.bash
 echo "  shortname=\\$(basename \\$public_entry)" >> createSL.bash
 echo "  #create symbolic links inside public for all items except images" >> createSL.bash
 echo "  if [ \\"\\$shortname\\" != \\"images\\" ]; then" >> createSL.bash
@@ -246,7 +246,7 @@ echo "done" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
-echo "for folderToZip in `ls -d *`; do" >> createSL.bash
+echo "for folderToZip in \\`ls -d *\\`; do" >> createSL.bash
 echo "  if [ -d \\$folderToZip ]; then" >> createSL.bash
 echo "    if [ \\"\\$folderToZip\\" != \\"\\$versionId\\" ]; then" >> createSL.bash
 echo "      echo \\"zip previous version: \\$folderToZip\\"" >> createSL.bash
