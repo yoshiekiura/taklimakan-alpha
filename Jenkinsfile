@@ -266,7 +266,13 @@ fi
 mkdir taklimakan-alpha
 
 for D in *; do
-  if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ]; then
+  if [ $D != "taklimakan-alpha" ] && 
+     [ $D != ".git" ] && 
+     [ $D != "Jenkinsfile" ] && 
+     [ $D != "CodeAnalysis" ] && 
+     [ $D != "deploy" ] &&
+     [ $D != "createSL.bash" ] &&
+     [[ $D != *"pylint"* ]]; then
     # copy to taklimakan-alpha
     if [ -d "${D}" ]; then
       cp -R $D taklimakan-alpha/
@@ -278,6 +284,7 @@ done
 
 #zip deploy file
 zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
+
 '''
           archiveArtifacts '*.zip'
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
