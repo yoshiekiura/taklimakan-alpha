@@ -181,7 +181,7 @@ echo "#########################################################" >> createSL.bas
 echo "" >> createSL.bash
 echo "cd /var/www/" >> createSL.bash
 echo "if [ \\$# != 1 ]; then" >> createSL.bash
-echo "  echo "Deploy is not success. Deploy version is not set"" >> createSL.bash
+echo "  echo \\"Deploy is not success. Deploy version is not set\\"" >> createSL.bash
 echo "  exit 1;" >> createSL.bash
 echo "fi" >> createSL.bash
 echo "" >> createSL.bash
@@ -214,7 +214,7 @@ echo "  if [ \\"\\$name\\" != \\"public\\" ] && [[ \\$name != *\\".zip\\"* ]]; t
 echo "    if [ -f \\$entry ] || [ -d \\$entry ]; then" >> createSL.bash
 echo "      echo \\"Remove file or folder: \\$entry .. \\$name\\"" >> createSL.bash
 echo "      # remove file or folder" >> createSL.bash
-echo "      rm -rf \\$entry" >> createSL.bash
+echo "      rm -rf \\$name" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "    # create new symbolic link" >> createSL.bash
 echo "    ln -sfn \\$entry \\$name" >> createSL.bash
