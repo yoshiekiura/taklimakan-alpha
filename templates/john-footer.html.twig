@@ -70,6 +70,7 @@
     <script src="/john/js/bootstrap.min.js"></script>
     <script src="/john/js/owl.carousel.min.js"></script>
 
+    {% if app.environment != 'dev' %}
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116479802-1"></script>
@@ -79,6 +80,8 @@
     gtag('js', new Date());
     gtag('config', 'UA-116479802-1');
     </script>
+
+    {% endif %}
 
     <!-- FIXME! We have to have conditional include here -->
 

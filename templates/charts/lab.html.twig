@@ -1,0 +1,171 @@
+{% extends 'charts/charts.html.twig' %}
+
+{% block chart %}
+
+<div class="container">
+
+    <style>
+        #lab-chart { width: 100%; height: 600px; }
+        #range-selector { text-align: right; padding: 20px 20px 0px 0px; }
+    </style>
+
+    <div id="lab-card" class="news-header" style="margin: 75px 0 0 0"><h2><a name="lab">Lab Chart</a></h2></div>
+    <p>There are so many data feeds to experiment with!</p>
+    <div id="lab-chart"><div id="range-selector"></div></div>
+
+    <script>
+
+    var globalChart;
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        anychart.licenseKey('lar.fm-99e7e246-4b5d8f8b');
+        anychart.onDocumentReady(function () {
+        anychart.theme('lightGlamour');
+
+        var ranges = [
+            { 'type' : 'unit', 'unit' : 'day', 'count' : 7, 'text' : 'Week' },
+            { 'type' : 'unit', 'unit' : 'month', 'count' : 1, 'text' : 'Month' },
+            { 'type' : 'unit', 'unit' : 'month', 'count' : 3, 'text' : 'Quarter' },
+            { 'type' : 'unit', 'unit' : 'year', 'count' : 1, 'text' : 'Year' },
+            { 'type': 'max', 'text': 'All' },
+        ];
+
+        // --- AnyCharts Actual Code ---
+
+/*
+                    var data = {{ data|json_encode|raw }};
+                    var dataTable = anychart.data.table();
+                    dataTable.addData(data);
+
+                    var volume = {{ volume|json_encode|raw }};
+                    var volumeTable = anychart.data.table();
+                    volumeTable.addData(volume);
+*/
+
+                    var chart = anychart.stock();
+globalChart = chart;
+                    var credits = chart.credits();
+                    credits.enabled(false);
+
+/*
+                        var plot = chart.plot(0);
+                        plot.height("75%");
+                        plot.line()
+                        //plot.column()
+                            .data(dataTable.mapAs({'value': 1}))
+                            .name('Price')
+                            //.fill('#1976d2 0.65')
+                            //.stroke('1.75 #1976d2')
+                            .stroke('2 #564fd9')
+                            //.tooltip(false)
+                            ;
+
+                        var volumePlot = chart.plot(1);
+                        volumePlot.height("25%");
+                        volumePlot.column()
+                            .data(volumeTable.mapAs({'value': 1}))
+                            .name('Volume')
+                            .stroke('1.25 #007bff')
+                            //.stroke('1.25 #564fd9')
+                            ;
+*/
+
+                        chart.container('lab-chart');
+                        chart.draw();
+
+                        var rangeSelector = anychart.ui.rangeSelector();
+                        rangeSelector.ranges(ranges);
+                        rangeSelector.target(chart);
+                        rangeSelector.render(document.getElementById("range-selector"));
+
+
+
+                    });
+
+
+                // --- AnyChart Code ends ---
+
+    }); // jQuery or DOMContentLoaded
+
+
+
+    </script>
+
+
+</div>
+
+<div class="container" style="margin-top: 50px;">
+
+    <div class="form-check col-6">
+    {% set count = 0 %}
+        {% for pair in allowed %}
+
+        {% if count == 0 %}
+            <div class="row" style="padding: 2px 2px 2px 0px;">
+        {% endif %}
+            {% set count = count + 1 %}
+            <input type="checkbox" id="{{pair}}-Checkbox" class="col" onchange='showPair("{{pair}}");'>
+            <label for="{{pair}}-Checkbox" class="form-check-label col"><span class="small">{{pair}}</span></label>
+        {% if count == 3 %}
+            </div>
+            {% set count = 0 %}
+        {% endif %}
+
+    {% endfor %}
+    </div>
+
+    <div class="form-check col-6">
+    </div>
+
+</div>
+
+<script>
+    function showPair(pair) {
+        //alert(pair);
+
+        cb = document.getElementById(pair + "-Checkbox");
+        //cat = document.getElementById(cat);
+        if (cb.checked) {
+            // alert ("Show " + pair);
+            drawPlot(pair);
+        }
+        else
+            alert ("Hide " + pair);
+
+
+
+    }
+
+    function drawPlot(pair) {
+
+        //alert(globalChart);
+
+        $.get("/api/lab", { "pair": pair } ).done(function( data ) {
+
+            alert(data);
+
+            // var data = {{ data|json_encode|raw }};
+            var dataTable = anychart.data.table();
+            dataTable.addData(data);
+
+//            var plot = chart.plot(2);
+    var plot = globalChart.plot(0);
+            //plot.height("75%");
+            plot.line()
+            //plot.column()
+                .data(dataTable.mapAs({'value': 1}))
+                //.name('Price')
+                //.fill('#1976d2 0.65')
+                //.stroke('1.75 #1976d2')
+                //.stroke('2 #564fd9')
+                //.tooltip(false)
+                ;
+
+          });
+
+    }
+
+</script>
+
+{% endblock %}
