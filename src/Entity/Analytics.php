@@ -128,10 +128,11 @@ class Analytics
     {
         $this->tags = $tags;
     }
-
-    /**
+    
+/*
+    / * *
      * @ORM\ManyToOne(targetEntity="Category")
-     */
+     * /
     private $category;
     public function getCategory()
     {
@@ -141,7 +142,7 @@ class Analytics
     {
         $this->category = $category;
     }
-
+*/
 
     /**
      * @ORM\Column(type="boolean", options={"default": false})

@@ -1,0 +1,37 @@
+<!-- Education -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="news-header">
+                <h2>Education</h2>
+                <p>
+                    Our team is researching the globe to select and provide you with the best sources of Education materials on all topics of crypto investing – from basics on crypto currencies to advanced trading strategies. Stay tuned as we start publishing materials from our partners.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="news-box news-box-index">
+
+        <div class="row">
+
+            {% for course in courses %}
+
+                {% include 'edu/course-card.html.twig' %}
+
+            {% endfor %}
+
+        </div> <!-- ROW -->
+
+        <div class="row">
+            <div class="col-xl-6 offset-xl-3 col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-6 offset-sm-3">
+                <a href="/courses" class="btn btn-success btn-block btn-load">See all Courses and Articles</a>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+
+    <!--/.News Box-->

@@ -14,63 +14,64 @@ use App\Entity\Tags;
 
 class NewsController extends Controller
 {
-/*
-    / **
-     * @Route("/{url}", name="remove_trailing_slash", requirements={"url" = ".*\/$"})
-     * /
-    public function removeTrailingSlash(Request $request)
-    {
-        $pathInfo = $request->getPathInfo();
-        $requestUri = $request->getRequestUri();
-
-        $url = str_replace($pathInfo, rtrim($pathInfo, ' /'), $requestUri);
-
-        // 308 (Permanent Redirect) is similar to 301 (Moved Permanently) except
-        // that it does not allow changing the request method (e.g. from POST to GET)
-        return $this->redirect($url, 308);
-    }
-*/
     /**
      * @Route("/news", name="news")
      * @Route("/news/", name="news_trail")
      */
     public function index(Request $request)
     {
+
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
         $filter = [];
 
-        if ($request->query->get('tags'))
-            $filter['tags'] = explode(',', $request->query->get('tags'));
+        $tags = $request->query->get('tags') ? explode(',', $request->query->get('tags')) : [];
+        if ($tags) $filter['tags'] = $tags;
 
-        $newsRepo = $this->getDoctrine()->getRepository(News::class);
+        $page = $request->query->get('page') ? intval($request->query->get('page')) : 1;
+        if ($page) $filter['page'] = $page - 1;
+
+        $limit = $request->query->get('limit') ? intval($request->query->get('limit')) : 12;
+        if ($limit) $filter['limit'] = $limit;
+
+        // NB! And we have to know total number of news somehow
 
         // Для запроса новостей и тегов проходит несколько SQL-вызовов. Первый дергает все новости из таблицы, последующие дергают теги для КАЖДОЙ из новостей
         // Parameters: [   ] SELECT t0.id AS id_1, t0.title AS title_2, t0.lead AS lead_3, t0.text AS text_4, t0.source AS source_5, t0.image AS image_6, t0.date AS date_7, t0.active AS active_8, t0.category_id AS category_id_9 FROM news t0
         // Parameters: [ 1 ] SELECT t0.id AS id_1, t0.tag AS tag_2 FROM tags t0 INNER JOIN news_tags ON t0.id = news_tags.tags_id WHERE news_tags.news_id = ?
 
-        //$news = $newsRepo->findAll();
+        $newsRepo = $this->getDoctrine()->getRepository(News::class);
         $news = $newsRepo->getNews($filter);
 
         $tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
-        $tags = $tagsRepo->findAll();
+        $allTags = $tagsRepo->findAll();
 
         return $this->render('news/index.html.twig', [
             'menu' => 'news',
             'show_welcome' => $showWelcome,
             'news' => $news,
-            'tags' => $tags,
+            'tags' => $allTags, // Selected tags to sort
+            'filter' => [
+                'sort' => null, // NB! Define sort orders later (new / older / trending / popular / etc)
+                'tags' => implode($tags, ','),
+            ],
+            'paginator' => [
+                'total' => null,   // Total news for paginator / NB! Do not count for now
+                'page'  => $page,  // Current Page
+                'limit' => $limit, // Max news on the page
+            ]
         ]);
     }
 
     /**
-     * @Route("/news/{id}", name="news_id")
-     * @Route("/news/{id}/", name="news_trail")     
-     * @Route("/news/{id}/{translit}", name="news_show_translit")
+     * @Route("/news/{id}", name="news_id", requirements={"id"="\d+"})
+     * @Route("/news/{id}/", name="news_id_trail", requirements={"id"="\d+"})
+     * @Route("/news/{id}/{translit}", name="news_id_translit", requirements={"id"="\d+"})
      */
     public function show($id, $translit = '', Request $request)
     {
+
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
@@ -90,6 +91,9 @@ class NewsController extends Controller
         // $news = $newsRepo->getNews($filter);
 
         $news = $newsRepo->findOneBy([ 'id' => $id ]);
+
+        if (!$news)
+            throw $this->createNotFoundException('Sorry, this news does not exist!');
 
 /*
         // FIXME! По быстрому дергаем теги - потом архитектура изменится, переделать

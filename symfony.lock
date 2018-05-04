@@ -8,6 +8,24 @@
     "composer/ca-bundle": {
         "version": "1.1.0"
     },
+    "debril/feed-io": {
+        "version": "v4.2.0"
+    },
+    "debril/rss-atom-bundle": {
+        "version": "4.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "2c23ed747eda9f4c13f5e7eb55fffa1091fdd505"
+        }
+    },
+    "deployer/deployer": {
+        "version": "v6.2.0"
+    },
+    "deployer/phar-update": {
+        "version": "v2.1.0"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -74,6 +92,18 @@
             "ref": "66070ea553247b0cd5275e21d0fe5399a25f40be"
         }
     },
+    "egulias/email-validator": {
+        "version": "2.1.4"
+    },
+    "guzzlehttp/guzzle": {
+        "version": "6.3.2"
+    },
+    "guzzlehttp/promises": {
+        "version": "v1.3.1"
+    },
+    "guzzlehttp/psr7": {
+        "version": "1.4.2"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -95,11 +125,17 @@
     "pagerfanta/pagerfanta": {
         "version": "v1.0.5"
     },
+    "pimple/pimple": {
+        "version": "v3.2.3"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
     "psr/container": {
         "version": "1.0.0"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
     },
     "psr/log": {
         "version": "1.0.2"
@@ -124,6 +160,9 @@
             "version": "4.0",
             "ref": "e65a105bf4cd5b1b79012ba029954927f05922e8"
         }
+    },
+    "swiftmailer/swiftmailer": {
+        "version": "v6.0.2"
     },
     "symfony/apache-pack": {
         "version": "1.0",
@@ -152,6 +191,9 @@
             "ref": "c646e4b71af082e94b5014daca36ef6812bad076"
         }
     },
+    "symfony/css-selector": {
+        "version": "v4.0.8"
+    },
     "symfony/debug": {
         "version": "v4.0.6"
     },
@@ -160,6 +202,9 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v4.0.6"
+    },
+    "symfony/dom-crawler": {
+        "version": "v4.0.8"
     },
     "symfony/dotenv": {
         "version": "v4.0.6"
@@ -205,6 +250,9 @@
     },
     "symfony/intl": {
         "version": "v4.0.6"
+    },
+    "symfony/lock": {
+        "version": "v4.0.8"
     },
     "symfony/lts": {
         "version": "4-dev"
@@ -280,6 +328,15 @@
     },
     "symfony/stopwatch": {
         "version": "v4.0.6"
+    },
+    "symfony/swiftmailer-bundle": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "3db029c03e452b4a23f7fc45cec7c922c2247eb8"
+        }
     },
     "symfony/templating": {
         "version": "v4.0.8"

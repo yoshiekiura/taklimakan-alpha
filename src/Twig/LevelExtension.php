@@ -21,7 +21,7 @@ class LevelExtension extends AbstractExtension
                 return 'Moderate';
             case '3':
                 return 'Advanced';
-            case '3':
+            case '4':
                 return 'Expert';
             default:
                 return '---';

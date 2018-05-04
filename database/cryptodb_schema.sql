@@ -4,6 +4,7 @@
 -- Version 0.0.0 / 2018-03-12 / First attempt to arhcitect rates table
 -- Version 0.1.0 / 2018-03-16 / Works just fine
 -- Version 0.2.0 / 2018-04-12 / Merged with analytics tables
+-- Version 0.2.1 / 2018-04-23 / Migrate to utf8mb4 according to the latest recommendations
 
 -- CoinAPI Data Feed
 -- https://rest.coinapi.io/v1/ohlcv/BITSTAMP_SPOT_BTC_USD/history?period_id=1DAY&time_start=2017-01-01T00:00:00&time_end=2018-01-01T00:00:00&limit=100000
@@ -11,7 +12,7 @@
 -- CryptoCompare Data Feed
 -- https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=365
 
-create database if not exists crypto character set utf8 collate utf8_general_ci;
+create database if not exists crypto character set utf8mb4 collate utf8mb4_general_ci;
 
 create table if not exists rates
 (
@@ -46,7 +47,7 @@ create table if not exists rates
     index  ix (source, exchange, base, quote, period, date), -- using hash,
     unique uni (source, exchange, base, quote, period, date) -- using hash
 
-) engine=InnoDB default character set=utf8;
+) engine=InnoDB default character set=utf8mb4;
 
 CREATE TABLE analytics_type_dictionary
 (

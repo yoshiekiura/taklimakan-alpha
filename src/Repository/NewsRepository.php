@@ -25,27 +25,6 @@ class NewsRepository extends ServiceEntityRepository
         parent::__construct($registry, News::class);
     }
 
-/*
-    public function getNews($limit = 0)
-    {
-        // FIXME We have to have more advanced filter here (limits, ranges, categories, etc)
-        // $sql = "SELECT name FROM user WHERE favorite_color = :color";
-        //  ORDER BY date DESC LIMIT
-
-        $sql =
-            'SELECT *,
-            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = news.id) AS likes_count,
-            (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = news.id) AS comments
-            FROM news';
-//echo $sql; die();
-        // $params['color'] = blue;
-        $query = $this->getEntityManager()->getConnection()->prepare($sql);
-        // $query->execute($params);
-        $query->execute();
-
-        return $query->fetchAll();
-    }
-*/
     /**
      * @return News[] Returns an array of News objects NB! WITH LIKES
      */
@@ -59,6 +38,7 @@ class NewsRepository extends ServiceEntityRepository
 
         $filterTags = isset($filter['tags']) ? $filter['tags'] : [];
         $filterLimit = isset($filter['limit']) ? intval($filter['limit']) : null;
+        $filterPage = isset($filter['page']) ? intval($filter['page']) : null;
 
         // Get News by Filter including Tags and count of Likes & Comments
 
@@ -70,22 +50,6 @@ class NewsRepository extends ServiceEntityRepository
             FROM news n';
 
         if (count($filterTags)) {
-/*
-            $sql .=
-                ' JOIN news_tags nt on nt.news_id = n.id
-                JOIN tags t on t.id = nt.tags_id
-                WHERE t.tag in (:tags)
-                GROUP BY n.id';
-*/
-/*
-            $sql .=
-                ' JOIN news_tags nt on nt.news_id = n.id
-                JOIN tags t on t.id = nt.tags_id
-                WHERE t.tag in (:tags)
-                AND active = true
-                ORDER BY date DESC';
-*/
-//                ' WHERE tags LIKE "%' . $filterTags[0] . '%"
             $sql .=
                 ' WHERE tags LIKE :tags
                 AND active = true
@@ -94,7 +58,11 @@ class NewsRepository extends ServiceEntityRepository
             $sql .= ' WHERE active = true
             ORDER BY date DESC';
 
-        if ($filterLimit)
+        if ($filterPage && $filterLimit) {
+            $offset = $filterPage * $filterLimit;
+            $sql .= " LIMIT $filterLimit OFFSET $offset";
+        }
+        else if ($filterLimit)
             $sql .= " LIMIT $filterLimit";
 
         $query = $conn->prepare($sql);
@@ -102,7 +70,7 @@ class NewsRepository extends ServiceEntityRepository
         // FIXME If there are a few tags we have to use looping here instead of implode
         if (count($filterTags))
             //$params = [ 'tags' => implode(', ', $filterTags) ];
-            $params = [ 'tags' => '%'.$filterTags[0].'%'];
+            $params = [ 'tags' => '%'.$filterTags[0].'%' ];
         $query->execute($params);
         $tagsCollection = new ArrayCollection(); // $em, Tags::class, []
         $rows = $query->fetchAll();
@@ -130,12 +98,6 @@ class NewsRepository extends ServiceEntityRepository
         return $rows;
     }
 
-
-
-
-//    /**
-//     * @return News[] Returns an array of News objects
-//     */
     /*
     public function findByExampleField($value)
     {
@@ -150,15 +112,4 @@ class NewsRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?News
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

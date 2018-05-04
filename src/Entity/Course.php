@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 //use Doctrine\Common\Annotations\AnnotationRegistry;
 
 use App\Entity\Lecture;
+use Doctrine\Common\Collections\Criteria;
 
 // Trying to use right association to link Courses and Lessons together
 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/association-mapping.html
@@ -40,6 +41,10 @@ class Course
      public function setLectures($lectures)
      {
          $this->lectures = $lectures;
+     }
+     public function getActiveLectures()
+     {
+         return $this->lectures->matching(Criteria::create()->where(Criteria::expr()->eq('active', true)));
      }
 
     /**
@@ -241,10 +246,10 @@ class Course
 
 
     // There are common Categories between News, Analytics section and Courses?
-
-    /**
+/*
+    / * *
      * @ORM\ManyToOne(targetEntity="Category")
-     */
+     * /
     private $category;
     public function getCategory()
     {
@@ -254,7 +259,7 @@ class Course
     {
         $this->category = $category;
     }
-
+*/
 
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default": false})

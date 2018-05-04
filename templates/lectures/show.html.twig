@@ -30,10 +30,17 @@
                             <li class="list-inline-item"><a href="/">Taklimakan</a></li>
                             <li class="list-inline-item">/</li>
                             <li class="list-inline-item"><a href="/courses">Courses & Materials</a></li>
+                            {% if course is defined and course is not empty %}
+                                <li class="list-inline-item">/</li>
+                                <li class="list-inline-item"><a href="/courses/{{course.id}}/{{course.title|translit}}">{{course.title}}</a></li>
+                            {% endif %}
                             <li class="list-inline-item">/</li>
-                            <li class="list-inline-item"><a href="/courses/{{course.id}}/{{course.title|translit}}">{{course.title}}</a></li>
-                            <li class="list-inline-item">/</li>
-                            <li class="list-inline-item">#{{lecture.number}}. {{lecture.title}}</li>
+                            <li class="list-inline-item">
+                            {% if lecture.number is defined and lecture.number is not empty %}
+                                #{{lecture.number}}. {{lecture.title}}</li>
+                            {% else %}
+                                {{lecture.title}}</li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -63,18 +70,27 @@
                                     {{ lecture.text|raw }}
 
                                 </div>
+
+                                <ul class="list-inline">
+                                    {% if lecture.source is not empty %}
+                                        <li class="list-inline-item"><strong>Source:</strong> <a href="{{lecture.source}}">{{lecture.source}}</a></li>
+                                    {% endif %}
 {# FIXME Hide Shares and Likes while they are not working properly
-                                <ul class="list-inline news-likes news-likes-include">
                                     <li class="list-inline-item"><a href="#"><img src="images/i/like.svg" alt=""> 10 likes</a></li>
                                     <li class="list-inline-item"><a href="#"><img src="images/i/share.svg" alt=""> Share</a></li>
-                                </ul>
 #}
+                                </ul>
+
                             </div>
                         </div>
                     </div>
                     <!-- End of Lecture Body -->
 
-                    {% include '/lectures/sidebar.html.twig' %}
+                    {% if course is defined and course is not empty %}
+                        {% include '/lectures/sidebar.html.twig' %}
+                    {% else %}
+                        {% include '/lectures/standalone.sidebar.html.twig' %}
+                    {% endif %}
 
 
                 </div>
