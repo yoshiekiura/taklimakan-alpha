@@ -107,7 +107,7 @@ echo "#" >> deploy
 echo "#########################################################" >> deploy
 echo "" >> deploy
 echo "if [ $# != 2 ]; then" >> deploy
-echo "  echo \\"Deploy is not successful. Wrong number of arguments\\"" >> deploy
+echo "  echo \\"Deploy is not successful. Wrong number of arguments $# ..  $1 .. $2 ... $@\\"" >> deploy
 echo "  exit 1" >> deploy
 echo "fi" >> deploy
 echo "" >> deploy
