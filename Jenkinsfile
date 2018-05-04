@@ -308,7 +308,7 @@ scp -P $DEPLOY_PORT createSL.bash tkln@$DEPLOY_HOST:/var/www/createSL.bash
 echo "Run deploy script"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy.bash
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT ./var/www/deploy.bash'''
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy.bash'''
           }
 
         }
