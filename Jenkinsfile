@@ -138,8 +138,8 @@ echo "" >> deploy
 echo "#2. install composer" >> deploy
 echo "# copy .env to DEPLOY/<version> which is necessary for symphony" >> deploy
 echo "cp .env DEPLOY/\\$version_id/.env" >> deploy
-#echo "cd DEPLOY/\\$version_id" >> deploy
-#echo "composer install" >> deploy
+echo "cd DEPLOY/\\$version_id" >> deploy
+echo "composer install" >> deploy
 echo "" >> deploy
 echo "# return to /var/www/ folder" >> deploy
 echo "cd /var/www/" >> deploy
@@ -244,8 +244,8 @@ echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
-echo "#install composer" >> createSL.bash
-echo "composer install" >> createSL.bash
+#echo "#install composer" >> createSL.bash
+#echo "composer install" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
@@ -293,7 +293,6 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
           archiveArtifacts '*.zip'
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
-dir
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]
 then
