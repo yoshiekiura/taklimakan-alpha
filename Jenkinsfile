@@ -206,15 +206,14 @@ echo "#  except \\"images\\" it will remain the same as before" >> createSL.bash
 echo "for entry in `ls -d DEPLOY/\\$versionId/*`; do" >> createSL.bash
 echo "  name=\\$(basename \\$entry)" >> createSL.bash
 echo "" >> createSL.bash
-echo "  if [ \\"\\$name\\" != \\"public\\" ]; then" >> createSL.bash
-echo "    if [[ \\$name != *\\".zip\\"* ]]; then" >> createSL.bash
-echo "      if [ -f \\$entry ]; then" >> createSL.bash
-echo "        # remove file or folder" >> createSL.bash
-echo "        rm -rf \\$name" >> createSL.bash
-echo "      fi" >> createSL.bash
-echo "      # create new symbolic link" >> createSL.bash
-echo "      ln -sfn \\$entry \\$name" >> createSL.bash
+echo "  if [ \\"\\$name\\" != \\"public\\" ] && [[ \\$name != *\\".zip\\"* ]]; then" >> createSL.bash
+echo "    if [ -f \\$entry ] || [ -d \\$entry ]; then" >> createSL.bash
+echo "      echo "Remove file or folder: $entry"" >> createSL.bash
+echo "      # remove file or folder" >> createSL.bash
+echo "      rm -rf \\$name" >> createSL.bash
 echo "    fi" >> createSL.bash
+echo "    # create new symbolic link" >> createSL.bash
+echo "    ln -sfn \\$entry \\$name" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
@@ -234,7 +233,7 @@ echo "  if [ \\"\\$shortname\\" != \\"images\\" ]; then" >> createSL.bash
 echo "    # create new symbolic link" >> createSL.bash
 echo "    cd public" >> createSL.bash
 echo "    # remove existing file/folder/symlink" >> createSL.bash
-echo "    if [ -f \\$shortname ]; then" >> createSL.bash
+echo "    if [ -f \\$shortname ] || [ -d \\$shortname ]; then" >> createSL.bash
 echo "      # remove file or folder" >> createSL.bash
 echo "      echo \\" remove file or folder: \\$shortname \\"" >> createSL.bash
 echo "      rm -rf \\$shortname" >> createSL.bash
