@@ -1,19 +1,11 @@
+import os
 from datetime import datetime
 
 import MySQLdb
 import mysql.connector
 import sshtunnel
 
-
-def timer(fn):
-    def new_function(*args, **kwargs):
-        before = datetime.now()
-        x = fn(*args, **kwargs)
-        after = datetime.now()
-        print("Elapsed Time = {0}".format(after - before))
-        return x
-
-    return new_function
+from utils.timer import timer
 
 
 def log_arg(fn):
@@ -29,6 +21,17 @@ def log_arg(fn):
 class DbConnection:
     ssh_server = None
     db = None
+
+    @staticmethod
+    def get_instance(config):
+        need_ssh = True
+        if ('DB_HOST' in os.environ.keys()) and ('DB_USER' in os.environ.keys()) and (
+                    'DB_PASSWORD' in os.environ.keys()):
+            config['local']['host'] = os.environ['DB_HOST']
+            config['db']['user'] = os.environ['DB_USER']
+            config['db']['pass'] = os.environ['DB_PASSWORD']
+            need_ssh = False
+        return DbConnection(need_ssh, config)
 
     def __init__(self, need_ssh, config):
         if need_ssh:
@@ -58,6 +61,7 @@ class DbConnection:
         print("Connected to DB " + ("(local)" if need_ssh else "(server)"))
         self.analytics_table = config['db']['analytics_table']
         self.price_table = config['db']['price_table']
+        self.index_table = config['db']['index_table']
         self._check_analytics_table()
 
     def _check_analytics_table(self):
@@ -67,8 +71,8 @@ class DbConnection:
         cursor.execute(query)
         cursor.close()
 
-    @timer
-    @log_arg
+    #@log_arg
+    #@timer
     def get_list(self, query):
         cursor = self.db.cursor()
         cursor.execute(query)
@@ -76,8 +80,8 @@ class DbConnection:
         cursor.close()
         return results
 
-    @timer
-    @log_arg
+    #@log_arg
+    #@timer
     def get_single_value(self, query):
         cursor = self.db.cursor()
         cursor.execute(query)
@@ -87,8 +91,8 @@ class DbConnection:
             return None
         return res[0]
 
-    @timer
-    @log_arg
+    #@log_arg
+    #@timer
     def execute(self, query):
         cursor = self.db.cursor()
         cursor.execute(query)

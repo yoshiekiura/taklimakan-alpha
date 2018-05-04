@@ -4,24 +4,57 @@ from datetime import datetime, timedelta
 
 import numpy as np
 from collections import namedtuple
+from utils.index import IndexType
 
-_ = namedtuple('FormulaInfo', ['number', 'date', 'length'])
+_ = namedtuple('FormulaInfo', ['number', 'date', 'length', 'index'])
 
 RISK_FREE_RATE = 0.014 / 365.25
+VOLATILITY_LENGTH = 60
+BETA_LENGTH = 60
+SHARPE_LENGTH = 60
+
+
+def validate(fn):
+    def new_function(self, asset, index=None):
+        if self.value.length is None:
+            raise Exception(self.name + ".apply not supported")
+        if len(asset) < self.value.length:
+            raise Exception("wrong asset length: " + str(len(asset)))
+        if index is not None and not same_keys(asset, index):
+            raise Exception("asset and index not matched")
+
+        k_prev = None
+        for k in sorted(asset.keys()):
+            if type(k) is not datetime:
+                raise Exception("wrong asset key type: " + str(k))
+            if k_prev is not None and not (k - k_prev).days == 1:
+                raise Exception("wrong asset keys interval")
+            if asset[k] is None:
+                raise Exception("price is None for key " + str(k))
+            if index is not None and index[k] is None:
+                raise Exception("index is None for key " + str(k))
+            k_prev = k
+
+        x = fn(self, asset, index)
+        return x
+
+    return new_function
 
 
 class Formula(enum.Enum):
-    Price = _(1, datetime(2017, 1, 1), None)
-    Volume = _(2, datetime(2017, 1, 1), None)
-    Volatility = _(3, datetime(2017, 3, 3), 60)
-    Alpha = _(4, datetime(2018, 2, 1), 60)
-    Beta = _(5, datetime(2018, 2, 1), 60)
-    SharpeRatio = _(6, datetime(2017, 3, 3), 60)
-    ExponentiallyWeightedVolatility = _(7, datetime(2017, 3, 3), 60)
-    ExponentiallyWeightedAlpha = _(8, datetime(2018, 2, 1), 60)
-    ExponentiallyWeightedBeta = _(9, datetime(2018, 2, 1), 60)
-    ExponentiallyWeightedSharpeRatio = _(10, datetime(2017, 3, 3), 60)
-    Index = _(11, datetime(2017, 12, 1), None)
+    Price = _(1, datetime(2017, 1, 1), None, None)
+    Volume = _(2, datetime(2017, 1, 1), None, None)
+    Volatility = _(3, datetime(2017, 3, 3), VOLATILITY_LENGTH, None)
+    Alpha = _(4, datetime(2018, 2, 1), BETA_LENGTH, IndexType.INDEX001)
+    Beta = _(5, datetime(2018, 2, 1), BETA_LENGTH, IndexType.INDEX001)
+    SharpeRatio = _(6, datetime(2017, 3, 3), SHARPE_LENGTH, None)
+    ExponentiallyWeightedVolatility = _(7, datetime(2017, 3, 3), VOLATILITY_LENGTH, None)
+    ExponentiallyWeightedAlpha = _(8, datetime(2018, 2, 1), BETA_LENGTH, IndexType.INDEX001)
+    ExponentiallyWeightedBeta = _(9, datetime(2018, 2, 1), BETA_LENGTH, IndexType.INDEX001)
+    ExponentiallyWeightedSharpeRatio = _(10, datetime(2017, 3, 3), SHARPE_LENGTH, None)
+    Index = _(11, datetime(2017, 12, 1), None, None)
+    AlphaSP500 = _(12, datetime(2017, 12, 1), BETA_LENGTH, IndexType.SP500)
+    BetaSP500 = _(13, datetime(2017, 12, 1), BETA_LENGTH, IndexType.SP500)
 
     def start_date(self, extra_data_days):
         if self in [Formula.Price, Formula.Volume, Formula.Index]:
@@ -29,24 +62,37 @@ class Formula(enum.Enum):
         else:
             return self.value.date + timedelta(days=extra_data_days)
 
-    def apply(self, asset, index):
+    @validate
+    def apply(self, asset, index=None):
         if self == Formula.Volatility:
             return get_volatility(asset)
-        if self == Formula.Beta:
-            return get_beta(asset, index)
-        if self == Formula.Alpha:
-            return get_alpha(asset, index)
+        if self == Formula.Beta or self == Formula.BetaSP500:
+            if index is not None:
+                return get_beta(asset, index)
+        if self == Formula.Alpha or self == Formula.AlphaSP500:
+            if index is not None:
+                return get_alpha(asset, index)
         if self == Formula.SharpeRatio:
             return get_sharpe_ratio(asset)
         if self == Formula.ExponentiallyWeightedVolatility:
             return get_volatility(asset, True)
         if self == Formula.ExponentiallyWeightedAlpha:
-            return get_alpha(asset, index, True)
+            if index is not None:
+                return get_alpha(asset, index, True)
         if self == Formula.ExponentiallyWeightedBeta:
-            return get_beta(asset, index, True)
+            if index is not None:
+                return get_beta(asset, index, True)
         if self == Formula.ExponentiallyWeightedSharpeRatio:
-            return get_sharpe_ratio(asset, True)
+            if index is not None:
+                return get_sharpe_ratio(asset, True)
 
+        return None
+
+    @staticmethod
+    def get_by_number(number):
+        for f in Formula:
+            if f.value.number == number:
+                return f
         return None
 
 
@@ -71,7 +117,7 @@ def get_beta(d, index, weighted=False):
 def get_sharpe_ratio(d, weighted=False):
     r = get_returns(d)
     mean_r = weighted_mean(r) if weighted else np.mean(r)
-    stdev_r = math.sqrt(weighted_cov(r,r)) if weighted else  np.std(r)
+    stdev_r = math.sqrt(weighted_cov(r, r)) if weighted else  np.std(r)
     if stdev_r != 0:
         return (mean_r - RISK_FREE_RATE) / stdev_r
     else:
