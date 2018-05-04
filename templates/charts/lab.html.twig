@@ -8,96 +8,59 @@
         #lab-chart { width: 100%; height: 600px; }
         #range-selector { text-align: right; padding: 20px 20px 0px 0px; }
     </style>
-
+{#
     <div id="lab-card" class="news-header" style="margin: 75px 0 0 0"><h2><a name="lab">Lab Chart</a></h2></div>
-    <p>There are so many data feeds to experiment with!</p>
+    <p>There are so many data feeds to experiment with!</p> #}
     <div id="lab-chart"><div id="range-selector"></div></div>
 
     <script>
 
     var globalChart;
+    var globalType = 1;
+    var globalPair = '';
+    var globalPlots = [];
+    var globalCount = 0;
 
     document.addEventListener('DOMContentLoaded', function() {
 
         anychart.licenseKey('lar.fm-99e7e246-4b5d8f8b');
+
         anychart.onDocumentReady(function () {
-        anychart.theme('lightGlamour');
 
-        var ranges = [
-            { 'type' : 'unit', 'unit' : 'day', 'count' : 7, 'text' : 'Week' },
-            { 'type' : 'unit', 'unit' : 'month', 'count' : 1, 'text' : 'Month' },
-            { 'type' : 'unit', 'unit' : 'month', 'count' : 3, 'text' : 'Quarter' },
-            { 'type' : 'unit', 'unit' : 'year', 'count' : 1, 'text' : 'Year' },
-            { 'type': 'max', 'text': 'All' },
-        ];
+            anychart.theme('lightGlamour');
 
-        // --- AnyCharts Actual Code ---
+            var ranges = [
+                { 'type' : 'unit', 'unit' : 'day', 'count' : 7, 'text' : 'Week' },
+                { 'type' : 'unit', 'unit' : 'month', 'count' : 1, 'text' : 'Month' },
+                { 'type' : 'unit', 'unit' : 'month', 'count' : 3, 'text' : 'Quarter' },
+                { 'type' : 'unit', 'unit' : 'year', 'count' : 1, 'text' : 'Year' },
+                { 'type': 'max', 'text': 'All' },
+            ];
 
-/*
-                    var data = {{ data|json_encode|raw }};
-                    var dataTable = anychart.data.table();
-                    dataTable.addData(data);
+            var chart = anychart.stock();
+            var credits = chart.credits();
+            credits.enabled(false);
 
-                    var volume = {{ volume|json_encode|raw }};
-                    var volumeTable = anychart.data.table();
-                    volumeTable.addData(volume);
-*/
+            globalChart = chart;
 
-                    var chart = anychart.stock();
-globalChart = chart;
-                    var credits = chart.credits();
-                    credits.enabled(false);
+            chart.container('lab-chart');
+            chart.draw();
 
-/*
-                        var plot = chart.plot(0);
-                        plot.height("75%");
-                        plot.line()
-                        //plot.column()
-                            .data(dataTable.mapAs({'value': 1}))
-                            .name('Price')
-                            //.fill('#1976d2 0.65')
-                            //.stroke('1.75 #1976d2')
-                            .stroke('2 #564fd9')
-                            //.tooltip(false)
-                            ;
+            var rangeSelector = anychart.ui.rangeSelector();
+            rangeSelector.ranges(ranges);
+            rangeSelector.target(chart);
+            rangeSelector.render(document.getElementById("range-selector"));
 
-                        var volumePlot = chart.plot(1);
-                        volumePlot.height("25%");
-                        volumePlot.column()
-                            .data(volumeTable.mapAs({'value': 1}))
-                            .name('Volume')
-                            .stroke('1.25 #007bff')
-                            //.stroke('1.25 #564fd9')
-                            ;
-*/
-
-                        chart.container('lab-chart');
-                        chart.draw();
-
-                        var rangeSelector = anychart.ui.rangeSelector();
-                        rangeSelector.ranges(ranges);
-                        rangeSelector.target(chart);
-                        rangeSelector.render(document.getElementById("range-selector"));
-
-
-
-                    });
-
-
-                // --- AnyChart Code ends ---
+        });
 
     }); // jQuery or DOMContentLoaded
 
-
-
     </script>
-
-
 </div>
 
-<div class="container" style="margin-top: 50px;">
+<div class="container" style="margin-top: 50px;"><div class="row">
 
-    <div class="form-check col-6">
+    <div class="col-8">
     {% set count = 0 %}
         {% for pair in allowed %}
 
@@ -105,9 +68,13 @@ globalChart = chart;
             <div class="row" style="padding: 2px 2px 2px 0px;">
         {% endif %}
             {% set count = count + 1 %}
-            <input type="checkbox" id="{{pair}}-Checkbox" class="col" onchange='showPair("{{pair}}");'>
+            <input type="checkbox" id="{{pair}}-Checkbox" class="col chbox" onchange='showPair("{{pair}}");'>
             <label for="{{pair}}-Checkbox" class="form-check-label col"><span class="small">{{pair}}</span></label>
-        {% if count == 3 %}
+        {% if count == 4 or loop.index == allowed|length %}
+            {# % if loop.index == allowed|length % }
+                <input type="checkbox" class="col"><label class="col"></label>
+                <input type="checkbox" class="col"><label class="col"></label>
+            { % endif % #}
             </div>
             {% set count = 0 %}
         {% endif %}
@@ -115,56 +82,123 @@ globalChart = chart;
     {% endfor %}
     </div>
 
-    <div class="form-check col-6">
+    <div class="col-4" style="text-align: right;">
+
+        <div class="btn-group">
+            <button id="choose-button" class="btn btn-secondary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+                Chart Type #1
+            </button>
+            <div class="dropdown-menu">
+                {% for i in range (1,11) %}
+                <a class="dropdown-item" href="#" onclick="changeType({{i}});">Chart Type {{i}}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div>
+            <p><br/>#1 - Price / #2 - Volume / <br/>#3 - Volatility / #4 - Alpha / <br/>#5 - Beta / #6 - Sharpe</p>
+        </div>
+
     </div>
 
-</div>
+</div></div>
 
 <script>
+
+    function changeType(type) {
+        $('.chbox').prop('checked', false);
+        globalType = type;
+        $('#choose-button').text('Chart Type #' + type);
+    }
+
     function showPair(pair) {
-        //alert(pair);
 
         cb = document.getElementById(pair + "-Checkbox");
-        //cat = document.getElementById(cat);
-        if (cb.checked) {
-            // alert ("Show " + pair);
+        if (cb.checked)
             drawPlot(pair);
-        }
         else
-            alert ("Hide " + pair);
+            hidePlot(pair);
 
+    }
 
-
+    function hidePlot(pair) {
+        //globalPlots[pair].hide();
+        //globalPlots[pair].enabled(false);
     }
 
     function drawPlot(pair) {
 
-        //alert(globalChart);
+        //alert(pair);
 
-        $.get("/api/lab", { "pair": pair } ).done(function( data ) {
+        //var params = { pair: pair } ;
+        //$.post("/api/lab", params).done(function(data) {
 
-            alert(data);
+        var params = { pair: pair, type: globalType };
 
-            // var data = {{ data|json_encode|raw }};
-            var dataTable = anychart.data.table();
-            dataTable.addData(data);
+        $.ajax({
+            url: '/api/lab',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(params),
+            processData: false,
+            success: function(data, textStatus, jQxhr) {
 
-//            var plot = chart.plot(2);
-    var plot = globalChart.plot(0);
-            //plot.height("75%");
-            plot.line()
-            //plot.column()
-                .data(dataTable.mapAs({'value': 1}))
-                //.name('Price')
-                //.fill('#1976d2 0.65')
-                //.stroke('1.75 #1976d2')
-                //.stroke('2 #564fd9')
-                //.tooltip(false)
-                ;
+                // alert(JSON.stringify(data));
+                var dataTable = anychart.data.table();
+                dataTable.addData(data);
 
-          });
+        //            var plot = chart.plot(2);
+                globalCount++;
+                var plot = globalChart.plot(0);
+                //var plot = globalChart.plot(globalCount);
+                //plot.height("75%");
+                plot.line()
+                //plot.column()
+                    .data(dataTable.mapAs({'value': 1}))
+                    .name('#' + globalType + ' | ' + pair)
+                    //.fill('#1976d2 0.65')
+                    //.stroke('1.75 #1976d2')
+                    //.stroke('2 #564fd9')
+                    //.tooltip(false)
+                    ;
+
+                    globalPlots[pair] = plot;
+                },
+                error: function( jqXhr, textStatus, errorThrown ){
+                    console.log('[ERR ] Cant get Data with AJAX!');
+                }
+            });
 
     }
+
+
+        function drawPlotAjax(pair) {
+
+        var params = { pair: pair } ;
+
+                $.ajax({
+                    url: '/api/lab',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: params,
+                    processData: false,
+                    success: function(data, textStatus, jQxhr) {
+                        //alert(JSON.stringify(data));
+                        //alert(data);
+                        // $('#response pre').html( data );
+                    },
+                    error: function( jqXhr, textStatus, errorThrown ){
+                        console.log('[ERR ] Cant get Data with AJAX!');
+                    }
+                });
+
+                // e.preventDefault();
+
+        };
+
+        // $('#my-form').submit( processForm );
 
 </script>
 
