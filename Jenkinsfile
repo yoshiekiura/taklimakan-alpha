@@ -224,7 +224,7 @@ echo "echo "################################################"" >> createSL.bash
 echo "for entry in \\`ls -d DEPLOY/\\$versionId/*\\`; do" >> createSL.bash
 echo "  name=\\$(basename \\$entry)" >> createSL.bash
 echo "" >> createSL.bash
-echo "  if [ \\"\\$name\\" != \\"public\\" ] && [[ \\$name != *\\".zip\\"* ]]; then" >> createSL.bash
+echo "  if [ \\"\\$name\\" != \\"public\\" ] && [ \\"\\$name\\" != \\"var\\" ] && [[ \\$name != *\\".zip\\"* ]]; then" >> createSL.bash
 echo "    if [ -f \\$entry ] || [ -d \\$entry ]; then" >> createSL.bash
 echo "      echo \\"Remove file or folder: \\$entry .. \\$name\\"" >> createSL.bash
 echo "      # remove file or folder" >> createSL.bash
@@ -253,7 +253,6 @@ echo "    cd public" >> createSL.bash
 echo "    # remove existing file/folder/symlink" >> createSL.bash
 echo "    if [ -f \\$shortname ] || [ -d \\$shortname ]; then" >> createSL.bash
 echo "      # remove file or folder" >> createSL.bash
-#echo "      echo \\" remove file or folder: \\$shortname \\"" >> createSL.bash
 echo "      rm -rf \\$shortname" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "" >> createSL.bash
@@ -275,8 +274,7 @@ echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
-echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
-'''
+echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash'''
           sh '''#!/bin/bash
 if [ -d taklimakan-alpha ]; then
   # remove previous deploy data
