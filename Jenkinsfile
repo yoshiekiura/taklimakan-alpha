@@ -84,7 +84,50 @@ exit 0
 
         }
         steps {
-          sh '#!/bin/bash'
+          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+            sh '''#!/bin/bash
+# take symfony enviroment file to make sure that
+#   deploy process not crash server 
+#   (it could be if symfony environment variables are missed)
+
+scp -P $DEVELOP_PORT tkln@$DEVELOP_HOST:/var/www/.env develop.env
+scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
+#TODO uncomment for master branch in future
+#scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
+'''
+          }
+
+          sh '''#!/bin/bash
+echo "Branch Name: $BRANCH_NAME"
+if [ "$BRANCH_NAME" == "master" ]; then
+  # Verify that .env file of realease branch contain the 
+  #   same Symfony environment variables as in develop branch
+  FROM="release.env"
+  TO="master.env"
+else
+  if [ "$BRANCH_NAME" != "develop" ]; then
+  # Verify that .env file of realease branch contain the 
+  #   same symfony environment variables as in develop branch
+  echo "Verify that Symfony enviroment variables are exist both in release and develop branch"
+  FROM="develop.env"
+  TO="release.env"
+  fi
+fi
+
+while IFS= read -r line
+do
+  if [[ $line != "#"* ]] && [[ $line == *"="* ]]; then
+    envvariable=$(echo $line| cut -d\'=\' -f 1)
+    if ! grep "^[^#;]" $TO | grep "$envvariable=" >> /dev/null; then
+      echo "Symfony enviroment variable files are different. Merge required"
+      exit 1
+    fi
+  fi
+done <"$FROM"
+
+echo "Symfony enviromnt variable file is correct. Proceed with deploy"
+'''
+          sh 'rm -rf *.env'
         }
       }
       stage('Archive & Deploy') {
@@ -307,17 +350,17 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]
 then
-  DEPLOY_HOST="192.168.100.127"
-  DEPLOY_PORT="8022"
+  DEPLOY_HOST=$PRODUCTION_HOST
+  DEPLOY_PORT=$PRODUCTION_PORT
 else
   if [ "$BRANCH_NAME" == "develop" ]
   then
-    DEPLOY_HOST="192.168.100.125"
-    DEPLOY_PORT="8022"
+    DEPLOY_HOST=$DEVELOP_HOST
+    DEPLOY_PORT=$DEVELOP_PORT
   else
     #release branch
-    DEPLOY_HOST="192.168.100.126"
-    DEPLOY_PORT="8022"
+    DEPLOY_HOST=$RELEASE_HOST
+    DEPLOY_PORT=$RELEASE_PORT
   fi
 fi
 echo "Deploy Host: $DEPLOY_HOST:$DEPLOY_PORT"
@@ -337,5 +380,13 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
 
         }
       }
+    }
+    environment {
+      DEVELOP_HOST = '"192.168.100.125"'
+      DEVELOP_PORT = '"8022"'
+      RELEASE_HOST = '"192.168.100.126"'
+      RELEASE_PORT = '"8022"'
+      PRODUCTION_HOST = '"192.168.100.127"'
+      PRODUCTION_PORT = '"8022"'
     }
   }
