@@ -227,7 +227,7 @@ echo "      rm -rf \\$name" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "    # create new symbolic link" >> createSL.bash
 echo "    ln -sfn \\$entry \\$name" >> createSL.bash
-echo "    echo \\"Creating symbolic link from \\$entry to .. DEPLOY/\\$versionId/\\$name ... done\\"" >> createSL.bash
+echo "    echo \\"Creating symbolic link from  $name to .. \\$entry ... done\\"" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
