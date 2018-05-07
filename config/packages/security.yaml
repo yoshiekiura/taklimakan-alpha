@@ -6,10 +6,10 @@ security:
             memory:
                 users:
                     user:
-                        password: yetanotherpass
+                        password: '%env(USER_PASSWORD)%' 
                         roles: 'ROLE_USER'
                     admin:
-                        password: unicorn2018
+                        password: '%env(ADMIN_PASSWORD)%' 
                         roles: 'ROLE_ADMIN'
         db_provider:
             entity:

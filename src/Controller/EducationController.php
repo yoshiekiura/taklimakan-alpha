@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Lecture;
 use App\Entity\Course;
 // use App\Entity\Joiner;
+use App\Entity\Tags;
 
 use App\Repository\LectureRepository;
 use App\Repository\CourseRepository;
@@ -56,24 +57,53 @@ class EducationController extends Controller
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
         $filter = [];
+
+        $tags = $request->query->get('tags') ? explode(',', $request->query->get('tags')) : [];
+        if ($tags) $filter['tags'] = $tags;
+
+        $page = $request->query->get('page') ? intval($request->query->get('page')) : 1;
+        if ($page) $filter['page'] = $page - 1;
+
+        $limit = $request->query->get('limit') ? intval($request->query->get('limit')) : 6;
+        if ($limit) $filter['limit'] = $limit;
+
+        $level = $request->query->get('level') ? intval($request->query->get('level')) : null;
+        if ($level) $filter['level'] = $level;
+
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
         $courses = $courseRepo->getCourses($filter);
         foreach ($courses as &$course)
             $course['type'] = 'course';
 
         $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
-        $standaloneLectures = $lectureRepo->findBy([ 'course' => null]);
-//echo (count($standaloneLectures)) ; die();
+        $filter['course'] = null;
+        $standaloneLectures = $lectureRepo->getLectures($filter);
 
         foreach ($standaloneLectures as $lecture) {
         //    $lecture['type'] = 'lecture';
             $courses[] = $lecture;
         }
 
+        $courses = array_slice($courses, 0, $filter['limit']);
+
+        $tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
+        $allTags = $tagsRepo->findAll();
+
         return $this->render('edu/courses.html.twig', [
             'menu' => 'edu',
             'show_welcome' => $showWelcome,
-            'courses' => $courses
+            'courses' => $courses,
+            'tags' => $allTags, // Selected tags to sort
+            'filter' => [
+                'sort' => null, // NB! Define sort orders later (new / older / trending / popular / etc)
+                'level' => null,
+                'tags' => implode($tags, ','),
+            ],
+            'paginator' => [
+                'total' => null,   // Total items for paginator / NB! Do not count for now
+                'page'  => $page,  // Current Page
+                'limit' => $limit, // Max items on the page
+            ]
         ]);
     }
 
@@ -104,7 +134,7 @@ class EducationController extends Controller
 //var_dump(count($joiners)); die();
         // $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
 //        $lectures = $lectureRepo->findBy([ 'id' => $joiners ]);
-        $lectures = $course->getLectures();
+        $lectures = $course->getActiveLectures();
 
         return $this->render('courses/show.html.twig', [
             'menu' => 'edu',
@@ -124,7 +154,7 @@ class EducationController extends Controller
      */
     public function lectures(Request $request)
     {
-die("KEK");
+
         // https://stackoverflow.com/questions/10625491/symfony2-and-throwing-exception-error/35088605#35088605
         throw $this->createNotFoundException('This route does not exist!');
 
@@ -181,7 +211,7 @@ die("KEK");
             'course' => $course,
             'lecture' => $lecture,
             'lectures' => $lectures,
-            'tags' => $tags, 
+            'tags' => $tags,
         ]);
     }
 
