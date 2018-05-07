@@ -75,6 +75,18 @@ exit 0
           }
         }
       }
+      stage('Compare .env') {
+        when {
+          anyOf {
+            branch 'master'
+            branch 'release/**'
+          }
+
+        }
+        steps {
+          sh '#!/bin/bash'
+        }
+      }
       stage('Archive & Deploy') {
         when {
           anyOf {
