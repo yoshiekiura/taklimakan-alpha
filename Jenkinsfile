@@ -75,6 +75,18 @@ exit 0
           }
         }
       }
+      stage('Compare .env') {
+        when {
+          anyOf {
+            branch 'master'
+            branch 'release/**'
+          }
+
+        }
+        steps {
+          sh '#!/bin/bash'
+        }
+      }
       stage('Archive & Deploy') {
         when {
           anyOf {
@@ -111,8 +123,6 @@ echo "  echo \\"Deploy is not successful. Wrong number of arguments\\"" >> deplo
 echo "  exit 1" >> deploy
 echo "fi" >> deploy
 echo "" >> deploy
-echo "dir" >> deploy
-echo "echo \\"arguments: \\$1 .. \\$2\\"" >> deploy
 echo "if [ ! -f DEPLOY/\\$1.zip ]; then" >> deploy
 echo "  echo \\"Deploy is not successful. Deploy file is not exist: \\$1.zip\\"" >> deploy
 echo "  exit 1" >> deploy
@@ -137,17 +147,21 @@ echo "  echo \\"Deploy is not successful. Deploy version already exist\\"" >> de
 echo "  exit 1" >> deploy
 echo "fi" >> deploy
 echo "" >> deploy
-echo "#2. install composer" >> deploy
+echo "#2. install composer." >> deploy
+echo "#      If composer installation is failed then it finished with error code !=0" >> deploy
+echo "#        and deploy script stopped and exit with the same error code" >> deploy
+echo "#        and Jenkins treat it as error and jenkins build will failed" >> deploy
+echo "" >> deploy
+echo "# copy .env to DEPLOY/<version> which is necessary for symphony" >> deploy
+echo "cp .env DEPLOY/\\$version_id/.env" >> deploy
 echo "cd DEPLOY/\\$version_id" >> deploy
 echo "composer install" >> deploy
 echo "" >> deploy
 echo "# return to /var/www/ folder" >> deploy
 echo "cd /var/www/" >> deploy
 echo "" >> deploy
-echo "#3. (TODO) verify composer installation process (awk or grep log)" >> deploy
-echo "" >> deploy
-echo "#4. Create symlinks" >> deploy
-echo "./createSL \\$version_id" >> deploy
+echo "#Create symlinks" >> deploy
+echo "./createSL.bash \\$version_id" >> deploy
 '''
           sh '''echo "#!/bin/bash" > createSL.bash
 echo "#########################################################" >> createSL.bash
@@ -181,7 +195,7 @@ echo "#########################################################" >> createSL.bas
 echo "" >> createSL.bash
 echo "cd /var/www/" >> createSL.bash
 echo "if [ \\$# != 1 ]; then" >> createSL.bash
-echo "  echo "Deploy is not success. Deploy version is not set"" >> createSL.bash
+echo "  echo \\"Deploy is not success. Deploy version is not set\\"" >> createSL.bash
 echo "  exit 1;" >> createSL.bash
 echo "fi" >> createSL.bash
 echo "" >> createSL.bash
@@ -203,18 +217,17 @@ echo "#folder DEPLOY/\\$versioId exist now just create SL" >> createSL.bash
 echo "#  for all files/folder in it except public" >> createSL.bash
 echo "#  create links for all objects in public folder" >> createSL.bash
 echo "#  except \\"images\\" it will remain the same as before" >> createSL.bash
-echo "for entry in `ls -d DEPLOY/\\$versionId/*`; do" >> createSL.bash
+echo "for entry in \\`ls -d DEPLOY/\\$versionId/*\\`; do" >> createSL.bash
 echo "  name=\\$(basename \\$entry)" >> createSL.bash
 echo "" >> createSL.bash
-echo "  if [ \\"\\$name\\" != \\"public\\" ]; then" >> createSL.bash
-echo "    if [[ \\$name != *\\".zip\\"* ]]; then" >> createSL.bash
-echo "      if [ -f \\$entry ]; then" >> createSL.bash
-echo "        # remove file or folder" >> createSL.bash
-echo "        rm -rf \\$name" >> createSL.bash
-echo "      fi" >> createSL.bash
-echo "      # create new symbolic link" >> createSL.bash
-echo "      ln -sfn \\$entry \\$name" >> createSL.bash
+echo "  if [ \\"\\$name\\" != \\"public\\" ] && [ \\"\\$name\\" != \\"var\\" ] && [[ \\$name != *\\".zip\\"* ]]; then" >> createSL.bash
+echo "    if [ -f \\$entry ] || [ -d \\$entry ]; then" >> createSL.bash
+echo "      # remove file or folder" >> createSL.bash
+echo "      rm -rf \\$name" >> createSL.bash
 echo "    fi" >> createSL.bash
+echo "    # create new symbolic link" >> createSL.bash
+echo "    ln -sfn \\$entry \\$name" >> createSL.bash
+echo "    echo \\"Creating symbolic link from \\$name to .. \\$entry ... done\\"" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
@@ -227,14 +240,14 @@ echo "  mkdir public" >> createSL.bash
 echo "  mkdir public/images" >> createSL.bash
 echo "fi" >> createSL.bash
 echo "" >> createSL.bash
-echo "for public_entry in `ls -d DEPLOY/\\$versionId/public/*`; do" >> createSL.bash
+echo "for public_entry in \\`ls -d DEPLOY/\\$versionId/public/*\\`; do" >> createSL.bash
 echo "  shortname=\\$(basename \\$public_entry)" >> createSL.bash
 echo "  #create symbolic links inside public for all items except images" >> createSL.bash
 echo "  if [ \\"\\$shortname\\" != \\"images\\" ]; then" >> createSL.bash
 echo "    # create new symbolic link" >> createSL.bash
 echo "    cd public" >> createSL.bash
 echo "    # remove existing file/folder/symlink" >> createSL.bash
-echo "    if [ -f \\$shortname ]; then" >> createSL.bash
+echo "    if [ -f \\$shortname ] || [ -d \\$shortname ]; then" >> createSL.bash
 echo "      # remove file or folder" >> createSL.bash
 echo "      rm -rf \\$shortname" >> createSL.bash
 echo "    fi" >> createSL.bash
@@ -244,13 +257,15 @@ echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
+echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
-echo "for folderToZip in `ls -d *`; do" >> createSL.bash
+echo "for folderToZip in \\`ls -d *\\`; do" >> createSL.bash
 echo "  if [ -d \\$folderToZip ]; then" >> createSL.bash
 echo "    if [ \\"\\$folderToZip\\" != \\"\\$versionId\\" ]; then" >> createSL.bash
 echo "      echo \\"zip previous version: \\$folderToZip\\"" >> createSL.bash
 echo "      zip -r -m -q  \\$folderToZip.zip \\$folderToZip" >> createSL.bash
+echo "      rm -rf \\$folderToZip" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
@@ -266,7 +281,13 @@ fi
 mkdir taklimakan-alpha
 
 for D in *; do
-  if [ $D != "taklimakan-alpha" ] && [ $D != ".git" ] && [ $D != "Jenkinsfile" ] && [ $D != "CodeAnalysis" ]; then
+  if [ $D != "taklimakan-alpha" ] && 
+     [ $D != ".git" ] && 
+     [ $D != "Jenkinsfile" ] && 
+     [ $D != "CodeAnalysis" ] && 
+     [ $D != "deploy" ] &&
+     [ $D != "createSL.bash" ] &&
+     [[ $D != *"pylint"* ]]; then
     # copy to taklimakan-alpha
     if [ -d "${D}" ]; then
       cp -R $D taklimakan-alpha/
@@ -278,11 +299,11 @@ done
 
 #zip deploy file
 zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
+
 '''
           archiveArtifacts '*.zip'
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
-dir
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]
 then
@@ -311,7 +332,7 @@ echo "Run deploy script"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $OUTPUT.$BUILD_NUMBER'''
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
           }
 
         }
