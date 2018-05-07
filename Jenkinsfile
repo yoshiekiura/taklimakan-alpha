@@ -135,7 +135,11 @@ echo "  echo \\"Deploy is not successful. Deploy version already exist\\"" >> de
 echo "  exit 1" >> deploy
 echo "fi" >> deploy
 echo "" >> deploy
-echo "#2. install composer" >> deploy
+echo "#2. install composer." >> deploy
+echo "#      If composer installation is failed then it finished with error code !=0" >> deploy
+echo "#        and deploy script stopped and exit with the same error code" >> deploy
+echo "#        and Jenkins treat it as error and jenkins build will failed" >> deploy
+echo "" >> deploy
 echo "# copy .env to DEPLOY/<version> which is necessary for symphony" >> deploy
 echo "cp .env DEPLOY/\\$version_id/.env" >> deploy
 echo "cd DEPLOY/\\$version_id" >> deploy
@@ -144,9 +148,7 @@ echo "" >> deploy
 echo "# return to /var/www/ folder" >> deploy
 echo "cd /var/www/" >> deploy
 echo "" >> deploy
-echo "#3. (TODO) verify composer installation process (awk or grep log)" >> deploy
-echo "" >> deploy
-echo "#4. Create symlinks" >> deploy
+echo "#Create symlinks" >> deploy
 echo "./createSL.bash \\$version_id" >> deploy
 '''
           sh '''echo "#!/bin/bash" > createSL.bash
@@ -248,8 +250,6 @@ echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
-#echo "#install composer" >> createSL.bash
-#echo "composer install" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
