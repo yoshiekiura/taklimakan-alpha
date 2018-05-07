@@ -27,3 +27,5 @@ tmp
 /public/images/lectures
 
 /.idea/
+
+/services/udf_feed/node_modules/
