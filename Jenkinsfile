@@ -217,21 +217,17 @@ echo "#folder DEPLOY/\\$versioId exist now just create SL" >> createSL.bash
 echo "#  for all files/folder in it except public" >> createSL.bash
 echo "#  create links for all objects in public folder" >> createSL.bash
 echo "#  except \\"images\\" it will remain the same as before" >> createSL.bash
-echo "dir" >> createSL.bash
-echo "echo "################################################"" >> createSL.bash
-echo "ls -d DEPLOY/\\$versionId/*" >> createSL.bash
-echo "echo "################################################"" >> createSL.bash
 echo "for entry in \\`ls -d DEPLOY/\\$versionId/*\\`; do" >> createSL.bash
 echo "  name=\\$(basename \\$entry)" >> createSL.bash
 echo "" >> createSL.bash
 echo "  if [ \\"\\$name\\" != \\"public\\" ] && [ \\"\\$name\\" != \\"var\\" ] && [[ \\$name != *\\".zip\\"* ]]; then" >> createSL.bash
 echo "    if [ -f \\$entry ] || [ -d \\$entry ]; then" >> createSL.bash
-echo "      echo \\"Remove file or folder: \\$entry .. \\$name\\"" >> createSL.bash
 echo "      # remove file or folder" >> createSL.bash
 echo "      rm -rf \\$name" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "    # create new symbolic link" >> createSL.bash
 echo "    ln -sfn \\$entry \\$name" >> createSL.bash
+echo "    echo \\"Creating symbolic link from \\$entry to .. DEPLOY/\\$versionId/\\$name ... done\\"" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
@@ -274,7 +270,8 @@ echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
-echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash'''
+echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
+'''
           sh '''#!/bin/bash
 if [ -d taklimakan-alpha ]; then
   # remove previous deploy data
