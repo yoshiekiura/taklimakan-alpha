@@ -97,7 +97,9 @@ scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
 #TODO uncomment for master branch in future
 echo "get Symfony enviroment file from Master"
 #scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
-'''
+
+dir
+echo "#####################################"'''
           }
 
           sh '''#!/bin/bash
