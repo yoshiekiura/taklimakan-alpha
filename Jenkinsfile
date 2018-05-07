@@ -117,6 +117,8 @@ else
   fi
 fi
 
+dir 
+
 while IFS= read -r line
 do
   if [[ $line != "#"* ]] && [[ $line == *"="* ]]; then
