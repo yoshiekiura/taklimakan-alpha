@@ -47,7 +47,7 @@
 
 
         <div class="container">
-                <div class="news-box">
+                <div class="news-box" style="margin-bottom: 0px;">
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="news-include">
@@ -65,6 +65,10 @@
                                         <li class="list-inline-item">Source: <a href="{{ news.source }}" target="_blank" class="news-source">{{ news.source|source }}</a></li>
                                         {# <li class="list-inline-item"><a href="#">Subscribe</a></li> #}
                                     </ul>
+
+                                    <div class="addthis-buttons">
+                                        {% include 'news/buttons.html.twig'%}
+                                    </div>
 
                                     <div class="p-content">
                                         <div class="fr-view">
@@ -88,6 +92,8 @@
                         </div>
                     </div>
                 </div>
+
+                {% include 'news/comments.html.twig'%}
 
     </div></div>
     </div></div>
