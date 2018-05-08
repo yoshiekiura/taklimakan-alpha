@@ -75,7 +75,7 @@ exit 0
           }
         }
       }
-      stage('Compare .env') {
+      stage('Compare Symfony ENV') {
         when {
           anyOf {
             branch 'master'
@@ -144,6 +144,7 @@ do
     envvariable=$(echo $line| cut -d\'=\' -f 1)
     if ! grep "^[^#;]" $TO | grep "$envvariable=" >> /dev/null; then
       echo "Symfony enviroment variable files are different. Merge required"
+      rm -rf *.env
       exit 1
     fi
   fi
@@ -152,7 +153,6 @@ done <"$FROM"
 echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 '''
           sh 'rm -rf *.env'
-          cleanWs(externalDelete: 'rm -rf *.env')
         }
       }
       stage('Archive & Deploy') {
