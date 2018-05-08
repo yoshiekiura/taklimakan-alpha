@@ -118,6 +118,7 @@ scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
 
 if [ ! -f release.env ]; then
   echo "Symfony environment file not exist"
+  dir
   rm -rf *.env
   dir 
   exit 1
