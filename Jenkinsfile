@@ -116,16 +116,13 @@ fi'''
 echo "get Symfony enviroment file from Release"
 scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
 
-dir
-echo "#####################################"
-
 if [ ! -f release.env ]; then
   echo "Symfony environment file not exist"
   rm -rf *.env
+  dir 
   exit 1
 fi
-
-dir'''
+'''
           }
 
           sh '''#!/bin/bash
