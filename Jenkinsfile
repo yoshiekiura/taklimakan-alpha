@@ -107,7 +107,7 @@ if [ ! -f develop.env ]; then
 fi'''
           }
 
-          sshagent(credentials: ['BlockChain-release'], ignoreMissing: true) {
+          sshagent(credentials: ['Blockchain-release'], ignoreMissing: true) {
             sh '''#!/bin/bash
 # take symfony enviroment file to make sure that
 #   deploy process not crash server 
