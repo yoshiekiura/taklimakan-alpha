@@ -92,14 +92,7 @@ exit 0
 
 echo "get Symfony enviroment file from Develop"
 scp -P $DEVELOP_PORT tkln@$DEVELOP_HOST:/var/www/.env develop.env
-#echo "get Symfony enviroment file from Release"
-#scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
-#TODO uncomment for master branch in future
-#echo "get Symfony enviroment file from Master"
-#scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
 
-#dir
-#echo "#####################################"
 if [ ! -f develop.env ]; then
   echo "Symfony environment file not exist"
   rm -rf *.env
@@ -159,6 +152,7 @@ done <"$FROM"
 echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 '''
           sh 'rm -rf *.env'
+          cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, cleanupMatrixParent: true, externalDelete: '*.env')
         }
       }
       stage('Archive & Deploy') {
