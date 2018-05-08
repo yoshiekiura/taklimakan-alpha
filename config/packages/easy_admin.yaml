@@ -206,11 +206,12 @@ easy_admin:
 
             class: App\Entity\User
             list:
-                fields: ['id', 'email']
+                fields: ['id', 'email', 'erc20_token']
             form:
                 fields:
                     - { property: 'firstName', label: 'First Name' }
                     - { property: 'lastName', label: 'Last Name' }
+                    - { property: 'erc20Token', label: 'ERC-20 Wallet' }
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 

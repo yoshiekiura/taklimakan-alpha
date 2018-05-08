@@ -41,10 +41,6 @@ class RegistrationType extends AbstractType
                 'label' => 'ERC-20 Wallet',
                 'required' => true,
                 'constraints' => [
-                    new Assert\NotNull(),
-                    new Assert\Length([
-                        'min' => 40,
-                    ]),
                     new Assert\Regex([
                         'pattern' => '/^[a-zA-Z0-9]{40,}$/',
                     ]),

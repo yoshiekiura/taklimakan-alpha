@@ -181,7 +181,7 @@ class User implements UserInterface, \Serializable
      * @param string $erc20Token
      * @return User
      */
-    public function setErc20Token(string $erc20Token): User
+    public function setErc20Token($erc20Token): User
     {
         $this->erc20Token = $erc20Token;
 
