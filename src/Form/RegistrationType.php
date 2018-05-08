@@ -42,7 +42,7 @@ class RegistrationType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9]{40,}$/',
+                        'pattern' => '/^(0x)?[0-9a-f]{40}$/',
                     ]),
                 ],
             ])

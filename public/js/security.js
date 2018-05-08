@@ -133,9 +133,12 @@ $(function () {
 
         function checkToken() {
             const token = $token.val().trim();
-            if (token.length !== 0 && !(/^[a-zA-Z0-9]{40,}$/.test(token))) {
-                setError($token, 'Invalid wallet');
-                return false;
+            if (token.length !== 0) {
+                const w3 = new Web3();
+                if (!w3.isAddress(token)) {
+                    setError($token, 'Invalid wallet');
+                    return false;
+                }
             }
             setSuccess($token);
             return true;
