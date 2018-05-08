@@ -111,10 +111,26 @@ scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
 
 if [ ! -f release.env ]; then
   echo "Symfony environment file not exist"
-  dir
   rm -rf *.env
-  dir 
   exit 1
+fi
+'''
+          }
+
+          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+            sh '''#!/bin/bash
+# take symfony enviroment file to make sure that
+#   deploy process not crash server 
+#   (it could be if symfony environment variables are missed)
+
+echo "get Symfony enviroment file from Release $RELEASE_HOST:$RELEASE_PORT"
+scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
+
+if [ ! -f master.env ]; then
+  echo "Symfony environment file not exist"
+#TODO: uncomment when master branch will be available
+#  rm -rf *.env
+#  exit 1
 fi
 '''
           }
@@ -128,11 +144,11 @@ if [ "$BRANCH_NAME" == "master" ]; then
   TO="master.env"
 else
   if [ "$BRANCH_NAME" != "develop" ]; then
-  # Verify that .env file of realease branch contain the 
-  #   same symfony environment variables as in develop branch
-  echo "Verify that Symfony enviroment variables are exist both in release and develop branch"
-  FROM="develop.env"
-  TO="release.env"
+    # Verify that .env file of realease branch contain the 
+    #   same symfony environment variables as in develop branch
+    echo "Verify that Symfony enviroment variables are exist both in release and develop branch"
+    FROM="develop.env"
+    TO="release.env"
   fi
 fi
 
