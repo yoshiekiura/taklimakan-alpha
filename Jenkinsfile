@@ -90,13 +90,15 @@ exit 0
 #   deploy process not crash server 
 #   (it could be if symfony environment variables are missed)
 
-echo "get Symfony enviroment file from Develop"
-scp -P $DEVELOP_PORT tkln@$DEVELOP_HOST:/var/www/.env develop.env
+if [ "$BRANCH_NAME" != "master" ]; then
+ echo "get Symfony enviroment file from Develop"
+ scp -P $DEVELOP_PORT tkln@$DEVELOP_HOST:/var/www/.env develop.env
 
-if [ ! -f develop.env ]; then
-  echo "Symfony environment file not exist"
-  rm -rf *.env
-  exit 1
+ if [ ! -f develop.env ]; then
+    echo "Symfony environment file not exist"
+    rm -rf *.env
+    exit 1
+  fi
 fi'''
           }
 
@@ -123,14 +125,15 @@ fi
 #   deploy process not crash server 
 #   (it could be if symfony environment variables are missed)
 
-echo "get Symfony enviroment file from Release"
-scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
+if [ "$BRANCH_NAME" == "master" ]; then
+  echo "get Symfony enviroment file from Release"
+  scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
 
-if [ ! -f master.env ]; then
-  echo "Symfony environment file not exist"
-#TODO: uncomment when master branch will be available
-#  rm -rf *.env
-#  exit 1
+  if [ ! -f master.env ]; then
+    echo "Symfony environment file not exist"
+    rm -rf *.env
+    exit 1
+  fi
 fi
 '''
           }
@@ -387,20 +390,16 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
-if [ "$BRANCH_NAME" == "master" ]
-then
+if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
   DEPLOY_PORT=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  DEPLOY_HOST=$DEVELOP_HOST
+  DEPLOY_PORT=$DEVELOP_PORT
 else
-  if [ "$BRANCH_NAME" == "develop" ]
-  then
-    DEPLOY_HOST=$DEVELOP_HOST
-    DEPLOY_PORT=$DEVELOP_PORT
-  else
-    #release branch
-    DEPLOY_HOST=$RELEASE_HOST
-    DEPLOY_PORT=$RELEASE_PORT
-  fi
+  #release branch
+  DEPLOY_HOST=$RELEASE_HOST
+  DEPLOY_PORT=$RELEASE_PORT
 fi
 echo "Deploy Host: $DEPLOY_HOST:$DEPLOY_PORT"
 
