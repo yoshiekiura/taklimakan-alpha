@@ -3,46 +3,31 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class RegistrationType extends AbstractType
+class ProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('first_name', TextType::class, [
                 'label' => 'First name',
-                'required' => true,
-                'constraints' => [
-                    new Assert\NotNull(),
-                ],
+                'required' => false,
             ])
             ->add('last_name', TextType::class, [
                 'label' => 'Last name',
-                'required' => true,
-                'constraints' => [
-                    new Assert\NotNull(),
-                ],
-            ])
-            ->add('email', EmailType::class, [
-                'label' => 'Email address',
-                'required' => true,
-                'constraints' => [
-                    new Assert\NotNull(),
-                    new Assert\Email(),
-                ],
+                'required' => false,
             ])
             ->add('erc20_token', TextType::class, [
-                'label' => 'ERC-20 Wallet (optional)',
-                'required' => true,
+                'label' => 'ERC-20 Wallet',
+                'required' => false,
                 'constraints' => [
                     new Assert\Regex([
-                        'pattern' => '/^(0x)?[0-9a-zA-Z]{40}$/',
+                        'pattern' => '/^(0x)?[0-9a-f]{40}$/',
                     ]),
                 ],
             ])
@@ -57,7 +42,6 @@ class RegistrationType extends AbstractType
                     'label' => 'Repeat Password'
                 ],
                 'constraints' => [
-                    new Assert\NotNull(),
                     new Assert\Length([
                         'min' => 8,
                     ]),
