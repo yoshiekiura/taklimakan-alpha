@@ -1,7 +1,7 @@
 <?php
 
 // Super News Feeder :)
-// CLI  : php bin/console app:feeder
+// CLI  : php bin/console app:feeder --since="-48 hours"
 // CRON : php bin/console app:feeder > /var/log/feeder.log 2>&1
 
 namespace App\Command;
@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Symfony\Component\Lock\Factory;
@@ -31,12 +32,14 @@ use App\Entity\News;
 class FeederCommand extends ContainerAwareCommand
 {
     private $feeds = [
-        'bitcoin'       => 'https://news.bitcoin.com/feed/',
-        'dailyhodl'     => 'https://dailyhodl.com/feed/',
-        'cointelegraph' => 'https://cointelegraph.com/rss',
-        'bitcoinist'    => 'http://bitcoinist.com/feed/',
-        'cryptovest'    => 'https://cryptovest.com/feed/',
-        'coindesk'      => 'https://www.coindesk.com/feed/',
+        '8btc'            => 'http://news.8btc.com/news/feed',
+        'bitcoinmagazine' => 'https://bitcoinmagazine.com/feed',
+        'bitcoin'         => 'https://news.bitcoin.com/feed/',
+        'dailyhodl'       => 'https://dailyhodl.com/feed/',
+        'cointelegraph'   => 'https://cointelegraph.com/rss',
+        'bitcoinist'      => 'http://bitcoinist.com/feed/',
+        'cryptovest'      => 'https://cryptovest.com/feed/',
+        'coindesk'        => 'https://www.coindesk.com/feed/',
     ];
 
     protected function configure()
@@ -45,12 +48,15 @@ class FeederCommand extends ContainerAwareCommand
             ->setName('app:feeder')
             ->setDescription('Automatically scans RSS feeds of content providers once per hour to retrieve latest news')
             ->setHelp('This command allows you to scan RSS feeds and get latest news')
-            ->addArgument('feed', InputArgument::OPTIONAL, 'The name of certain RSS to scan')
+            ->addArgument('feed',  InputArgument::OPTIONAL, 'The name of certain RSS to scan') // FIXME! Implement LATER
+            ->addOption('since', null, InputOption::VALUE_REQUIRED, 'Specify what news to check out? Default is msx 2 hours late', '-2 hours')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+
+        $sinceTime = $input->getOption('since');
 
         // Genereate folder names for images and create them if necessary
 
@@ -82,7 +88,7 @@ class FeederCommand extends ContainerAwareCommand
             // Logger::ERROR ignores all INFO, NOTICE and DEBUG messages
             $logger = new Logger('default', [new StreamHandler('php://stdout', Logger::ERROR)]);
             $feeder = new FeedIo($client, $logger);
-            $modifiedSince = new \DateTime('-2 hours');
+            $modifiedSince = new \DateTime($sinceTime);
 
             // Trying to get news feed up to 3 times for max of 3 minutes
             $feed = null; $count = 0;
@@ -314,6 +320,60 @@ class FeederCommand extends ContainerAwareCommand
 
                 }
 
+                if ($provider == 'bitcoinmagazine') {
+
+                    // Clean LEAD - there may be SOOO rich HTML, so clean up ALL tags
+                    $crawler = new Crawler($html);
+                    $lead = $crawler->filter('.rich-text')->text();
+                    $text = $crawler->filter('.rich-text')->html();
+
+                    // Remove trash footer if exists
+                    $patterns = [ '<p><em>This article originally appeared' ];
+                    foreach ($patterns as $pattern) {
+                        $pos = mb_strpos($text, $pattern);
+                        if ($pos) break;
+                    }
+                    if ($pos) $text = mb_substr($text, 0, $pos);
+
+                    // Grep image from raw HTML
+                    $image_html = $crawler->filter('.article--image')->html();
+                    preg_match('/http\S*(jpg|jpeg|png|webp)/usi', $image_html, $matches);
+                    $image = count($matches) ? $matches[0] : '';
+
+//var_dump($image); die();
+//var_dump($html); die();
+//var_dump($image_html); die();
+
+                }
+
+                if ($provider == '8btc') {
+
+                    $crawler = new Crawler($html);
+                    $text = $crawler->filter('.single-content')->html();
+
+                    // Remove trash footer if exists
+                    $patterns = [ '<div>' ];
+                    foreach ($patterns as $pattern) {
+                        $pos = mb_strpos($text, $pattern);
+                        if ($pos) break;
+                    }
+                    if ($pos) $text = trim(mb_substr($text, 0, $pos));
+
+                    // Trying to search image for the article at [Recent Posts] block
+
+                    $div_html = $crawler->filter('.article')->html();
+                    $pos = mb_strpos($div_html, $source);
+                    if ($pos) {
+                        $subdiv = mb_substr($div_html, $pos);
+                        preg_match('/http\S*(jpg|jpeg|png|webp)/usi', $subdiv, $matches);
+                        $image = count($matches) ? $matches[0] : '';
+                    }
+                    else
+                        $image = '';
+
+                }
+
+
                 // Are there YouTube video? Style it with .videoWrapper
                 $matches = preg_grep('/<iframe.*(youtube.com|youtu.be)*iframe>/usi', [ $text ]);
                 if (count($matches)) {
@@ -329,6 +389,12 @@ class FeederCommand extends ContainerAwareCommand
 
                 echo "\n$source";
 
+// DEBUG
+/*
+echo "\n\n" . "[TITLE] " . $title . "\n" . "[TAGS] " . $tags .
+       "\n" . "[LEAD] " . $lead . "\n" . "[TEXT] " . $text .
+       "\n" . "[IMAGE] " . $image ;
+*/
                 // Some dumb checks to avoid EMPTY news / NB! Log that with WARNING message later
                 if (strlen($image) <= 10 || strlen($text) <= 100) {
                     echo " [SKIPPED]";
@@ -350,10 +416,16 @@ class FeederCommand extends ContainerAwareCommand
                 $newImageFull = $imageDir . $newImage;
 
                 // If we could copy remote image to our server, set it as the origin for our image
-                if (copy ($image, $newImageFull))
-                    $news->setImage($newImage);
-                else
-                    $news->setImage($image);
+                try {
+                    if (copy($image, $newImageFull))
+                        $news->setImage($newImage);
+                    else
+                        $news->setImage($image);
+                }
+                catch (\Exception $e) {
+                    echo " [SKIPPED]";
+                    continue;
+                }
 
                 // Trying to store news into the DB
                 try {
