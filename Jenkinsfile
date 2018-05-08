@@ -99,7 +99,12 @@ scp -P $DEVELOP_PORT tkln@$DEVELOP_HOST:/var/www/.env develop.env
 #scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
 
 #dir
-#echo "#####################################"'''
+#echo "#####################################"
+if [ ! -f develop.env ]; then
+  echo "Symfony environment file not exist"
+  rm -rf *.env
+  exit 1
+fi'''
           }
 
           sshagent(credentials: ['BlockChain-release'], ignoreMissing: true) {
@@ -112,7 +117,15 @@ echo "get Symfony enviroment file from Release"
 scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
 
 dir
-echo "#####################################"'''
+echo "#####################################"
+
+if [ ! -f release.env ]; then
+  echo "Symfony environment file not exist"
+  rm -rf *.env
+  exit 1
+fi
+
+dir'''
           }
 
           sh '''#!/bin/bash
