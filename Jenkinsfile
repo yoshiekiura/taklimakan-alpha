@@ -106,7 +106,7 @@ fi'''
 #   deploy process not crash server 
 #   (it could be if symfony environment variables are missed)
 
-echo "get Symfony enviroment file from Release $RELEASE_HOST:$RELEASE_PORT"
+echo "get Symfony enviroment file from Release"
 scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
 
 if [ ! -f release.env ]; then
@@ -123,7 +123,7 @@ fi
 #   deploy process not crash server 
 #   (it could be if symfony environment variables are missed)
 
-echo "get Symfony enviroment file from Release $RELEASE_HOST:$RELEASE_PORT"
+echo "get Symfony enviroment file from Release"
 scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
 
 if [ ! -f master.env ]; then
@@ -151,8 +151,6 @@ else
     TO="release.env"
   fi
 fi
-
-dir 
 
 while IFS= read -r line
 do
