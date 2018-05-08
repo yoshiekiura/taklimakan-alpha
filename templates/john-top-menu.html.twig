@@ -6,24 +6,32 @@
 
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <nav class="navbar navbar-expand-sm navbar-light bg-transparent">
-                      <a class="navbar-brand" href="/"><img src="/john/images/logo.svg" alt="" class="logo"></a>
-                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <a class="navbar-brand" href="/"><img src="/john/images/logo.svg" alt="" class="logo"></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
-                      </button>
+                    </button>
 
-                      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ml-auto">
-                          <li class="nav-item {{ menu == 'news' ? 'active' : '' }}"><a class="nav-link" href="/news">News</a></li>
-                          <li class="nav-item {{ menu == 'charts' ? 'active' : '' }}"><a class="nav-link" href="/charts/all">Analytics</a></li>
-                          {# }<li class="nav-item {{ menu == 'edu' ? 'active' : '' }}"><a class="nav-link" href="/edu">Education</a></li> #}
-                          <li class="nav-item {{ menu == 'courses' ? 'active' : '' }}"><a class="nav-link" href="/courses">Education</a></li>
-                          <li class="nav-item"><a class="nav-link" href="#"><img src="/john/images/i/userpic.svg" alt=""> Log In</a></li>
-                          <li class="nav-item"><a class="nav-link" href="#">Sign Up</a></li>
+                            <li class="nav-item {{ menu == 'news' ? 'active' : '' }}"><a class="nav-link" href="/news">News</a></li>
+                            <li class="nav-item {{ menu == 'charts' ? 'active' : '' }}"><a class="nav-link" href="/charts/all">Analytics</a></li>
+                            {# }<li class="nav-item {{ menu == 'edu' ? 'active' : '' }}"><a class="nav-link" href="/edu">Education</a></li> #}
+                            <li class="nav-item {{ menu == 'courses' ? 'active' : '' }}"><a class="nav-link" href="/courses">Education</a></li>
+                            {% if app.user %}
+                                <li class="nav-item"><a class="nav-link" href="{{ path('app_profile_view') }}"><img src="images/i/userpic.svg" alt=""> Profile</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{ path('logout') }}"> Log Out</a></li>
+                            {% else %}
+                                <li class="nav-item"><a class="nav-link" href="#" data-toggle="modal" data-target="#LogIn"><img src="images/i/userpic.svg" alt=""> Log In</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#" data-toggle="modal" data-target="#register">Sign Up</a></li>
+                            {% endif %}
                         </ul>
                       </div>
                 </nav>
             </div>
         </div>
+
+        {% include 'john-security.html.twig' %}
+
 <!--
         <div class="slider">
         <div class="row">
