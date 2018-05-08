@@ -92,11 +92,24 @@ exit 0
 
 echo "get Symfony enviroment file from Develop"
 scp -P $DEVELOP_PORT tkln@$DEVELOP_HOST:/var/www/.env develop.env
+#echo "get Symfony enviroment file from Release"
+#scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
+#TODO uncomment for master branch in future
+#echo "get Symfony enviroment file from Master"
+#scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
+
+#dir
+#echo "#####################################"'''
+          }
+
+          sshagent(credentials: ['BlockChain-release'], ignoreMissing: true) {
+            sh '''#!/bin/bash
+# take symfony enviroment file to make sure that
+#   deploy process not crash server 
+#   (it could be if symfony environment variables are missed)
+
 echo "get Symfony enviroment file from Release"
 scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
-#TODO uncomment for master branch in future
-echo "get Symfony enviroment file from Master"
-#scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
 
 dir
 echo "#####################################"'''
