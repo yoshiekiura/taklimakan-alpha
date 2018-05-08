@@ -107,13 +107,13 @@ if [ ! -f develop.env ]; then
 fi'''
           }
 
-          sshagent(credentials: ['Blockchain-release'], ignoreMissing: true) {
+          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 # take symfony enviroment file to make sure that
 #   deploy process not crash server 
 #   (it could be if symfony environment variables are missed)
 
-echo "get Symfony enviroment file from Release"
+echo "get Symfony enviroment file from Release $RELEASE_HOST:$RELEASE_PORT"
 scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
 
 if [ ! -f release.env ]; then
