@@ -96,7 +96,11 @@
         </div>
 
         <div>
-            <p><br/>#1 - Price / #2 - Volume / <br/>#3 - Volatility / #4 - Alpha / <br/>#5 - Beta / #6 - Sharpe</p>
+            <p>
+                <br/>#1 | Price <br/>#2 | Volume <br/>#3 | Volatility <br/>#4 | Alpha <br/>#5 | Beta <br/>#6 | Sharpe Ratio
+                <br/>#7 | Exp. Weighted Volatility <br/>#8 | Exp. Weighted Alpha <br/>#9 | Exp. Weighted Beta
+                <br/>#10 | Exp. Weighted Sharpe Ratio <br/>#11 | Base Index
+            </p>
         </div>
 
     </div>
@@ -109,6 +113,12 @@
         $('.chbox').prop('checked', false);
         globalType = type;
         $('#choose-button').text('Chart Type #' + type);
+        if (type == 11) {
+            $('.chbox').prop('disabled', true);
+            drawPlot('INDEX001');
+        }
+        else
+            $('.chbox').prop('disabled', false);
     }
 
     function showPair(pair) {
