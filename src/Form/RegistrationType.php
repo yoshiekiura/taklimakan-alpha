@@ -38,7 +38,7 @@ class RegistrationType extends AbstractType
                 ],
             ])
             ->add('erc20_token', TextType::class, [
-                'label' => 'ERC-20 Wallet',
+                'label' => 'ERC-20 Wallet (optional)',
                 'required' => true,
                 'constraints' => [
                     new Assert\Regex([
