@@ -152,7 +152,7 @@ done <"$FROM"
 echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 '''
           sh 'rm -rf *.env'
-          cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, cleanupMatrixParent: true, externalDelete: 'rm -rf *.env')
+          cleanWs(externalDelete: 'rm -rf *.env')
         }
       }
       stage('Archive & Deploy') {
