@@ -35,7 +35,10 @@
                     </div>
                     <div class="col-lg-12">
                         <div class="form-group">
-                            {{ form_label(registration_form.erc20_token) }}
+                            <label for="{{ registration_form.erc20_token.vars.id }}">
+                                ERC-20 Wallet (optional)
+                                <a href="javascript:void(0);">Learn how to get</a>
+                            </label>
                             {{ form_widget(registration_form.erc20_token, {attr: {class: 'form-control', placeholder: registration_form.erc20_token.vars.label}}) }}
                             <small class="form-text text-muted valid-error" style="display: none;"></small>
                         </div>
