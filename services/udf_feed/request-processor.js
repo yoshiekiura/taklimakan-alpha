@@ -473,15 +473,22 @@ RequestProcessor.prototype._sendSymbolHistory = function (symbol, startDateTimes
     console.log("fromSec=", fromSec);
 
     for (var i=fromSec; i<=toSec; i += 3600*24) {
-        var val = Math.abs(100 * Math.sin(Math.PI * 2 * i / (100 * 3600 * 24)));
-        var valNext = Math.abs(100 * Math.sin(Math.PI * 2 * (i + 3600 * 24) / (100 * 3600 * 24)));
-        var vol = Math.abs(1000 * Math.sin(Math.PI * 2 * i / (1234 * 24)));
+        var freq = 1 / (100 * 3600 * 24);
+        var vfreq = 1 / (1234 * 24);
+        if (symbol == 'TST') {
+            freq = 1 / (200 * 3600 * 24);
+            vfreq = 1 / (4321 * 24);
+        }
+
+        var val = Math.abs(100 * Math.sin(Math.PI * 2 * i * freq));
+        var valNext = Math.abs(100 * Math.sin(Math.PI * 2 * (i + 3600 * 24) * freq));
+        var vol = Math.abs(1000 * Math.sin(Math.PI * 2 * i * vfreq));
 
         data.t.push(i);
         data.o.push(val);
         data.c.push(valNext);
-        data.h.push(valNext);
-        data.l.push(val);
+        data.h.push(valNext + 5);
+        data.l.push(val * 0.995);
         data.v.push(vol);
     }
 
