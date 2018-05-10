@@ -99,6 +99,12 @@ class DbConnection:
         self.db.commit()
         cursor.close()
 
+    def executemany(self, query, params):
+        cursor = self.db.cursor()
+        cursor.executemany(query, params)
+        self.db.commit()
+        cursor.close()
+
     def __enter__(self):
         return self
 

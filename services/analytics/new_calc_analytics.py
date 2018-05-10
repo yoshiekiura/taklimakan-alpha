@@ -52,6 +52,9 @@ with DbConnection.get_instance(config) as connector:
             "SELECT dt, value, is_extrapolated FROM %s WHERE pair = '%s' AND dt >= '%s' AND dt < '%s' and type_id = %s ORDER BY dt DESC" %
             (connector.analytics_table, pair, date_from, date_to, Formula.Price.value.number))
 
+    def get_min_date_with_price(pair):
+        return connector.get_single_value("SELECT min(dt) FROM %s WHERE pair = '%s' and type_id = %s" %
+                                          (connector.analytics_table, pair, Formula.Price.value.number))
 
     # date_to: exclusively
     @functools.lru_cache(maxsize=None)
@@ -224,9 +227,11 @@ with DbConnection.get_instance(config) as connector:
         for item in prices_data:
             total_cost += item['price'] * item['volume']
             total_volume += item['volume']
-        weighted_average_price = total_cost / total_volume
-        prices_data = list(
-            filter(lambda x: abs(x['price'] - weighted_average_price) / weighted_average_price <= 0.15, prices_data))
+
+        if total_volume > 0:
+            weighted_average_price = total_cost / total_volume
+            prices_data = list(
+                filter(lambda x: abs(x['price'] - weighted_average_price) / weighted_average_price <= 0.15, prices_data))
 
         result_volume = sum(sorted(volumes[:max(len(volumes),10)])) if len(volumes) > 0 else None
         result_price = float(sum(map(lambda x: x['price'], prices_data))) / len(prices_data) if len(prices_data) > 0 else None
@@ -238,6 +243,12 @@ with DbConnection.get_instance(config) as connector:
         print("Extrapolate price", pair_str, missing_date)
         price = None
         date = missing_date
+
+        min_existing_date = get_min_date_with_price(pair_str)
+        if min_existing_date is None or min_existing_date > missing_date:
+            print("Cannot extrapolate: min date=", min_existing_date)
+            return None
+
         while price is None and date > Formula.Price.value.date:
             date -= timedelta(days=1)
             data = get_pair_prices(pair_str, date, date + timedelta(days=1))
@@ -264,10 +275,11 @@ with DbConnection.get_instance(config) as connector:
             raw_data = get_raw_prices(currency, list(set(missing[CurrencyBase.BTC] + missing[CurrencyBase.USD])))
             data_by_dates = {}
             for row in raw_data:
-                if not row[2] in data_by_dates:
-                    data_by_dates[row[2]] = []
-                data_by_dates[row[2]].append(
-                    {'currency': row[1], 'price': row[3], 'volume': row[4], 'exchange': row[5]})
+                if row[3] != 0:
+                    if not row[2] in data_by_dates:
+                        data_by_dates[row[2]] = []
+                    data_by_dates[row[2]].append(
+                        {'currency': row[1], 'price': row[3], 'volume': row[4], 'exchange': row[5]})
 
             for base in missing.keys():
                 for date in sorted(missing[base]):
@@ -303,8 +315,8 @@ with DbConnection.get_instance(config) as connector:
                         if price[2]:
                             skip = True
                             # search for earlier real prices
-                            prev_prices = get_pair_prices(price[0], min(missing_dates) - timedelta(days=8),
-                                                          max(missing_dates))
+                            prev_prices = get_pair_prices(price[0], min(missing_dates[IndexType.INDEX001.name]) - timedelta(days=8),
+                                                          max(missing_dates[IndexType.INDEX001.name]))
                             for p in prev_prices:
                                 if not p[2] and (date - p[0]).days < MAX_DATA_GAP:
                                     skip = False
