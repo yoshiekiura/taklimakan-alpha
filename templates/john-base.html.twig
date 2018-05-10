@@ -5,9 +5,12 @@
 
         {% include 'john-header.html.twig' %}
 
+        <title>{% block title %}Taklimakan{% endblock %}</title>
+        
         <meta name="description" content="{% block description %}Taklimakan | Your Compass in the Cryptocurrency World{% endblock %}">
         <meta name="keywords" content="{% block keywords %}taklimakan, trading, cryptocurrency{% endblock %}">
-        <title>{% block title %}Taklimakan{% endblock %}</title>
+
+        {% block meta %}{% endblock %}
 
     </head>
 

@@ -1,8 +1,12 @@
 {% extends 'john-base.html.twig' %}
 
-{% block title %}{{news.title}} | Taklimakan{% endblock %}
-{% block description %}{{news.lead}}{% endblock %}
-{% block keywords %}{{tags|join(', ')}}{% endblock %}
+{% block title %}{{news.title|truncate(80)}} | Taklimakan{% endblock %}
+{% block description %}{{news.lead|truncate(160)}}{% endblock %}
+{% block keywords %}{{tags|join(', ')|truncate(160)}}{% endblock %}
+
+{% block meta %}
+    {% include 'meta-tags.html.twig' %}
+{% endblock %}
 
 {% block body %}
 
