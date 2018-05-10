@@ -135,6 +135,19 @@ class ProfileController extends Controller
 
                     $session->remove('profile_data');
 
+                    $message = (new \Swift_Message('Profile has been changed'))
+                        ->setFrom('noreply@taklimakan.network')
+                        ->setTo($user->getEmail())
+                        ->setBody(
+                            $this->renderView(
+                                'emails/changed_profile.html.twig'
+                            ),
+                            'text/html'
+                        )
+                    ;
+
+                    $this->get('mailer')->send($message);
+
                     return $this->redirectToRoute('app_profile_edit');
                 }
                 $invalidPassword = true;
