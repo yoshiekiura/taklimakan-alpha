@@ -60,7 +60,7 @@ class NewsController extends Controller
                 'total' => null,   // Total news for paginator / NB! Do not count for now
                 'page'  => $page,  // Current Page
                 'limit' => $limit, // Max news on the page
-            ]
+            ],
         ]);
     }
 
@@ -113,11 +113,25 @@ class NewsController extends Controller
 
 //var_dump($tags);die();
 
+        if (strpos($news->getImage(), 'http://') !== false || strpos($news->getImage(), 'https://') !== false)
+            $img = $news->getImage();
+        else
+            $img = 'https://' . $request->getHost() . "/images/news/" . $news->getImage();
+
         return $this->render('news/show.html.twig', [
             'menu' => 'news',
             'show_welcome' => $showWelcome,
             'news' => $news,
             'tags' => $tags,
+            'meta' => [
+                'title' => $news->getTitle(),
+                'description' => $news->getLead(),
+                'image' => $img,
+                'date' => $news->getDate()->format('Y-m-dTH:i:sZ'),
+                'url' => $request->getUri(),
+                'tags' => $tags,
+            ],
+
         ]);
     }
 
