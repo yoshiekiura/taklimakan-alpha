@@ -16,23 +16,29 @@ class ProfileType extends AbstractType
         $builder
             ->add('first_name', TextType::class, [
                 'label' => 'First name',
-                'required' => false,
+                'required' => true,
+                'constraints' => [
+                    new Assert\NotNull(),
+                ],
             ])
             ->add('last_name', TextType::class, [
                 'label' => 'Last name',
-                'required' => false,
+                'required' => true,
+                'constraints' => [
+                    new Assert\NotNull(),
+                ],
             ])
             ->add('erc20_token', TextType::class, [
                 'label' => 'ERC-20 Wallet',
                 'required' => false,
                 'constraints' => [
                     new Assert\Regex([
-                        'pattern' => '/^(0x)?[0-9a-f]{40}$/',
+                        'pattern' => '/^(0x)?[0-9a-zA-Z]{40}$/',
                     ]),
                 ],
             ])
             ->add('password', RepeatedType::class, [
-                'required' => true,
+                'required' => false,
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'first_options'  => [

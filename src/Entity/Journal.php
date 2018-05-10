@@ -10,12 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Journal
 {
-    const ACTION_CHANGE_USER_FIRST_NAME = 1;
-    const ACTION_CHANGE_USER_LAST_NAME = 2;
-    const ACTION_CHANGE_USER_ERC20_TOKEN = 3;
-    const ACTION_CHANGE_USER_PASSWORD = 4;
+    const ACTION_CHANGE_USER_DATA = 1;
+    const ACTION_CHANGE_USER_FIRST_NAME = 2;
+    const ACTION_CHANGE_USER_LAST_NAME = 3;
+    const ACTION_CHANGE_USER_ERC20_TOKEN = 4;
+    const ACTION_CHANGE_USER_PASSWORD = 5;
 
     public static $actions = [
+        self::ACTION_CHANGE_USER_DATA,
         self::ACTION_CHANGE_USER_FIRST_NAME,
         self::ACTION_CHANGE_USER_LAST_NAME,
         self::ACTION_CHANGE_USER_ERC20_TOKEN,
@@ -105,7 +107,7 @@ class Journal
      * @param User $admin
      * @return Journal
      */
-    public function setAdmin(User $admin): Journal
+    public function setAdmin(User $admin = null): Journal
     {
         $this->admin = $admin;
 
