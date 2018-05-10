@@ -1,4 +1,62 @@
 {% extends 'profile/base.html.twig' %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        (function () {
+            $(function () {
+                const $form = $('form[name=profile]');
+                $form.submit(function () {
+                    return false;
+                });
+            });
+        }());
+    </script>
+{% endblock %}
+
 {% block profile_content %}
+    <style type="text/css">
+        form[name=profile] label {
+            font-size: 16px;
+            margin-top: 16px;
+        }
+    </style>
+
+    {{ form_start(form) }}
+    <div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.first_name) }}
+            {{ form_widget(form.first_name, {attr: {class: 'form-control', placeholder: form.first_name.vars.label}}) }}
+            <small class="form-text text-muted valid-error" style="display: none;"></small>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.last_name) }}
+            {{ form_widget(form.last_name, {attr: {class: 'form-control', placeholder: form.last_name.vars.label}}) }}
+            <small class="form-text text-muted valid-error" style="display: none;"></small>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.erc20_token) }}
+            {{ form_widget(form.erc20_token, {attr: {class: 'form-control', placeholder: form.erc20_token.vars.label}}) }}
+            <small class="form-text text-muted valid-error" style="display: none;"></small>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="form-group">
+            {{ form_label(form.password.first) }}
+            {{ form_widget(form.password.first, {attr: {class: 'form-control', placeholder: form.password.first.vars.label}}) }}
+            <small class="form-text text-muted" id="passwordHelp">Latin, number and special characters only. Minimum 8 characters, must contain numbers and letters.</small>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="form-group">
+            {{ form_label(form.password.second) }}
+            {{ form_widget(form.password.second, {attr: {class: 'form-control', placeholder: form.password.second.vars.label}}) }}
+            <small class="form-text text-muted valid-error" style="display: none;"></small>
+        </div>
+    </div>
+    {{ form_end(form) }}
 {% endblock %}

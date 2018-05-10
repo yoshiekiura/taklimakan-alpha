@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\ProfileType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -35,6 +37,23 @@ class ProfileController extends Controller
      */
     public function editAction(Request $request)
     {
-        return $this->render('profile/edit.html.twig');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm(ProfileType::class, [
+            'first_name' => $user->getFirstName(),
+            'last_name' => $user->getLastName(),
+            'erc20_token' => $user->getErc20Token(),
+        ]);
+        if ($request->isMethod('post')) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+
+            }
+        }
+
+        return $this->render('profile/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
