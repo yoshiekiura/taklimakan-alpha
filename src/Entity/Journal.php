@@ -25,9 +25,9 @@ class Journal
     /**
      * @var int
      *
-     * @ORM\Column(type="id")
      * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
      */
     protected $id;
 
