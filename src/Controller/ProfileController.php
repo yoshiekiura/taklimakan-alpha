@@ -136,7 +136,7 @@ class ProfileController extends Controller
                     $session->remove('profile_data');
 
                     $message = (new \Swift_Message('Profile has been changed'))
-                        ->setFrom('noreply@taklimakan.network')
+                        ->setFrom($this->getParameter('sender_email'))
                         ->setTo($user->getEmail())
                         ->setBody(
                             $this->renderView(

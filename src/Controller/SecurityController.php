@@ -34,7 +34,7 @@ class SecurityController extends Controller
                 }
 
                 $message = (new \Swift_Message('Hello Email'))
-                    ->setFrom('noreply@taklimakan.network')
+                    ->setFrom($this->getParameter('sender_email'))
                     ->setTo($email)
                     ->setBody(
                         $this->renderView(
@@ -187,7 +187,7 @@ class SecurityController extends Controller
         }
 
         $message = (new \Swift_Message('Hello Email'))
-            ->setFrom('noreply@taklimakan.network')
+            ->setFrom($this->getParameter('sender_email'))
             ->setTo($email)
             ->setBody(
                 $this->renderView(
