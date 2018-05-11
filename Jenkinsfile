@@ -145,7 +145,7 @@ exit 0
           }
           stage('Mess Detection') {
             steps {
-              sh './vendor/bin/phpmd . xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --exclude vendor,.git,tests,var || exit 0'
+              sh './vendor/bin/phpmd . xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --exclude vendor/,.git/,tests/,var/ || exit 0'
               pmd(canRunOnFailed: true, pattern: 'results/CALogs/pmd.xml')
             }
           }
