@@ -71,11 +71,10 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
           archiveArtifacts '*.zip'
         }
       }
-      stage('Test') {
+      stage('Install Composer') {
         when {
-          anyOf {
-            branch 'release/**'
-            branch 'develop'
+          not {
+            branch 'master'
           }
 
         }
@@ -87,14 +86,40 @@ echo "" > ".env"'''
 echo "install composer"
 composer install'''
           sh '''#!/bin/bash
-./vendor/bin/simple-phpunit --log-junit phpUnitRes/junit.xml --coverage-html=phpUnitRes/
-#phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
+echo "create catalog for Code Analysis results"
+mkdir -p results/CALogs'''
         }
       }
-      stage('Copy paste detection') {
-        steps {
-          sh './vendor/bin/phpcpd --log-pmd results/CopyPasteDetectLogs/pmd-cpd.xml --exclude vendor . || exit 0'
-          dry(canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml')
+      stage('Tests') {
+        when {
+          not {
+            branch 'master'
+          }
+
+        }
+        parallel {
+          stage('Test') {
+            steps {
+              sh '''#!/bin/bash
+mkdir -p results/phpUnitRes
+./vendor/bin/simple-phpunit --log-junit results/phpUnitRes/junit.xml --coverage-html=results/phpUnitRes/
+#phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
+            }
+          }
+          stage('Copy paste detection') {
+            steps {
+              sh '''
+./vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude vendor . || exit 0'''
+              dry(canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml')
+            }
+          }
+          stage('Mess Detection') {
+            steps {
+              sh '''#!/bin/bash
+./vendor/bin/phpmd . xml build/phpmd.xml --reportfile results/CALogs/pmd.xml --exclude vendor/ || exit 0'''
+              pmd(canRunOnFailed: true, pattern: 'results/CALogs/pmd.xml')
+            }
+          }
         }
       }
       stage('Static Analysis') {
@@ -456,8 +481,8 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
     }
     post {
       always {
-        junit 'phpUnitRes/*.xml'
-        publishHTML(allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
+        junit 'results/phpUnitRes/*.xml'
+        publishHTML(allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
 
       }
 
