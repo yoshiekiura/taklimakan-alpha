@@ -29,3 +29,8 @@ tmp
 /.idea/
 
 /services/udf_feed/node_modules/
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###

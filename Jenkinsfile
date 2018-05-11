@@ -35,9 +35,61 @@ pipeline {
 
         }
       }
-      stage('Test') {
+      stage('Archive') {
         steps {
-          sh 'echo "execute Unit tests"'
+          sh '''#!/bin/bash
+if [ -d taklimakan-alpha ]; then
+  # remove previous deploy data
+  rm -rf taklimakan-alpha
+fi
+
+mkdir taklimakan-alpha
+
+for D in *; do
+  if [ $D != "taklimakan-alpha" ] &&
+     [ $D != ".git" ] &&
+     [ $D != "Jenkinsfile" ] &&
+     [ $D != "CodeAnalysis" ] &&
+     [ $D != "deploy" ] &&
+     [ $D != "phpUnitRes" ] &&
+     [ $D != "tests" ] &&
+     [ $D != "createSL.bash" ] &&
+     [[ $D != *"pylint"* ]]; then
+    # copy to taklimakan-alpha
+    if [ -d "${D}" ]; then
+      cp -R $D taklimakan-alpha/
+    else
+      cp $D taklimakan-alpha/
+    fi
+  fi
+done
+
+#zip deploy file
+zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
+
+'''
+          archiveArtifacts '*.zip'
+        }
+      }
+      stage('Test') {
+        when {
+          anyOf {
+            branch 'release/**'
+            branch 'develop'
+          }
+
+        }
+        steps {
+          sh '''#!/bin/bash
+echo "create dummy symfony environment file"
+echo "" > ".env"'''
+          sh '''#!/bin/bash
+echo "install composer"
+composer install'''
+          sh '''#!/bin/bash
+./vendor/bin/simple-phpunit --coverage-xml=phpUnitRes/
+#phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
+          junit(testResults: 'cov/junit.xml', allowEmptyResults: true)
         }
       }
       stage('Static Analysis') {
@@ -172,7 +224,7 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
           sh 'rm -rf *.env'
         }
       }
-      stage('Archive & Deploy') {
+      stage('Deploy') {
         when {
           anyOf {
             branch 'master'
@@ -357,36 +409,6 @@ echo "done" >> createSL.bash
 echo "" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
-          sh '''#!/bin/bash
-if [ -d taklimakan-alpha ]; then
-  # remove previous deploy data
-  rm -rf taklimakan-alpha
-fi
-
-mkdir taklimakan-alpha
-
-for D in *; do
-  if [ $D != "taklimakan-alpha" ] &&
-     [ $D != ".git" ] &&
-     [ $D != "Jenkinsfile" ] &&
-     [ $D != "CodeAnalysis" ] &&
-     [ $D != "deploy" ] &&
-     [ $D != "createSL.bash" ] &&
-     [[ $D != *"pylint"* ]]; then
-    # copy to taklimakan-alpha
-    if [ -d "${D}" ]; then
-      cp -R $D taklimakan-alpha/
-    else
-      cp $D taklimakan-alpha/
-    fi
-  fi
-done
-
-#zip deploy file
-zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
-
-'''
-          archiveArtifacts '*.zip'
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
@@ -426,5 +448,12 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
       RELEASE_PORT = '8022'
       PRODUCTION_HOST = '192.168.100.127'
       PRODUCTION_PORT = '8022'
+    }
+    post {
+      always {
+        junit 'phpUnitRes/*.xml'
+
+      }
+
     }
   }
