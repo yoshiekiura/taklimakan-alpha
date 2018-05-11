@@ -140,13 +140,13 @@ exit 0
           stage('Copy paste detection') {
             steps {
               sh '''mkdir -p results/CALogs
-./vendor/bin/phpcpd --names=src/**/*,templates/**/*,public/**/*,services/**/* --log-pmd results/CALogs/pmd-cpd.xml || exit 0'''
+./vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude=vendor/,tests/,var/,src/Migrations || exit 0'''
               dry(canRunOnFailed: true, pattern: 'results/CALogs/pmd-cpd.xml')
             }
           }
           stage('Mess Detection') {
             steps {
-              sh './vendor/bin/phpmd src,templates,public,services xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --ignore-violations-on-exit'
+              sh './vendor/bin/phpmd src,templates,public,services xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --exclude=src/Migrations --ignore-violations-on-exit'
               pmd(canRunOnFailed: true, pattern: 'results/CALogs/pmd.xml')
             }
           }
