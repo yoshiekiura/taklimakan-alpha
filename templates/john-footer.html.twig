@@ -74,7 +74,7 @@
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116479802-1"></script>
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
@@ -85,7 +85,7 @@
 
     <!-- FIXME! We have to have conditional include here -->
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     $('.owl-carousel').owlCarousel({
     loop:true,
     margin:10,
@@ -122,7 +122,7 @@
 
 {% if show_charts is defined %}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
 
     let names = {{allowed|json_encode|raw}}
 
@@ -183,7 +183,7 @@
 {% if show_welcome is defined and show_welcome == true %}
 
 <!-- Welcome Popup -->
-<script>
+<script nonce="{{ csp_nonce() }}">
 
     function setCookie(key, value) {
         var expires = new Date();
@@ -215,7 +215,7 @@
 
 <!-- https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php -->
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 
 
 // Find all YouTube videos

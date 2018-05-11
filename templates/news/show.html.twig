@@ -1,8 +1,12 @@
 {% extends 'john-base.html.twig' %}
 
-{% block title %}{{news.title}} | Taklimakan{% endblock %}
-{% block description %}{{news.lead}}{% endblock %}
-{% block keywords %}{{tags|join(', ')}}{% endblock %}
+{% block title %}{{news.title|truncate(80)}} | Taklimakan{% endblock %}
+{% block description %}{{news.lead|truncate(160)}}{% endblock %}
+{% block keywords %}{{tags|join(', ')|truncate(160)}}{% endblock %}
+
+{% block meta %}
+    {% include 'meta-tags.html.twig' %}
+{% endblock %}
 
 {% block body %}
 
@@ -61,14 +65,16 @@
                                     <a class="news-date" href="#">{{ news.date|date("F jS / H:i") }}</a>
                                 </div>
                                 <div class="news-body news-body-include">
-                                    <ul class="list-inline">
-                                        <li class="list-inline-item">Source: <a href="{{ news.source }}" target="_blank" class="news-source">{{ news.source|source }}</a></li>
+
+                                    <ul class="list-inline" style="z-index: 200;">
+                                        <li class="list-inline-item" style="z-index: 300;">Source: <a href="{{ news.source }}" target="_blank" class="news-source">{{ news.source|source }}</a></li>
                                         {# <li class="list-inline-item"><a href="#">Subscribe</a></li> #}
                                     </ul>
 
                                     <div class="addthis-buttons">
-                                        {% include 'news/buttons.html.twig'%}
+                                        {% include 'news/buttons.html.twig' %}
                                     </div>
+
 
                                     <div class="p-content">
                                         <div class="fr-view">

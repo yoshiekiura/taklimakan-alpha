@@ -12,7 +12,7 @@
 
         {# https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php #}
 
-        <style>
+        <style nonce="{{ csp_nonce() }}">
             .videoWrapper {
         	    position: relative;
             	padding-bottom: 56.25%; /* 16:9 */
