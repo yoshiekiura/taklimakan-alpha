@@ -82,7 +82,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
         steps {
           sh '''#!/bin/bash
 echo "create dummy symfony environment file"
-echo "dummy" > ".env"'''
+echo "" > ".env"'''
           sh '''#!/bin/bash
 echo "install composer"
 composer install'''
