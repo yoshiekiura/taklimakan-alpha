@@ -81,11 +81,15 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
         }
         steps {
           sh '''#!/bin/bash
+echo "create dummy symfony environment file"
+echo "dummy" > ".env"'''
+          sh '''#!/bin/bash
 echo "install composer"
 composer install'''
           sh '''#!/bin/bash
 ./vendor/bin/simple-phpunit --coverage-xml=cov/junit.xml
 #phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
+          junit(testResults: 'cov/junit.xml', allowEmptyResults: true)
         }
       }
       stage('Static Analysis') {
