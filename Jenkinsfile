@@ -419,6 +419,7 @@ echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
+echo "find /var/www/DEPLOY/\\$versionId/var/cache -type d -exec chmod 777 {} \\;" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
@@ -431,8 +432,6 @@ echo "      rm -rf \\$folderToZip" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
-echo "" >> createSL.bash
-echo "find /var/www/DEPLOY/\\$versionId/var/cache -type d -exec chmod 777 {} \\;" >> createSL.bash
 echo "" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
