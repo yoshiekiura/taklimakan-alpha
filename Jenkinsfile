@@ -87,7 +87,7 @@ echo "" > ".env"'''
 echo "install composer"
 composer install'''
           sh '''#!/bin/bash
-./vendor/bin/simple-phpunit --coverage-xml=phpUnitRes/
+./vendor/bin/simple-phpunit --log-junit phpUnitRes/junit.xml --coverage-html=phpUnitRes/
 #phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
           junit(testResults: 'cov/junit.xml', allowEmptyResults: true)
         }
