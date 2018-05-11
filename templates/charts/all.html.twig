@@ -40,7 +40,7 @@
 
 {# FIXME! THE FIRST VERSION OF SELECTOR
 
-<style>
+<style nonce="{{ csp_nonce() }}">
 .btn-custom-group .btn-secondary {
     background-color: #5833ed;
     border-color: #5833ed;
@@ -85,7 +85,7 @@
 
     {# Read More https://codepen.io/joserick/pen/ooVPwR #}
 
-    <style>
+    <style nonce="{{ csp_nonce() }}">
         /* #summary {  font-size: 14px; line-height: 1.5; } */
         #summary p.collapse:not(.show) { height: 36px !important; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         #summary p.collapsing { min-height: 36px !important; }
@@ -108,7 +108,7 @@
         #sharpe-summary a:not(.collapsed):after { content: '- Read Less'; }
     </style>
 
-    <style>
+    <style nonce="{{ csp_nonce() }}">
         #price-chart { width: 100%; height: 600px; }
         #volatility-chart, #alpha-chart, #beta-chart, #index-chart, #sharpe-chart { width: 100%; height: 500px; }
         #range-selector, #volatility-range-selector, #alpha-range-selector, #beta-range-selector,
@@ -132,7 +132,7 @@
 
     {# % include 'charts/selector.html.twig' % #}
 
-    <style>
+    <style nonce="{{ csp_nonce() }}">
         .dropdown { margin-top: 75px; }
         .dropdown-menu { max-height: 20rem; overflow-y: auto; }
     </style>
@@ -218,7 +218,7 @@
     <div id="sharpe-chart"><div id="sharpe-range-selector"></div></div>
 
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
 
     document.addEventListener('DOMContentLoaded', function() {
 

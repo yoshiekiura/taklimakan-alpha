@@ -113,6 +113,15 @@
     "monolog/monolog": {
         "version": "1.23.0"
     },
+    "nelmio/security-bundle": {
+        "version": "2.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.4",
+            "ref": "65726efb67ff51d89de38195bc0d230fa811f64d"
+        }
+    },
     "nikic/php-parser": {
         "version": "v4.0.0"
     },
@@ -124,6 +133,9 @@
     },
     "pagerfanta/pagerfanta": {
         "version": "v1.0.5"
+    },
+    "paragonie/random_compat": {
+        "version": "v2.0.12"
     },
     "pimple/pimple": {
         "version": "v3.2.3"
@@ -400,6 +412,9 @@
     },
     "twig/twig": {
         "version": "v2.4.6"
+    },
+    "ua-parser/uap-php": {
+        "version": "v3.5.0"
     },
     "vich/uploader-bundle": {
         "version": "1.5",

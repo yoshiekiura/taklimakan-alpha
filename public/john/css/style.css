@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,700,700i&subset=cyrillic');
+
+/*
 @font-face {
 	font-family: 'Montserrat';
 	src: url('../fonts/Montserrat-Light.eot');
@@ -40,7 +43,9 @@
 		url('../fonts/Montserrat-Medium.ttf') format('truetype');
 	font-weight: 500;
 	font-style: normal;
-}
+}*/
+
+
 
 /* XS */
 @media screen and (max-width: 575px) {
