@@ -89,7 +89,6 @@ composer install'''
           sh '''#!/bin/bash
 ./vendor/bin/simple-phpunit --log-junit phpUnitRes/junit.xml --coverage-html=phpUnitRes/
 #phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
-          junit(testResults: 'cov/junit.xml', allowEmptyResults: true)
         }
       }
       stage('Static Analysis') {
@@ -452,6 +451,7 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
     post {
       always {
         junit 'phpUnitRes/*.xml'
+        publishHTML(allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
 
       }
 
