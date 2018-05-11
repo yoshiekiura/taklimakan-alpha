@@ -51,7 +51,7 @@ for D in *; do
      [ $D != "Jenkinsfile" ] &&
      [ $D != "CodeAnalysis" ] &&
      [ $D != "deploy" ] &&
-     [ $D != "cov" ] &&
+     [ $D != "phpUnitRes" ] &&
      [ $D != "tests" ] &&
      [ $D != "createSL.bash" ] &&
      [[ $D != *"pylint"* ]]; then
@@ -87,7 +87,7 @@ echo "" > ".env"'''
 echo "install composer"
 composer install'''
           sh '''#!/bin/bash
-./vendor/bin/simple-phpunit --coverage-xml=cov/junit.xml
+./vendor/bin/simple-phpunit --coverage-xml=phpUnitRes/
 #phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
           junit(testResults: 'cov/junit.xml', allowEmptyResults: true)
         }
@@ -451,7 +451,7 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
     }
     post {
       always {
-        junit 'cov/*.xml'
+        junit 'phpUnitRes/*.xml'
 
       }
 
