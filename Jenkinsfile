@@ -142,7 +142,7 @@ exit 0
             steps {
               sh '''
 ./vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude vendor . || exit 0'''
-              dry(canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml')
+              dry(canRunOnFailed: true, pattern: 'results/CALogs/pmd-cpd.xml')
             }
           }
           stage('Mess Detection') {
