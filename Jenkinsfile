@@ -97,39 +97,22 @@ mkdir -p results/CALogs'''
           }
 
         }
-        parallel {
-          stage('Test') {
-            steps {
-              sh '''#!/bin/bash
+        steps {
+          sh '''#!/bin/bash
 mkdir -p results/phpUnitRes
 ./vendor/bin/simple-phpunit --log-junit results/phpUnitRes/junit.xml --coverage-html=results/phpUnitRes/
 #phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
-            }
-          }
-          stage('Copy paste detection') {
-            steps {
-              sh '''
-./vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude vendor . || exit 0'''
-              dry(canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml')
-            }
-          }
-          stage('Mess Detection') {
-            steps {
-              sh '''#!/bin/bash
-./vendor/bin/phpmd . xml build/phpmd.xml --reportfile results/CALogs/pmd.xml --exclude vendor/ || exit 0'''
-              pmd(canRunOnFailed: true, pattern: 'results/CALogs/pmd.xml')
-            }
-          }
         }
       }
       stage('Static Analysis') {
-        parallel {
-          stage('Static Analysis') {
-            steps {
-              echo 'Static Analysis'
-            }
+        when {
+          not {
+            branch 'master'
           }
-          stage('Analitics') {
+
+        }
+        parallel {
+          stage('Python Lint') {
             steps {
               sh '''#!/bin/bash
 
@@ -153,6 +136,21 @@ exit 0
 '''
               warnings(consoleParsers: [[parserName: 'PyLint']], parserConfigurations: [[parserName: 'PyLint', pattern: 'pylint*.log']])
               archiveArtifacts 'pylint_*.log'
+            }
+          }
+          stage('Copy paste detection') {
+            steps {
+              sh '''
+./vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude vendor . || exit 0'''
+              dry(canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml')
+            }
+          }
+          stage('Mess Detection') {
+            steps {
+              sh '''#!/bin/bash
+#./vendor/bin/phpmd . xml build/phpmd.xml --reportfile results/CALogs/pmd.xml --exclude vendor/ || exit 0
+./vendor/bin/phpmd --reportfile results/CALogs/pmd.xml --exclude vendor/ || exit 0'''
+              pmd(canRunOnFailed: true, pattern: 'results/CALogs/pmd.xml')
             }
           }
         }
