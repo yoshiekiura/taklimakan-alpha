@@ -149,7 +149,7 @@ exit 0
             steps {
               sh '''#!/bin/bash
 #./vendor/bin/phpmd . xml build/phpmd.xml --reportfile results/CALogs/pmd.xml --exclude vendor/ || exit 0
-./vendor/bin/phpmd --reportfile results/CALogs/pmd.xml --exclude vendor/ || exit 0'''
+./vendor/bin/phpmd . xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --exclude vendor/ || exit 0'''
               pmd(canRunOnFailed: true, pattern: 'results/CALogs/pmd.xml')
             }
           }
