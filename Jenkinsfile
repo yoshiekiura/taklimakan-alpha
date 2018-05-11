@@ -146,7 +146,7 @@ exit 0
           }
           stage('Mess Detection') {
             steps {
-              sh './vendor/bin/phpmd src,templates,public,services xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --exclude=src/Migrations --ignore-violations-on-exit'
+              sh './vendor/bin/phpmd src,templates,public,services xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --exclude src/Migrations --ignore-violations-on-exit'
               pmd(canRunOnFailed: true, pattern: 'results/CALogs/pmd.xml')
             }
           }
