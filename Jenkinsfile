@@ -139,7 +139,7 @@ exit 0
           }
           stage('Copy paste detection') {
             steps {
-              sh './vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude vendor . || exit 0'
+              sh './vendor/bin/phpcpd --names=src/,templates/,public/,services/--log-pmd results/CALogs/pmd-cpd.xml --exclude vendor . || exit 0'
               dry(canRunOnFailed: true, pattern: 'results/CALogs/pmd-cpd.xml')
             }
           }
