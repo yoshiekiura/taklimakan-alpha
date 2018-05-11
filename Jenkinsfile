@@ -36,20 +36,37 @@ pipeline {
         }
       }
       stage('Test') {
-        steps {
-          sh 'echo "execute Unit tests"'
-        }
-      }
-      stage('Static Analysis') {
-        parallel {
-          stage('Static Analysis') {
-            steps {
-              echo 'Static Analysis'
-            }
+        when {
+          anyOf {
+            branch 'release/**'
+            branch 'develop'
           }
-          stage('Analitics') {
-            steps {
-              sh '''#!/bin/bash
+
+        }
+        steps {
+          sh '''echo "execute Unit tests"
+./vendor/bin/simple-phpunit --coverage-html=cov/'''
+          publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: 'cov',
+                        reportFiles: '*.*',
+                        reportTitles: "PHPUnit Tests Report",
+                        reportName: "PHPUnit Tests Report"
+                      ])
+          }
+        }
+        stage('Static Analysis') {
+          parallel {
+            stage('Static Analysis') {
+              steps {
+                echo 'Static Analysis'
+              }
+            }
+            stage('Analitics') {
+              steps {
+                sh '''#!/bin/bash
 
 if [ ! -f pylint.cfg ]
 then
@@ -69,23 +86,23 @@ done
 exit 0
 
 '''
-              warnings(consoleParsers: [[parserName: 'PyLint']], parserConfigurations: [[parserName: 'PyLint', pattern: 'pylint*.log']])
-              archiveArtifacts 'pylint_*.log'
+                warnings(consoleParsers: [[parserName: 'PyLint']], parserConfigurations: [[parserName: 'PyLint', pattern: 'pylint*.log']])
+                archiveArtifacts 'pylint_*.log'
+              }
             }
           }
         }
-      }
-      stage('Compare Symfony ENV') {
-        when {
-          anyOf {
-            branch 'master'
-            branch 'release/**'
-          }
+        stage('Compare Symfony ENV') {
+          when {
+            anyOf {
+              branch 'master'
+              branch 'release/**'
+            }
 
-        }
-        steps {
-          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            sh '''#!/bin/bash
+          }
+          steps {
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              sh '''#!/bin/bash
 # take symfony enviroment file to make sure that
 #   deploy process not crash server
 #   (it could be if symfony environment variables are missed)
@@ -100,10 +117,10 @@ if [ "$BRANCH_NAME" != "master" ]; then
     exit 1
   fi
 fi'''
-          }
+            }
 
-          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            sh '''#!/bin/bash
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              sh '''#!/bin/bash
 # take symfony enviroment file to make sure that
 #   deploy process not crash server
 #   (it could be if symfony environment variables are missed)
@@ -117,10 +134,10 @@ if [ ! -f release.env ]; then
   exit 1
 fi
 '''
-          }
+            }
 
-          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            sh '''#!/bin/bash
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              sh '''#!/bin/bash
 # take symfony enviroment file to make sure that
 #   deploy process not crash server
 #   (it could be if symfony environment variables are missed)
@@ -136,9 +153,9 @@ if [ "$BRANCH_NAME" == "master" ]; then
   fi
 fi
 '''
-          }
+            }
 
-          sh '''#!/bin/bash
+            sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
   # Verify that .env file of realease branch contain the
@@ -169,22 +186,22 @@ done <"$FROM"
 
 echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 '''
-          sh 'rm -rf *.env'
-        }
-      }
-      stage('Archive & Deploy') {
-        when {
-          anyOf {
-            branch 'master'
-            branch 'release/**'
-            branch 'develop'
+            sh 'rm -rf *.env'
           }
-
         }
-        steps {
-          sh '''echo "display git branch info to make sure that branch is switch to Commit"
+        stage('Archive & Deploy') {
+          when {
+            anyOf {
+              branch 'master'
+              branch 'release/**'
+              branch 'develop'
+            }
+
+          }
+          steps {
+            sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch'''
-          sh '''echo "#!/bin/bash" > deploy
+            sh '''echo "#!/bin/bash" > deploy
 echo "#########################################################" >> deploy
 echo "# deploy" >> deploy
 echo "#" >> deploy
@@ -248,7 +265,7 @@ echo "" >> deploy
 echo "#Create symlinks" >> deploy
 echo "./createSL.bash \\$version_id" >> deploy
 '''
-          sh '''echo "#!/bin/bash" > createSL.bash
+            sh '''echo "#!/bin/bash" > createSL.bash
 echo "#########################################################" >> createSL.bash
 echo "# createSL.bash" >> createSL.bash
 echo "#" >> createSL.bash
@@ -357,7 +374,7 @@ echo "done" >> createSL.bash
 echo "" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
-          sh '''#!/bin/bash
+            sh '''#!/bin/bash
 if [ -d taklimakan-alpha ]; then
   # remove previous deploy data
   rm -rf taklimakan-alpha
@@ -371,6 +388,8 @@ for D in *; do
      [ $D != "Jenkinsfile" ] &&
      [ $D != "CodeAnalysis" ] &&
      [ $D != "deploy" ] &&
+     [ $D != "cov" ] &&
+     [ $D != "tests" ] &&
      [ $D != "createSL.bash" ] &&
      [[ $D != *"pylint"* ]]; then
     # copy to taklimakan-alpha
@@ -386,9 +405,9 @@ done
 zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
 '''
-          archiveArtifacts '*.zip'
-          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            sh '''#!/bin/bash
+            archiveArtifacts '*.zip'
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
@@ -414,17 +433,17 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
-          }
+            }
 
+          }
         }
       }
+      environment {
+        DEVELOP_HOST = '192.168.100.125'
+        DEVELOP_PORT = '8022'
+        RELEASE_HOST = '192.168.100.126'
+        RELEASE_PORT = '8022'
+        PRODUCTION_HOST = '192.168.100.127'
+        PRODUCTION_PORT = '8022'
+      }
     }
-    environment {
-      DEVELOP_HOST = '192.168.100.125'
-      DEVELOP_PORT = '8022'
-      RELEASE_HOST = '192.168.100.126'
-      RELEASE_PORT = '8022'
-      PRODUCTION_HOST = '192.168.100.127'
-      PRODUCTION_PORT = '8022'
-    }
-  }
