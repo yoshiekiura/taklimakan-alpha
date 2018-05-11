@@ -91,6 +91,12 @@ composer install'''
 #phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
         }
       }
+      stage('Copy paste detection') {
+        steps {
+          sh './vendor/bin/phpcpd --log-pmd results/CopyPasteDetectLogs/pmd-cpd.xml --exclude vendor . || exit 0'
+          dry(canRunOnFailed: true, pattern: 'build/logs/pmd-cpd.xml')
+        }
+      }
       stage('Static Analysis') {
         parallel {
           stage('Static Analysis') {
