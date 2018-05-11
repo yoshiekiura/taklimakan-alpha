@@ -100,8 +100,7 @@ mkdir -p results/CALogs'''
         steps {
           sh '''#!/bin/bash
 mkdir -p results/phpUnitRes
-./vendor/bin/simple-phpunit --log-junit results/phpUnitRes/junit.xml --coverage-html=results/phpUnitRes/
-#phpunit --log-junit results/phpunit/junit.xml --coverage-html=results/phpunit/covegare -c tests/phpunit.xml'''
+./vendor/bin/simple-phpunit --log-junit results/phpUnitRes/junit.xml --coverage-html=results/phpUnitRes/'''
         }
       }
       stage('Static Analysis') {
@@ -140,16 +139,13 @@ exit 0
           }
           stage('Copy paste detection') {
             steps {
-              sh '''
-./vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude vendor . || exit 0'''
+              sh './vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude vendor . || exit 0'
               dry(canRunOnFailed: true, pattern: 'results/CALogs/pmd-cpd.xml')
             }
           }
           stage('Mess Detection') {
             steps {
-              sh '''#!/bin/bash
-#./vendor/bin/phpmd . xml build/phpmd.xml --reportfile results/CALogs/pmd.xml --exclude vendor/ || exit 0
-./vendor/bin/phpmd . xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --exclude vendor/ || exit 0'''
+              sh './vendor/bin/phpmd . xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --exclude vendor,.git,tests,var || exit 0'
               pmd(canRunOnFailed: true, pattern: 'results/CALogs/pmd.xml')
             }
           }
