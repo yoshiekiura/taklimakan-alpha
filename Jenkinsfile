@@ -140,7 +140,7 @@ exit 0
           stage('Copy paste detection') {
             steps {
               sh '''mkdir -p results/CALogs
-./vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude=vendor,tests,var,src/Migrations ./src,./templates,./public,./services || exit 0'''
+./vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude=vendor,tests,var,src/Migrations ./src ./templates ./public ./services || exit 0'''
               dry(canRunOnFailed: true, pattern: 'results/CALogs/pmd-cpd.xml')
             }
           }
