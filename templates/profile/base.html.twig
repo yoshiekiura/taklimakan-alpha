@@ -60,17 +60,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript">
-        const $document = $(document);
-        $document.ready(function(){
-            $('.btn-menu').click(function(){
-                $('.left-side').toggleClass('active');
-                $('.main-content').toggleClass('active');
-                return false;
-            });
-            $document.click(function() {
-                $('.left-side.active').removeClass('active');
-            });
-        });
-    </script>
+    <script type="text/javascript" src="/js/profile/base.js"></script>
 {% endblock %}
