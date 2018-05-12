@@ -47,7 +47,6 @@
                                         </ul>#}
                                         <ul class="list-inline news-tags">
                                             <li class="list-inline-item">Tags:</li>
-                                            <li class="list-inline-item">Tags:</li>
                                             {% for tag in news.tags %}
                                                 <li class="list-inline-item"><a href="?tags={{tag}}">{{tag}}</a></li>
                                             {% endfor %}
@@ -94,7 +93,7 @@
                                             <div class="row">
                                                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
                                                     <div class="cource-title">
-                                                        <a href="#">Launch course on &laquo;{{ course.title }}&raquo;</a>
+                                                        <a href="{{ path('courses_id_translit', {id: course.id, translit: (course.title|translit)}) }}">Launch course on &laquo;{{ course.title }}&raquo;</a>
                                                     </div>
                                                 </div>
                                             </div>
