@@ -32,6 +32,7 @@ easy_admin:
 
             - { label: 'Security' }
             - { entity: 'Users', label: 'Users', icon: 'users' }
+            - { entity: 'Journal', label: 'Journal', icon: 'book' }
 
             - { label: 'Etc' }
             - { label: 'Home', url: 'http://taklimakan.io', rel: 'index' }
@@ -203,7 +204,6 @@ easy_admin:
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
         Users:
-
             class: App\Entity\User
             list:
                 fields: ['id', 'email', 'erc20_token']
@@ -212,6 +212,13 @@ easy_admin:
                     - { property: 'firstName', label: 'First Name' }
                     - { property: 'lastName', label: 'Last Name' }
                     - { property: 'erc20Token', label: 'ERC-20 Wallet' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Journal:
+            class: App\Entity\Journal
+            list:
+                fields: ['id', 'admin', 'user', 'action', 'data']
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
