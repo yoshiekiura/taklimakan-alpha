@@ -32,12 +32,12 @@ body { min-height: 100%; }
 
 <style nonce="{{ csp_nonce() }}">
     html, body { /*height: 100vh;*/ height: 100%; margin: 0;  }
-    body { /*overflow:hidden;*/ height: 100%; padding: 0px 25px; }
+    body { overflow:hidden; height: 100%; padding: 0px 25px; }
     .container { position: relative; height: 100%; }
     #filler { /*position: absolute;*/ height: 100%; }
-#index-chart { width: 100%; height: 90%; /*position: absolute;*/ }
+    #index-chart { width: 100%; height: 90%; /*position: absolute;*/ }
     #index-range-selector { text-align: right; padding: 0px 20px 0px 0px; margin-top: -50px; }
-    #ac_layer_10 { display: none } /* Hide annoing range selector below graph */
+    #ac_layer_10, #ac_layer_12 { display: none } /* Hide annoing range selector below graph */
 </style>
 
 
