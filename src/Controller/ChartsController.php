@@ -111,6 +111,27 @@ class ChartsController extends Controller
      */
     public function showChart($type = null, Request $request)
     {
+
+        // Show iframe content for TN Crypto 100 Index
+        if ("100" == strval($type)) {
+
+            $conn = $this->getDoctrine()->getConnection();
+
+            $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "11" AND pair = "INDEX001"';
+            $query = $this->getDoctrine()->getConnection()->prepare($sql);
+            $query->execute();
+            $rows = $query->fetchAll();
+            $crypto_index = [];
+            foreach ($rows as $row)
+                $data[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
+
+            return $this->render('charts/100.html.twig', [
+                'data' => $data,
+            ]);
+
+        }
+            $this->show100($request);
+
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
@@ -224,7 +245,7 @@ class ChartsController extends Controller
         return $this->render('charts/all.html.twig', [
             'menu' => 'charts',
             'params' => $params,
-            'show_welcome' => $showWelcome,            
+            'show_welcome' => $showWelcome,
             'allowed' => $allowed,
             'pair' => $pair,
             'data' => $data,
