@@ -18,6 +18,7 @@
 """
 import os
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 
 def before_all(context):
@@ -34,8 +35,10 @@ def before_all(context):
         context.browser = webdriver.Chrome()
     else:
         # this is Jenkins. Open headless browser
-        # PhantomJS (http://phantomjs.org/) should be installed on jenkins prior to usage
-        context.browser = webdriver.PhantomJS()
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--window-size=1920x1080")
+        context.browser = webdriver.Chrome(chrome_options=chrome_options)
 
 
 def after_all(context):
