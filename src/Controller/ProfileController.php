@@ -78,6 +78,7 @@ class ProfileController extends Controller
         }
 
         return $this->render('profile/edit.html.twig', [
+            'hide_footer' => true,
             'form' => $form->createView(),
         ]);
     }
@@ -140,7 +141,8 @@ class ProfileController extends Controller
                         ->setTo($user->getEmail())
                         ->setBody(
                             $this->renderView(
-                                'emails/changed_profile.html.twig'
+                                'emails/changed_profile.html.twig',
+                                $data
                             ),
                             'text/html'
                         )
@@ -155,6 +157,7 @@ class ProfileController extends Controller
         }
 
         return $this->render('profile/confirm.html.twig', [
+            'hide_footer' => true,
             'form' => $form->createView(),
             'invalidPassword' => $invalidPassword,
         ]);

@@ -1,1 +1,9 @@
-Your profile has been changed
+Your profile has been changed:
+<br/>
+<ul>
+    {% for field in fields|keys %}
+        <li>{{ field }}</li>
+    {% endfor %}
+</ul>
+<br/>
+<a href="{{ path('home') }}">Contact us if it wasn't you.</a>
