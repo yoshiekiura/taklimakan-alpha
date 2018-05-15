@@ -466,6 +466,14 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
 
         }
       }
+      stage('Smoky Test') {
+        steps {
+          sh '''export PATH=$PATH:/usr/lib/chromium-browser/
+
+behave -c --no-junit tests/Selenium/SmokyTest/features/
+'''
+        }
+      }
     }
     environment {
       DEVELOP_HOST = '192.168.100.125'
