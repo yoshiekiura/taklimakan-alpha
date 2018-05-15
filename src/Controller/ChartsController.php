@@ -130,7 +130,6 @@ class ChartsController extends Controller
             ]);
 
         }
-            $this->show100($request);
 
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
