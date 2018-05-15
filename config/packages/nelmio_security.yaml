@@ -58,7 +58,8 @@ nelmio_security:
             script-src:
                 - self
                 - unsafe-inline
-                - unsafe-eval
+                # AddThis has eval() inside of the script
+                - unsafe-eval 
                 - cdn.anychart.com
                 - s7.addthis.com
                 - m.addthis.com

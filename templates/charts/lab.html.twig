@@ -53,6 +53,13 @@
 
         });
 
+        //$(document).ready(function() {
+        $('.chbox').on('click', showPair);
+        $('.dropdown-item').on('click', changeType);
+
+        //});
+
+
     }); // jQuery or DOMContentLoaded
 
     </script>
@@ -68,7 +75,8 @@
             <div class="row" style="padding: 2px 2px 2px 0px;">
         {% endif %}
             {% set count = count + 1 %}
-            <input type="checkbox" id="{{pair}}-Checkbox" class="col chbox" onchange='showPair("{{pair}}");'>
+{#            <input type="checkbox" id="{{pair}}-Checkbox" class="col chbox" onchange='showPair("{{pair}}");'> #}
+            <input type="checkbox" id="{{pair}}" class="col chbox">
             <label for="{{pair}}-Checkbox" class="form-check-label col"><span class="small">{{pair}}</span></label>
         {% if count == 4 or loop.index == allowed|length %}
             {# % if loop.index == allowed|length % }
@@ -90,7 +98,8 @@
             </button>
             <div class="dropdown-menu">
                 {% for i in range (1,13) %}
-                <a class="dropdown-item" href="#" onclick="changeType({{i}});">Chart Type {{i}}</a>
+{#                <a class="dropdown-item" href="#" onclick="changeType({{i}});">Chart Type {{i}}</a> #}
+                <a class="dropdown-item" href="#" id="{{i}}">Chart Type {{i}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -109,7 +118,11 @@
 
 <script nonce="{{ csp_nonce() }}">
 
-    function changeType(type) {
+    function changeType() {
+
+        let type = $(this).attr('id');
+        console.log(type);
+
         $('.chbox').prop('checked', false);
         globalType = type;
         $('#choose-button').text('Chart Type #' + type);
@@ -121,9 +134,13 @@
             $('.chbox').prop('disabled', false);
     }
 
-    function showPair(pair) {
+    function showPair() {
 
-        cb = document.getElementById(pair + "-Checkbox");
+        let pair = $(this).attr('id');
+        //console.log(pair);
+
+        // cb = document.getElementById(pair + "-Checkbox");
+        cb = document.getElementById(pair);
         if (cb.checked)
             drawPlot(pair);
         else
