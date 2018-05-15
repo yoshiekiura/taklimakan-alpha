@@ -468,6 +468,14 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
         }
       }
       stage('Smoky Test') {
+        when {
+          anyOf {
+            branch 'master'
+            branch 'release/**'
+            branch 'develop'
+          }
+
+        }
         steps {
           sh '''export PATH=$PATH:/usr/lib/chromium-browser/
 
@@ -476,6 +484,14 @@ behave -c --no-junit tests/Selenium/SmokyTest/features/
         }
       }
       stage('Integration Tests (Selenium)') {
+        when {
+          anyOf {
+            branch 'master'
+            branch 'release/**'
+            branch 'develop'
+          }
+
+        }
         steps {
           sh '''export PATH=$PATH:/usr/lib/chromium-browser/
 
