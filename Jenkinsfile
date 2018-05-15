@@ -479,7 +479,7 @@ behave -c --no-junit tests/Selenium/SmokyTest/features/
           sh '''export PATH=$PATH:/usr/lib/chromium-browser/
 
 behave -c --junit --junit-directory tests/Selenium/IntegrationTests/result tests/Selenium/IntegrationTests/features'''
-          junit(testResults: 'tests/Selenium/IntegrationTests/results', healthScaleFactor: 5)
+          junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5)
         }
       }
     }
