@@ -134,11 +134,9 @@
     "pagerfanta/pagerfanta": {
         "version": "v1.0.5"
     },
-
     "paragonie/random_compat": {
-         "version": "v2.0.12"
-    },     
-
+        "version": "v2.0.12"
+    },
     "pdepend/pdepend": {
         "version": "2.5.2"
     },
@@ -147,7 +145,6 @@
     },
     "phpunit/php-timer": {
         "version": "2.0.0"
-
     },
     "pimple/pimple": {
         "version": "v3.2.3"

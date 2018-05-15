@@ -1,12 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-
-    "content-hash": "44727c43605954877754a1d6a6b04bdd",
-
+    "content-hash": "0df8f722ddce096f26b349c108a47bfc",
     "packages": [
         {
             "name": "alterphp/easyadmin-extension-bundle",

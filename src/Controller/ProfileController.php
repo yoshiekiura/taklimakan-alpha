@@ -26,7 +26,7 @@ class ProfileController extends Controller
         return $this->render('profile/view.html.twig', [
             'hide_footer' => true,
             'news_list' => $this->getDoctrine()->getRepository('App:News')->getNews([
-                'limit' => 4,
+                'limit' => 3,
             ]),
             'courses' => $this->getDoctrine()->getRepository('App:Course')->getCourses([
                 'limit' => 4,
@@ -78,6 +78,7 @@ class ProfileController extends Controller
         }
 
         return $this->render('profile/edit.html.twig', [
+            'hide_footer' => true,
             'form' => $form->createView(),
         ]);
     }
@@ -118,7 +119,7 @@ class ProfileController extends Controller
                         $user->setFirstName($data['first_name']);
                     }
                     if (array_key_exists('last_name', $data)) {
-                        $user->setFirstName($data['first_name']);
+                        $user->setLastName($data['last_name']);
                     }
                     if (array_key_exists('erc20_token', $data)) {
                         $user->setErc20Token($data['erc20_token']);
@@ -140,7 +141,8 @@ class ProfileController extends Controller
                         ->setTo($user->getEmail())
                         ->setBody(
                             $this->renderView(
-                                'emails/changed_profile.html.twig'
+                                'emails/changed-profile.html.twig',
+                                $data
                             ),
                             'text/html'
                         )
@@ -155,6 +157,7 @@ class ProfileController extends Controller
         }
 
         return $this->render('profile/confirm.html.twig', [
+            'hide_footer' => true,
             'form' => $form->createView(),
             'invalidPassword' => $invalidPassword,
         ]);
