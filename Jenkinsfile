@@ -468,7 +468,7 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
       }
       stage('Smoky Test') {
         steps {
-          sh '''behave -c --no_junit tests/Selenium/SmokyTest/features/
+          sh '''behave -c --no-junit tests/Selenium/SmokyTest/features/
 '''
         }
       }
