@@ -482,6 +482,13 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
 behave -c --no-junit tests/Selenium/SmokyTest/features/
 '''
         }
+        post {
+          failure {
+            echo 'FAILED (in stage OK - should not happen :))'
+
+          }
+
+        }
       }
       stage('Integration Tests (Selenium)') {
         when {
