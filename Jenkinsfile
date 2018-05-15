@@ -474,6 +474,14 @@ behave -c --no-junit tests/Selenium/SmokyTest/features/
 '''
         }
       }
+      stage('Integration Tests (Selenium)') {
+        steps {
+          sh '''export PATH=$PATH:/usr/lib/chromium-browser/
+
+behave -c --junit --junit-directory tests/Selenium/IntegrationTests/result tests/Selenium/IntegrationTests/feature'''
+          junit(testResults: 'tests/Selenium/IntegrationTests/results', healthScaleFactor: 5)
+        }
+      }
     }
     environment {
       DEVELOP_HOST = '192.168.100.125'
