@@ -90,7 +90,7 @@ echo "create catalog for Code Analysis results"
 mkdir -p results/CALogs'''
         }
       }
-      stage('Tests') {
+      stage('Unit Tests') {
         when {
           not {
             branch 'master'
@@ -101,6 +101,7 @@ mkdir -p results/CALogs'''
           sh '''#!/bin/bash
 mkdir -p results/phpUnitRes
 ./vendor/bin/simple-phpunit --log-junit results/phpUnitRes/junit.xml --coverage-html=results/phpUnitRes/'''
+          junit 'results/phpUnitRes/*.xml'
         }
       }
       stage('Static Analysis') {
@@ -493,7 +494,6 @@ behave -c --junit --junit-directory tests/Selenium/IntegrationTests/results test
     }
     post {
       always {
-        junit 'results/phpUnitRes/*.xml'
         publishHTML(allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
 
       }
