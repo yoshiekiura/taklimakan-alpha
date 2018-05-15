@@ -71,6 +71,7 @@ nelmio_security:
                 - www.linkedin.com
                 - cdnjs.cloudflare.com
                 - www.googletagmanager.com
+                - www.google-analytics.com
             #font-src:
             #    - self
 
