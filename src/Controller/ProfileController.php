@@ -118,7 +118,7 @@ class ProfileController extends Controller
                         $user->setFirstName($data['first_name']);
                     }
                     if (array_key_exists('last_name', $data)) {
-                        $user->setFirstName($data['first_name']);
+                        $user->setLastName($data['last_name']);
                     }
                     if (array_key_exists('erc20_token', $data)) {
                         $user->setErc20Token($data['erc20_token']);
