@@ -141,7 +141,7 @@ class ProfileController extends Controller
                         ->setTo($user->getEmail())
                         ->setBody(
                             $this->renderView(
-                                'emails/changed_profile.html.twig',
+                                'emails/changed-profile.html.twig',
                                 $data
                             ),
                             'text/html'
