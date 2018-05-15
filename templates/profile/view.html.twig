@@ -48,7 +48,7 @@
                                         <ul class="list-inline news-tags">
                                             <li class="list-inline-item">Tags:</li>
                                             {% for tag in news.tags %}
-                                                <li class="list-inline-item"><a href="?tags={{tag}}">{{tag}}</a></li>
+                                                <li class="list-inline-item"><a href="/news?tags={{tag}}">{{tag}}</a></li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -93,7 +93,7 @@
                                             <div class="row">
                                                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
                                                     <div class="cource-title">
-                                                        <a href="{{ path('courses_id_translit', {id: course.id, translit: (course.title|translit)}) }}">Launch course on &laquo;{{ course.title }}&raquo;</a>
+                                                        <a href="{{ path('courses_id_translit', {id: course.id, translit: (course.title|translit)}) }}">&laquo;{{ course.title }}&raquo;</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -102,7 +102,7 @@
                                     <div class="row mb-15">
                                         <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-7">
                                             <div class="cource-category">
-                                                <a href="#">{{ course.title }}</a>
+                                                <a href="{{ path('courses_id_translit', {id: course.id, translit: (course.title|translit)}) }}">{{ course.title }}</a>
                                             </div>
                                         </div>
                                         <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-5 text-right">
@@ -113,7 +113,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-xl-12">
-                                            <a href="#" class="btn btn-buy-inv btn-block br-30">Start</a>
+                                            <a href="{{ path('courses_id_translit', {id: course.id, translit: (course.title|translit)}) }}" class="btn btn-buy-inv btn-block br-30">Start</a>
                                         </div>
                                     </div>
                                 </div>
@@ -164,308 +164,8 @@
                                         <div class="row">
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-ms-12 col-12">
                                                 <div class="analytics-title">
-                                                    <a href="/charts/all">Launch cource on cryptocurrencies</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="analytics-category">
-                                                    <a href="/charts/all">Analytic Material</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
-                                        <div class="analytics-rate">
-                                            <ul class="list-inline rating">
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star-o.svg" alt=""></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 text-right">
-                                        <div class="analytics-status">
-                                            <span>You follow</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="analytics-card">
-                                <div class="row mb-15">
-                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-                                        <div class="analytics-avatar">
-                                            <img src="/john/images/pdf-icon.svg" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
-                                        <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-ms-12 col-12">
-                                                <div class="analytics-title">
-                                                    <a href="/charts/all">Launch cource on cryptocurrencies</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="analytics-category">
-                                                    <a href="/charts/all">Analytic Material</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
-                                        <div class="analytics-rate">
-                                            <ul class="list-inline rating">
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star-o.svg" alt=""></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 text-right">
-                                        <div class="analytics-status">
-                                            <span>You follow</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="analytics-card">
-                                <div class="row mb-15">
-                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-                                        <div class="analytics-avatar">
-                                            <img src="/john/images/pdf-icon.svg" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
-                                        <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-ms-12 col-12">
-                                                <div class="analytics-title">
-                                                    <a href="/charts/all">Launch cource on cryptocurrencies</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="analytics-category">
-                                                    <a href="/charts/all">Analytic Material</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
-                                        <div class="analytics-rate">
-                                            <ul class="list-inline rating">
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star-o.svg" alt=""></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 text-right">
-                                        <div class="analytics-status">
-                                            <span>You follow</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="analytics-card">
-                                <div class="row mb-15">
-                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-                                        <div class="analytics-avatar">
-                                            <img src="/john/images/pdf-icon.svg" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
-                                        <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-ms-12 col-12">
-                                                <div class="analytics-title">
-                                                    <a href="/charts/all">Launch cource on cryptocurrencies</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="analytics-category">
-                                                    <a href="/charts/all">Analytic Material</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
-                                        <div class="analytics-rate">
-                                            <ul class="list-inline rating">
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star-o.svg" alt=""></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 text-right">
-                                        <div class="analytics-status">
-                                            <span>You follow</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="analytics-card">
-                                <div class="row mb-15">
-                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-                                        <div class="analytics-avatar">
-                                            <img src="/john/images/pdf-icon.svg" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
-                                        <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-ms-12 col-12">
-                                                <div class="analytics-title">
-                                                    <a href="/charts/all">Launch cource on cryptocurrencies</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="analytics-category">
-                                                    <a href="/charts/all">Analytic Material</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
-                                        <div class="analytics-rate">
-                                            <ul class="list-inline rating">
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star-o.svg" alt=""></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 text-right">
-                                        <div class="analytics-status">
-                                            <span>You follow</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="analytics-card">
-                                <div class="row mb-15">
-                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-                                        <div class="analytics-avatar">
-                                            <img src="/john/images/pdf-icon.svg" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
-                                        <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-ms-12 col-12">
-                                                <div class="analytics-title">
-                                                    <a href="/charts/all">Launch cource on cryptocurrencies</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="analytics-category">
-                                                    <a href="/charts/all">Analytic Material</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
-                                        <div class="analytics-rate">
-                                            <ul class="list-inline rating">
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star-o.svg" alt=""></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 text-right">
-                                        <div class="analytics-status">
-                                            <span>You follow</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="analytics-card">
-                                <div class="row mb-15">
-                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-                                        <div class="analytics-avatar">
-                                            <img src="/john/images/pdf-icon.svg" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
-                                        <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-ms-12 col-12">
-                                                <div class="analytics-title">
-                                                    <a href="/charts/all">Launch cource on cryptocurrencies</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="analytics-category">
-                                                    <a href="/charts/all">Analytic Material</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
-                                        <div class="analytics-rate">
-                                            <ul class="list-inline rating">
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star.svg" alt=""></a></li>
-                                                <li class="list-inline-item"><a href="#"><img src="/john/images/i/star-o.svg" alt=""></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 text-right">
-                                        <div class="analytics-status">
-                                            <span>You follow</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="analytics-card">
-                                <div class="row mb-15">
-                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-                                        <div class="analytics-avatar">
-                                            <img src="/john/images/pdf-icon.svg" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
-                                        <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-ms-12 col-12">
-                                                <div class="analytics-title">
-                                                    <a href="/charts/all">Launch cource on cryptocurrencies</a>
+                                                    {#<a href="/charts/all">Launch cource on cryptocurrencies</a>#}
+                                                    <a href="/charts/all">Check the latest crypto charts</a>
                                                 </div>
                                             </div>
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
