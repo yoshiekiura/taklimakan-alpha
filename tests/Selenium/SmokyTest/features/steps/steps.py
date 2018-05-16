@@ -47,7 +47,8 @@ def step(context):
     :param context: behave.runner.Context
     :return: none
     """
-    assert context.browser.title == "Taklimakan"
+
+    verify(context, context.browser.title == "Taklimakan", 'Taklimakan Page is not load successfully')
 
 
 @then('no exceptions on a page')
