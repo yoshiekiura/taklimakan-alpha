@@ -590,7 +590,7 @@ fi
 
 behave -c --junit --junit-directory tests/Selenium/IntegrationTests/results tests/Selenium/IntegrationTests/features'''
           junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5)
-          archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+          archiveArtifacts(artifacts: 'Screenshots/*.png', allowEmptyArchive: true)
         }
       }
     }
