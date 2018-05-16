@@ -487,7 +487,9 @@ OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 echo "$BRANCH_NAME.$OUTPUT" > success.last
 '''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            sh '''if [ "$BRANCH_NAME" == "master" ]; then
+            sh '''#!/bin/bash
+
+if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
   DEPLOY_PORT=$PRODUCTION_PORT
 elif [ "$BRANCH_NAME" == "develop" ]; then
