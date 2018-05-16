@@ -491,8 +491,10 @@ behave -c --no-junit tests/Selenium/SmokyTest/features/
           success {
             echo 'Smoky Test PASSED. Store this version as last success deploy version.'
             script {
-              def env = System.getenv()
-              def BranchName = env['BRANCH_NAME']
+              def build = this.getProperty('binding').getVariable('build')
+              def listener = this.getProperty('binding').getVariable('listener')
+              def env = build.getEnvironment(listener)
+              def BranchName = env.BRANCH_NAME
               def GitCommitHash=sh(returnStdout: true, script: "git log --pretty=format:\'%h\' -n 1")
               new File('success.last') < '''${BranchName}.${GitCommitHash}'''
             }
