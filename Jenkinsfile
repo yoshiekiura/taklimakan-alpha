@@ -553,7 +553,7 @@ else
 fi
 
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
-              archiveArtifacts(artifacts: 'tests/Selenium/SmokyTest/Screenshots/*.png', allowEmptyArchive: true)
+              archiveArtifacts(artifacts: 'Screenshots/*.png', allowEmptyArchive: true)
             }
 
 
@@ -590,7 +590,7 @@ fi
 
 behave -c --junit --junit-directory tests/Selenium/IntegrationTests/results tests/Selenium/IntegrationTests/features'''
           junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5)
-          archiveArtifacts 'Screenshots/*.png'
+          archiveArtifacts(artifacts: 'Screenshots/*.png', allowEmptyArchive: true)
         }
       }
     }
