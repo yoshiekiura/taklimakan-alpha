@@ -32,7 +32,7 @@ def verify(context, state, fail_text):
             os.mkdir('Screenshots')
 
         scn_name: str = scenario_name(context)
-        if not context.browser.get_screenshot_as_file('Screenshots/' + scn_name + '.png'):
+        if not context.browser.save_screenshot('Screenshots/' + scn_name + '.png'):
             print("No screenshot taken\n")
         else:
             print("Screenshot: " + scn_name + ".png taken")
