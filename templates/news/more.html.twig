@@ -1,0 +1,12 @@
+
+    <!-- News Block -->
+
+    <div class="row">
+    {% for el in news %}
+            {% include 'news/news-box.html.twig' %}
+    {% endfor %}
+    </div>
+
+    <!-- Placeholder for future News -->
+
+    <div class="row" id="more"></div>
