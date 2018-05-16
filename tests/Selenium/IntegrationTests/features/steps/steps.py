@@ -1,21 +1,21 @@
 from behave import *
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+import time
 from selenium.webdriver.support import expected_conditions as EC
-import os
 
 use_step_matcher("re")
 
 ###GIVEN###
 @given("Taklimakan Network is opened and start popup is skipped")
 def step_impl(context):
-    context.browser.find_element(By.CSS_SELECTOR, 'button.btn.btn-buy').click()
+    context.browser.find_element(By.CSS_SELECTOR, "button.btn.btn-buy").click()
+    time.sleep(3)
 
 ###WHEN###
+#TODO this step is not working
 @when('I click See all news on the main page')
 def step_impl(context):
-    context.browser.find_element(By.CSS_SELECTOR, 'btn btn-success btn-block btn-load').click()
+    context.browser.find_element(By.LINK_TEXT, 'See all news').click()
 
 @when("I click News button in top menu")
 def step_impl(context):
@@ -24,7 +24,7 @@ def step_impl(context):
 ###THEN###
 @then("I should see News index page")
 def step_impl(context):
-    print(context.browser.find_element(By.CLASS_NAME, 'div.news-header'))
+    EC.title_contains('Taklimakan / News')
 
 
 @when("I click See all Courses and Articles on the main page")
