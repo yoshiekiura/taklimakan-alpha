@@ -139,6 +139,20 @@ class ProfileController extends Controller
 
                     $session->remove('profile_data');
 
+                    $fields = array_keys($data);
+                    if (($index = array_search('first_name', $fields)) !== false) {
+                        $fields[$index] = 'First name';
+                    }
+                    if (($index = array_search('last_name', $fields)) !== false) {
+                        $fields[$index] = 'Last name';
+                    }
+                    if (($index = array_search('erc20_token', $fields)) !== false) {
+                        $fields[$index] = 'Wallet';
+                    }
+                    if (($index = array_search('password', $fields)) !== false) {
+                        $fields[$index] = 'Password';
+                    }
+
                     $message = (new \Swift_Message('Profile has been changed'))
                         ->setFrom($this->getParameter('sender_email'))
                         ->setTo($user->getEmail())
@@ -146,7 +160,7 @@ class ProfileController extends Controller
                             $this->renderView(
                                 'emails/changed-profile.html.twig',
                                 [
-                                    'fields' => array_keys($data),
+                                    'fields' => $fields,
                                 ]
                             ),
                             'text/html'
