@@ -17,7 +17,22 @@
      otherwise these hooks will not be executed
 """
 import os
+import re
+
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+
+def scenario_name(context):
+    """
+    Get scenario name from context.scenario and replace spaces with underscores
+    :param context: behave.runner.Context
+    :return: scenario name
+
+    WARNING: this function should be called only in scenario scope, for example in before_all it failed
+    """
+    return re.sub(r' ', '_', context.scenario.name)
+
 
 
 def before_all(context):
@@ -28,14 +43,21 @@ def before_all(context):
     :return: none
     """
     # print("before all scenario hook\n")
+
     # Verify that this is not Jenkins server
     if os.environ.get('BRANCH_NAME') is None:
         # this is not Jenkins open regular Chrome browser
         context.browser = webdriver.Chrome()
     else:
         # this is Jenkins. Open headless browser
-        # PhantomJS (http://phantomjs.org/) should be installed on jenkins prior to usage
-        context.browser = webdriver.PhantomJS()
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--window-size=1920x1080")
+        context.browser = webdriver.Chrome(chrome_options=chrome_options)
+
+    if os.environ.get('DEPLOY_HOST') is None:
+        os.environ["DEPLOY_HOST"] = 'tkln-test.usetech.ru'
+    print('Test executed on: ' + os.environ["DEPLOY_HOST"]+'\n')
 
 
 def after_all(context):
@@ -55,8 +77,9 @@ def before_scenario(context, scenario):
     :param scenario: current scenario name (not used for now)
     :return: none
     """
-    if os.environ.get('DEPLOY_HOST') is None:
-        # TODO: switch to taklimakan.io or some other ask Alexandra Kalm
-        os.environ["DEPLOY_HOST"] = '192.168.100.125'
+
+    # remove previously created screenshots if exist
+    if os.path.exists('Screenshots/' + scenario_name(context) + '.png'):
+        os.remove('Screenshots/' + scenario_name(context) + '.png')
 
     context.browser.get('http://'+os.environ.get('DEPLOY_HOST'))

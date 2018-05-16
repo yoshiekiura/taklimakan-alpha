@@ -5,6 +5,17 @@ import requests
 from behave import *
 
 
+def scenario_name(context):
+    """
+    Get scenario name from context.scenario and replace spaces with underscores
+    :param context: behave.runner.Context
+    :return: scenario name
+
+    WARNING: this function should be called only in scenario scope, for example in before_all it failed
+    """
+    return re.sub(r' ', '_', context.scenario.name)
+
+
 def verify(context, state, fail_text):
     """
     If state is fail create screenshot and store it (it will be stored as build artifact by Jenkins)
@@ -17,7 +28,14 @@ def verify(context, state, fail_text):
     :return: none
     """
     if not state:
-        context.browser.get_screenshot_as_file('screenshot-%s.png' % context.test)
+        if not os.path.isdir('Screenshots'):
+            os.mkdir('Screenshots')
+
+        scn_name: str = scenario_name(context)
+        if not context.browser.get_screenshot_as_file('Screenshots/' + scn_name + '.png'):
+            print("No screenshot taken\n")
+        else:
+            print("Screenshot: " + scn_name + ".png taken")
 
     assert state, fail_text
 
@@ -40,7 +58,7 @@ def step(context):
     :return: none
     """
 
-    verify(context, requests.get('http://'+os.environ.get('DEPLOY_HOST')).status_code == requests.codes.ok,
+    verify(context, requests.get('http://' + os.environ.get('DEPLOY_HOST')).status_code == requests.codes.ok,
            'Taklimakan Page is not load successfully')
 
     verify(context, re.search(r'[Ee]xception', context.browser.page_source) is None,
