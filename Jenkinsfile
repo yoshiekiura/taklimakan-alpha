@@ -523,6 +523,19 @@ scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'
             echo 'Smoky Test FAILED! Rollback web-site to the last success deployed version.'
             sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
               sh '''#!/bin/bash
+
+if [ "$BRANCH_NAME" == "master" ]; then
+  DEPLOY_HOST=$PRODUCTION_HOST
+  DEPLOY_PORT=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  DEPLOY_HOST=$DEVELOP_HOST
+  DEPLOY_PORT=$DEVELOP_PORT
+else
+  #release branch
+  DEPLOY_HOST=$RELEASE_HOST
+  DEPLOY_PORT=$RELEASE_PORT
+fi
+
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
             }
 
