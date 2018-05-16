@@ -3,6 +3,10 @@
 {% block chart %}
 
 
+<style nonce="{{ csp_nonce() }}">
+    #tv_chart_container { width: 100%; height: 100%; }
+</style>
+
 <!-- Fix for iOS Safari zooming bug -->
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -11,7 +15,7 @@
 <script type="text/javascript" src="/trading_view/datafeeds/udf/dist/polyfills.js"></script>
 <script type="text/javascript" src="/trading_view/datafeeds/udf/dist/bundle.js"></script>
 
-<script type="text/javascript">
+<script type="text/javascript" nonce="{{ csp_nonce() }}">
 
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -24,14 +28,16 @@
     {
         var widget = window.tvWidget = new TradingView.widget({
             // debug: true, // uncomment this line to see Library errors and warnings in the console
-            fullscreen: true,
+            fullscreen: false,
+            width: "70%",
+            height: "700px",
             symbol: 'ABSSIN',
             interval: 'D',
             container_id: "tv_chart_container",
             //	BEWARE: no trailing slash is expected in feed URL
             //datafeed: new Datafeeds.UDFCompatibleDatafeed("https://demo_feed.tradingview.com"),
-            //datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8081"),
-            datafeed: new Datafeeds.UDFCompatibleDatafeed("https://tkln-dev-udf.usetech.ru"),
+            datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8081"),
+            //datafeed: new Datafeeds.UDFCompatibleDatafeed("https://tkln-dev-udf.usetech.ru"),
             library_path: "charting_library/",
             //locale: getParameterByName('lang') || "en",
             //	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
@@ -76,9 +82,8 @@
 </head>
 
 <body style="margin:0px;">
-<div id="tv_chart_container"></div>
+<div id="tv_chart_container" align="center"></div>
 </body>
-
 
 
 {% endblock %}

@@ -53,6 +53,11 @@ DirectoryIndex index.php
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 
+    # Redirect "charting_library" requests to "trading_view/charting_library"
+    RewriteCond %{REQUEST_URI} "/charting_library/"
+    RewriteCond %{REQUEST_URI} !"/trading_view/"
+    RewriteRule ^(.*) /trading_view/$1  [L,R]
+
     # Rewrite all other queries to the front controller.
     RewriteRule ^ %{ENV:BASE}/index.php [L]
 </IfModule>

@@ -13,6 +13,7 @@ use Symfony\Bundle\MakerBundle\Validator;
 
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+
 class TradingViewController extends Controller
 {
 
