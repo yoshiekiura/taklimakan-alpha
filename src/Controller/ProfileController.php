@@ -132,9 +132,26 @@ class ProfileController extends Controller
                     $em->persist($user);
                     $em->flush();
 
+                    if (array_key_exists('password', $data)) {
+                        $data['password'] = '!UNAVAILABLE!';
+                    }
                     $this->get('journal')->log($user, Journal::ACTION_CHANGE_USER_DATA, $data);
 
                     $session->remove('profile_data');
+
+                    $fields = array_keys($data);
+                    if (($index = array_search('first_name', $fields)) !== false) {
+                        $fields[$index] = 'First name';
+                    }
+                    if (($index = array_search('last_name', $fields)) !== false) {
+                        $fields[$index] = 'Last name';
+                    }
+                    if (($index = array_search('erc20_token', $fields)) !== false) {
+                        $fields[$index] = 'Wallet';
+                    }
+                    if (($index = array_search('password', $fields)) !== false) {
+                        $fields[$index] = 'Password';
+                    }
 
                     $message = (new \Swift_Message('Profile has been changed'))
                         ->setFrom($this->getParameter('sender_email'))
@@ -142,7 +159,9 @@ class ProfileController extends Controller
                         ->setBody(
                             $this->renderView(
                                 'emails/changed-profile.html.twig',
-                                $data
+                                [
+                                    'fields' => $fields,
+                                ]
                             ),
                             'text/html'
                         )
