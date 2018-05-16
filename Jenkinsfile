@@ -504,6 +504,7 @@ fi
 scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'''
           }
 
+          sh 'rm -rf success.last'
         }
         post {
           failure {
