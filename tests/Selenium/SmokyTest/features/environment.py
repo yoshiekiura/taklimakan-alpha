@@ -17,9 +17,22 @@
      otherwise these hooks will not be executed
 """
 import os
-import glob
+import re
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+
+
+def scenario_name(context):
+    """
+    Get scenario name from context.scenario and replace spaces with underscores
+    :param context: behave.runner.Context
+    :return: scenario name
+
+    WARNING: this function should be called only in scenario scope, for example in before_all it failed
+    """
+    return re.sub(r' ', '_', context.scenario.name)
+
 
 
 def before_all(context):
@@ -30,11 +43,6 @@ def before_all(context):
     :return: none
     """
     # print("before all scenario hook\n")
-
-    # remove previously created screenshots if exist
-    files = glob.glob('*.png')
-    for f in files:
-        os.remove(f)
 
     # Verify that this is not Jenkins server
     if os.environ.get('BRANCH_NAME') is None:
@@ -69,4 +77,9 @@ def before_scenario(context, scenario):
     :param scenario: current scenario name (not used for now)
     :return: none
     """
+
+    # remove previously created screenshots if exist
+    if os.path.exists('Screenshots/' + scenario_name(context) + '.png'):
+        os.remove('Screenshots/' + scenario_name(context) + '.png')
+
     context.browser.get('http://'+os.environ.get('DEPLOY_HOST'))
