@@ -506,8 +506,9 @@ else
   export DEPLOY_HOST=$RELEASE_HOST
   export DEPLOY_PORT=$RELEASE_PORT
 fi
+cd tests/Selenium/SmokyTest
 
-behave -c --no-junit tests/Selenium/SmokyTest/features/
+behave -c --no-junit features/
 '''
           echo 'Smoky Test PASSED. Store this version as last success deploy version.'
           sh '''#!/bin/bash
@@ -537,6 +538,7 @@ scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'
         post {
           failure {
             echo 'Smoky Test FAILED! Rollback web-site to the last success deployed version.'
+            archiveArtifacts(artifacts: 'tests/Selenium/SmokyTest/Screenshots/*.png', allowEmptyArchive: true)
             sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
               sh '''#!/bin/bash
 
@@ -553,7 +555,6 @@ else
 fi
 
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
-              archiveArtifacts(artifacts: 'tests/Selenium/SmokyTest/Screenshots/*.png', allowEmptyArchive: true)
             }
 
 
@@ -587,8 +588,8 @@ else
   export DEPLOY_HOST=$RELEASE_HOST
   export DEPLOY_PORT=$RELEASE_PORT
 fi
-
-behave -c --junit --junit-directory tests/Selenium/IntegrationTests/results tests/Selenium/IntegrationTests/features'''
+cd tests/Selenium/IntegrationTests/
+behave -c --junit --junit-directory results features/'''
           junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5)
           archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
         }
