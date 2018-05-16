@@ -481,20 +481,13 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
 
 behave -c --no-junit tests/Selenium/SmokyTest/features/
 '''
-        }
-        post {
-          failure {
-            echo 'Smoky Test FAILED! Rollback web-site to the last success deployed version.'
-
-          }
-
-          success {
-            echo 'Smoky Test PASSED. Store this version as last success deploy version.'
-            sh ''' OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
+          echo 'Smoky Test PASSED. Store this version as last success deploy version.'
+          sh '''#!/bin/bash
+OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 echo "$BRANCH_NAME.$OUTPUT" > success.last
 '''
-            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-              sh '''if [ "$BRANCH_NAME" == "master" ]; then
+          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+            sh '''if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
   DEPLOY_PORT=$PRODUCTION_PORT
 elif [ "$BRANCH_NAME" == "develop" ]; then
@@ -506,11 +499,13 @@ else
   DEPLOY_PORT=$RELEASE_PORT
 fi
 
-OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last 
-rm -rf success.last '''
-            }
+scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'''
+          }
 
+        }
+        post {
+          failure {
+            echo 'Smoky Test FAILED! Rollback web-site to the last success deployed version.'
 
           }
 
