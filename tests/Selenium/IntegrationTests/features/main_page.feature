@@ -2,7 +2,7 @@ Feature: Main page
   As a user I want to read and access various sections from the main page
 
   Background:
-    Given Taklimakan Network is opened
+    Given Taklimakan Network is opened and start popup is skipped
 
   Scenario: Open news list from the main page by See all button
     When I click See all news on the main page

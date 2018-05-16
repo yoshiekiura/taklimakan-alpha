@@ -32,6 +32,7 @@ def before_all(context):
     if os.environ.get('BRANCH_NAME') is None:
         # this is not Jenkins open regular Chrome browser
         context.browser = webdriver.Chrome()
+        context.browser.maximize_window()
     else:
         # this is Jenkins. Open headless browser
         # PhantomJS (http://phantomjs.org/) should be installed on jenkins prior to usage
@@ -56,7 +57,6 @@ def before_scenario(context, scenario):
     :return: none
     """
     if os.environ.get('DEPLOY_HOST') is None:
-        # TODO: switch to taklimakan.io or some other ask Alexandra Kalm
-        os.environ["DEPLOY_HOST"] = '192.168.100.125'
+        os.environ["DEPLOY_HOST"] = 'tkln-test.usetech.ru'
 
     context.browser.get('http://'+os.environ.get('DEPLOY_HOST'))
