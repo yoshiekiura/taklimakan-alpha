@@ -162,7 +162,7 @@ class NewsController extends Controller
         $news = $newsRepo->getNews($filter);
 
         if (count($news))
-            $template = $this->render('news/more.html.twig', [ 'news' => $news ])->getContent();
+            $template = $this->render('news/more.html.twig', [ 'news' => $news, 'page' => $page ])->getContent();
         else
             $template = '';
 

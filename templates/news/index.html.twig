@@ -14,7 +14,6 @@
 
     {% include 'news/filters.html.twig' %}
 
-
     <div class="container">
         <div class="news-box">
 
@@ -26,75 +25,81 @@
 
             </div></div>
 
-        {#            {% include 'news/pagination.html.twig' %} #}
+            <!-- Placeholder for future News -->
 
-        <!-- More Button with AJAX -->
+            <div class="row" id="more-news"></div>
 
-        <div class="row">
-            <div class="col-xl-6 offset-xl-3">
-                {# <a href="#" class="btn btn-success btn-block btn-load"><img src="images/i/refresh.svg" alt="" class="refresh"> Load more...</a> #}
-                <p class="btn btn-success btn-block btn-load"><img src="images/i/refresh.svg" alt="" class="refresh"> Load more...</p>
+            <!-- More Button with AJAX -->
+
+            <div class="row">
+                <div class="col-xl-6 offset-xl-3">
+                    <p class="btn btn-success btn-block btn-load"><img src="images/i/refresh.svg" alt="" class="refresh"> Load more...</p>
+                </div>
             </div>
-        </div>
 
-        <script nonce="{{ csp_nonce() }}">
+            <script nonce="{{ csp_nonce() }}">
 
-            var page = Number(getParam("page") ? getParam("page") : 0);
-            var tag = getParam("tags");
+                var page = Number(getParam("page") ? getParam("page") : 0);
+                var tag = getParam("tags");
 
-            document.addEventListener('DOMContentLoaded', function() {
-                $('.btn-load').on('click', loadMore);
-            });
-
-            <!-- Get parameter from URL
-
-            function getParam (k) {
-                var p = {};
-                location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,k,v){p[k]=v})
-                return k ? p[k] : p;
-            }
-
-            function loadMore() {
-
-                $.ajax({
-                    url: '/news/more',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    data: JSON.stringify({ 'page': Number(page + 1), 'tags': [ tag ] }),
-                    processData: false,
-                    success:
-                        function(data, textStatus, jQxhr) {
-                            // alert(JSON.stringify(data));
-                            if (data.html) {
-                                $('#more').html(data.html);
-                                page++;
-                            }
-                        },
-                    error:
-                        function(jqXhr, textStatus, errorThrown) {
-                            console.log('[ERR ] Cant get Data with AJAX!');
-                        }
+                document.addEventListener('DOMContentLoaded', function() {
+                    $('.btn-load').on('click', loadMore);
                 });
-            }
 
-            {# /*
+                <!-- Get parameter from URL
+
+                function getParam (k) {
+                    var p = {};
+                    location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,k,v){p[k]=v})
+                    return k ? p[k] : p;
+                }
+
+                function loadMore() {
+
                     $.ajax({
-                        type: "POST",
-                        dataType: 'json',
                         url: '/news/more',
-                        async: false //you won't need that if nothing in your following code is dependend of the result
-                    })
-                    .done(function(response){
-                        template = response;
-                        $('#more').html(template.html); //Change the html of the div with the id = "your_div"
-                    })
-                    .fail(function(jqXHR, textStatus, errorThrown){
-                        alert('Error : ' + errorThrown);
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify({ 'page': Number(page + 1), 'tags': [ tag ] }),
+                        processData: false,
+                        success:
+                            function(data, textStatus, jQxhr) {
+                                // alert(JSON.stringify(data));
+                                if (data.html) {
+                                    page++;
+                                    // $('#more').html(data.html);
+                                    // $('#more').data('page', page).html(data.html);
+                                    //$('#more').html(data.html).removeAttr("id").after('<div class="row" id="more"></div>');
+                                    //$('#more').data('page', page).before(data.html);
+                                    //$('#more').data('page', page).after('<div class="row" id="more"></div>');
+                                    $('#more-news').before(data.html);
+                                }
+                            },
+                        error:
+                            function(jqXhr, textStatus, errorThrown) {
+                                console.log('[ERR ] Cant get Data with AJAX!');
+                            }
                     });
-            */ #}
+                }
 
-        </script>
+                {# /*
+                        $.ajax({
+                            type: "POST",
+                            dataType: 'json',
+                            url: '/news/more',
+                            async: false //you won't need that if nothing in your following code is dependend of the result
+                        })
+                        .done(function(response){
+                            template = response;
+                            $('#more').html(template.html); //Change the html of the div with the id = "your_div"
+                        })
+                        .fail(function(jqXHR, textStatus, errorThrown){
+                            alert('Error : ' + errorThrown);
+                        });
+                */ #}
+
+            </script>
 
 
         </div>
