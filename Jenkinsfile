@@ -349,10 +349,14 @@ echo "#     in DEPLOY folder and in this case it means that" >> createSL.bash
 echo "#     version will be rolled back to previous version" >> createSL.bash
 echo "#     current version will be zipped and could be used" >> createSL.bash
 echo "#     in future" >> createSL.bash
+echo "#   fail - if fail is mention instead of version Id" >> createSL.bash
+echo "#     then the last successful deployed version will be taken" >> createSL.bash
+echo "#     form DEPLOY/success.last file" >> createSL.bash
 echo "#" >> createSL.bash
 echo "# Examples:" >> createSL.bash
-echo "#   createSL.bash 1d3f74d.23" >> createSL.bash
-echo "#   createSL.bash 15" >> createSL.bash
+echo "#   1. createSL.bash" >> createSL.bash
+echo "#   2. createSL.bash fail" >> createSL.bash
+echo "#   3. createSL.bash 23.1d3f74d" >> createSL.bash
 echo "#" >> createSL.bash
 echo "#########################################################" >> createSL.bash
 echo "" >> createSL.bash
@@ -362,7 +366,15 @@ echo "  echo \\"Deploy is not success. Deploy version is not set\\"" >> createSL
 echo "  exit 1;" >> createSL.bash
 echo "fi" >> createSL.bash
 echo "" >> createSL.bash
-echo "versionId=\\$1" >> createSL.bash
+echo "if [ \\$1 == \\"fail\\" ]; then" >> createSL.bash
+echo "  if [ ! -f DEPLOY/success.last ]; then" >> createSL.bash
+echo "    echo \\"There are no successful deployed before\\"" >> createSL.bash
+echo "    exit 1" >> createSL.bash
+echo "  fi" >> createSL.bash
+echo "  versionId=\\`cat /var/www/DEPLOY/success.last\\`" >> createSL.bash
+echo "else" >> createSL.bash
+echo "  versionId=\\$1" >> createSL.bash
+echo "fi" >> createSL.bash
 echo "" >> createSL.bash
 echo "if [ ! -d DEPLOY/\\$versionId ]; then" >> createSL.bash
 echo "  if [ ! -f DEPLOY/\\$versionId.zip ]; then" >> createSL.bash
@@ -509,6 +521,11 @@ scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'
         post {
           failure {
             echo 'Smoky Test FAILED! Rollback web-site to the last success deployed version.'
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              sh '''#!/bin/bash
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
+            }
+
 
           }
 
