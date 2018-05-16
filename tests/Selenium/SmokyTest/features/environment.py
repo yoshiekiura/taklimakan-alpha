@@ -17,6 +17,7 @@
      otherwise these hooks will not be executed
 """
 import os
+import glob
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -29,6 +30,12 @@ def before_all(context):
     :return: none
     """
     # print("before all scenario hook\n")
+
+    # remove previously created screenshots if exist
+    files = glob.glob('*.png')
+    for f in files:
+        os.remove(f)
+
     # Verify that this is not Jenkins server
     if os.environ.get('BRANCH_NAME') is None:
         # this is not Jenkins open regular Chrome browser
@@ -39,6 +46,10 @@ def before_all(context):
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size=1920x1080")
         context.browser = webdriver.Chrome(chrome_options=chrome_options)
+
+    if os.environ.get('DEPLOY_HOST') is None:
+        os.environ["DEPLOY_HOST"] = 'tkln-test.usetech.ru'
+    print('Test executed on: ' + os.environ["DEPLOY_HOST"]+'\n')
 
 
 def after_all(context):
@@ -58,8 +69,4 @@ def before_scenario(context, scenario):
     :param scenario: current scenario name (not used for now)
     :return: none
     """
-    if os.environ.get('DEPLOY_HOST') is None:
-        # TODO: switch to taklimakan.io or some other ask Alexandra Kalm
-        os.environ["DEPLOY_HOST"] = '192.168.100.125'
-
     context.browser.get('http://'+os.environ.get('DEPLOY_HOST'))
