@@ -504,7 +504,7 @@ else
 fi
 
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \'echo "$BUILD_NUMBER.$OUTPUT" > /var/www/DEPLOY/success.last\' '''
+ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \'echo \\"\\$BUILD_NUMBER.\\$OUTPUT\\">/var/www/DEPLOY/success.last\' '''
             }
 
 
