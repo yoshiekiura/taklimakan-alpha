@@ -489,7 +489,23 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
 
         }
         steps {
-          sh '''export PATH=$PATH:/usr/lib/chromium-browser/
+          sh '''#!/bin/bash
+export PATH=$PATH:/usr/lib/chromium-browser/
+
+# it is necessary to set DEPLOY_HOST 
+#  to be able to execute Smoky Test on correct web-server
+
+if [ "$BRANCH_NAME" == "master" ]; then
+  export DEPLOY_HOST=$PRODUCTION_HOST
+  export DEPLOY_PORT=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  export DEPLOY_HOST=$DEVELOP_HOST
+  export DEPLOY_PORT=$DEVELOP_PORT
+else
+  #release branch
+  export DEPLOY_HOST=$RELEASE_HOST
+  export DEPLOY_PORT=$RELEASE_PORT
+fi
 
 behave -c --no-junit tests/Selenium/SmokyTest/features/
 '''
@@ -537,6 +553,7 @@ else
 fi
 
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
+              archiveArtifacts(artifacts: 'tests/Selenium/SmokyTest/Screenshots/*.png', allowEmptyArchive: true)
             }
 
 
@@ -556,8 +573,24 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
         steps {
           sh '''export PATH=$PATH:/usr/lib/chromium-browser/
 
+# it is necessary to set DEPLOY_HOST 
+#  to be able to execute Smoky Test on correct web-server
+
+if [ "$BRANCH_NAME" == "master" ]; then
+  export DEPLOY_HOST=$PRODUCTION_HOST
+  export DEPLOY_PORT=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  export DEPLOY_HOST=$DEVELOP_HOST
+  export DEPLOY_PORT=$DEVELOP_PORT
+else
+  #release branch
+  export DEPLOY_HOST=$RELEASE_HOST
+  export DEPLOY_PORT=$RELEASE_PORT
+fi
+
 behave -c --junit --junit-directory tests/Selenium/IntegrationTests/results tests/Selenium/IntegrationTests/features'''
           junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5)
+          archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
         }
       }
     }
