@@ -490,12 +490,9 @@ behave -c --no-junit tests/Selenium/SmokyTest/features/
 
           success {
             echo 'Smoky Test PASSED. Store this version as last success deploy version.'
-            script {
-              def BranchName = build.getEnvironment(listener).get('BRANCH_NAME')
-              def GitCommitHash=sh(returnStdout: true, script: "git log --pretty=format:\'%h\' -n 1")
-              new File('success.last') < '''${BranchName}.${GitCommitHash}'''
-            }
-
+            sh ''' OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
+echo "$BRANCH_NAME.$OUTPUT" > success.last
+'''
             sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
               sh '''if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
