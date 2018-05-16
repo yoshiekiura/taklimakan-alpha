@@ -484,7 +484,7 @@ behave -c --no-junit tests/Selenium/SmokyTest/features/
           echo 'Smoky Test PASSED. Store this version as last success deploy version.'
           sh '''#!/bin/bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-echo "$BRANCH_NAME.$OUTPUT" > success.last
+echo "$BUILD_NUMBER.$OUTPUT" > success.last
 '''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
