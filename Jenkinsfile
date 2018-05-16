@@ -491,7 +491,19 @@ behave -c --no-junit tests/Selenium/SmokyTest/features/
           success {
             echo 'Smoky Test PASSED. Store this version as last success deploy version.'
             sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-              sh '''OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
+              sh '''if [ "$BRANCH_NAME" == "master" ]; then
+  DEPLOY_HOST=$PRODUCTION_HOST
+  DEPLOY_PORT=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  DEPLOY_HOST=$DEVELOP_HOST
+  DEPLOY_PORT=$DEVELOP_PORT
+else
+  #release branch
+  DEPLOY_HOST=$RELEASE_HOST
+  DEPLOY_PORT=$RELEASE_PORT
+fi
+
+OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT \'echo "$BUILD_NUMBER.$OUTPUT" > /var/www/DEPLOY/success.last\' '''
             }
 
