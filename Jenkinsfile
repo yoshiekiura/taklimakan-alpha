@@ -537,6 +537,7 @@ else
 fi
 
 ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
+              archiveArtifacts(artifacts: 'tests/Selenium/SmokyTest/Screenshots/*.png', allowEmptyArchive: true)
             }
 
 
@@ -558,6 +559,7 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
 
 behave -c --junit --junit-directory tests/Selenium/IntegrationTests/results tests/Selenium/IntegrationTests/features'''
           junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5)
+          archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
         }
       }
     }
