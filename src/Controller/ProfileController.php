@@ -132,6 +132,9 @@ class ProfileController extends Controller
                     $em->persist($user);
                     $em->flush();
 
+                    if (array_key_exists('password', $data)) {
+                        $data['password'] = '!UNAVAILABLE!';
+                    }
                     $this->get('journal')->log($user, Journal::ACTION_CHANGE_USER_DATA, $data);
 
                     $session->remove('profile_data');
@@ -142,7 +145,9 @@ class ProfileController extends Controller
                         ->setBody(
                             $this->renderView(
                                 'emails/changed-profile.html.twig',
-                                $data
+                                [
+                                    'fields' => array_keys($data),
+                                ]
                             ),
                             'text/html'
                         )
