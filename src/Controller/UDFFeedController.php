@@ -137,6 +137,22 @@ class UDFFeedController extends Controller
         return $this->json($returnArray);
     }
 
+
+    private function getSymbolHistory($symbol, $type_id)
+    {
+        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "1" AND pair = "BTC-USD"';
+        $query = $this->getDoctrine()->getConnection()->prepare($sql);
+        $query->execute();
+
+        $rows = $query->fetchAll();
+
+        $data = [];
+        foreach ($rows as $row)
+            $data[] = [ $row['dt'], $row['value'] ];
+
+        return $data;
+    }
+
     /**
      * @Route("/api/v1/udf/history", name="udf_history")
      */
