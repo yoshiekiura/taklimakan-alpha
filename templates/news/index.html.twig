@@ -68,12 +68,9 @@
                                 // alert(JSON.stringify(data));
                                 if (data.html) {
                                     page++;
-                                    // $('#more').html(data.html);
                                     // $('#more').data('page', page).html(data.html);
-                                    //$('#more').html(data.html).removeAttr("id").after('<div class="row" id="more"></div>');
-                                    //$('#more').data('page', page).before(data.html);
-                                    //$('#more').data('page', page).after('<div class="row" id="more"></div>');
                                     $('#more-news').before(data.html);
+                                    scaleImages();
                                 }
                             },
                         error:
