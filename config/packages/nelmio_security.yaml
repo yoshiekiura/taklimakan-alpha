@@ -6,6 +6,7 @@ nelmio_security:
             '^/charts/100': ALLOW
             '^/tradingview': ALLOW
             '^/charting_library': ALLOW
+            #'^/api/v1/udf': ALLOW
             '^/.*': DENY
 
     # disables content type sniffing for script resources
