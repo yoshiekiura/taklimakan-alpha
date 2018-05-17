@@ -3,6 +3,7 @@ Feature: Main page
 
   Background:
     Given Taklimakan Network Main page is opened and start popup is skipped
+    Then I should see 'Taklimakan' page
 
   Scenario: Open news list from the main page by See all button
     When I click 'See all news' on the main page
@@ -28,11 +29,18 @@ Feature: Main page
     When I click 'Analytics' button in top menu
     Then I should see Crypto100 chart
 
-  Scenario Outline: Subscribe to news
-    When I input <email> into subscription form
+  Scenario: Successful subsription to news
+    When I input test@yopmail.com into subscription form
     And I click on Subscribe button
     Then I should see You have been subscribed message
+
+  Scenario Outline: Email field validation
+    When I input <incorrect_email> into subscription form
+    And I click on Subscribe button
+    Then I should see validation message
     Examples:
-    | email            |
-    | mytest@email.com |
-    | not_an_email     |
+      | incorrect_email |
+      | mytest@         |
+      | mytest@mail     |
+      | not_an_email    |
+      |                 |

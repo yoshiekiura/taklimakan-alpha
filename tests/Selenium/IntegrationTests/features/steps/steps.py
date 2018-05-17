@@ -8,11 +8,16 @@ from selenium.webdriver.common.by import By
 use_step_matcher("parse")
 
 """
+NB!!! All assertions should be done only in @then steps
+Wherenever possible provide readable error messages for assertions
+"""
+#TODO print current url if any step fails (should be in env.py)
+"""
 ###GIVEN###
 """
 
 
-@given('Taklimakan Network {page} page is opened and start popup is skipped')
+@step('Taklimakan Network {page} page is opened and start popup is skipped')
 def step_impl(context, page):
     """
     This step is used to move on page under test
@@ -83,16 +88,19 @@ def step_impl(context, email):
     form.send_keys(email)
 
 
-@when(u'I click on .+ button')
-def step_impl(context):
+@when('I click on {button} button')
+def step_impl(context, button):
     """
-    This step is used to click on CSS_SELECTOR button
-    TODO: investigate 'a.btn-sub' is it for all buttons or just only one.
-    TODO: if only one - investigate how we could update step regexp to be able to use it for different buttons
+    This step is used to click on submit buttons
     :param context: behave.runner.Context
+    :param button: used to identify the button when CSS_SELECTOR differs
     :return: none
     """
-    context.browser.find_element(By.CSS_SELECTOR, 'a.btn-sub').click()
+    if button == 'Subscribe':
+        button = 'a.btn-sub'
+    else:
+        print('Selector for button is not defined')
+    context.browser.find_element(By.CSS_SELECTOR, button).click()
 
 
 """
@@ -108,14 +116,25 @@ def step_impl(context, text):
     :param text: Title of the expected page
     :return: none
     """
-    print(text)
-    print(context.browser.title)
-    assert text in context.browser.title
+    try:
+        assert text in context.browser.title
+    except(AssertionError):
+        print("Expected text " + text + " and " + context.browser.title + " do not match")
+        raise
 
 
 @then('I should see Crypto100 chart')
 def step_impl(context):
-    context.browser.find_element(By.CSS_SELECTOR, 'div#crypto-index-card')
+    """
+        This step is used to verify that we have reached the page with charts
+        :param context: behave.runner.Context
+        :return: none
+        """
+    try:
+        context.browser.find_element(By.CSS_SELECTOR, 'div#crypto-index-card')
+    except:
+        print("Crypto100 chart was not found")
+        raise
 
 
 # TODO implement step when subscription in implemented in TKLN
@@ -125,5 +144,15 @@ def step_impl(context):
     This step is used to verify that subscription is succeed
     :param context: behave.runner.Context
     :return: none
+    """
+    pass
+
+# TODO implement step when subscription in implemented in TKLN
+@then('I should see validation message')
+def step_impl(context):
+    """
+    This step should verify validation message has appeared
+    :param context:
+    :return:
     """
     pass
