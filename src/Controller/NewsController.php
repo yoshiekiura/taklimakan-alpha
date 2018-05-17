@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\News;
 use App\Entity\Tags;
 
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+
 class NewsController extends Controller
 {
     /**
@@ -32,7 +34,7 @@ class NewsController extends Controller
         $page = $request->query->get('page') ? intval($request->query->get('page')) : 1;
         if ($page) $filter['page'] = $page - 1;
 
-        $limit = $request->query->get('limit') ? intval($request->query->get('limit')) : 12;
+        $limit = $request->query->get('limit') ? intval($request->query->get('limit')) : 6;
         if ($limit) $filter['limit'] = $limit;
 
         // NB! And we have to know total number of news somehow
@@ -61,6 +63,7 @@ class NewsController extends Controller
                 'page'  => $page,  // Current Page
                 'limit' => $limit, // Max news on the page
             ],
+            'page'  => $page,  // Current Page
         ]);
     }
 
@@ -133,6 +136,39 @@ class NewsController extends Controller
             ],
 
         ]);
+    }
+
+    // Callback Helper for AJAX News <Load More> Button
+
+    /**
+     * @Route("/news/more", name="news_more")
+     */
+    public function more(Request $request)
+    {
+        if (!$request->isXMLHttpRequest())
+            throw new BadRequestHttpException("[ERR] Only AJAX requests are allowed!");
+
+        $content = $request->getContent();
+        $params = json_decode($content, true);
+        $page = $params['page'] > 0 ? intval($params['page']) : 0;
+        $tags = count($params['tags']) > 0 ? $params['tags'] : [];
+
+        $filter = [];
+        $filter['page'] = $page;
+        $filter['tags'] = $tags;
+        $filter['limit'] = 6;
+
+        $newsRepo = $this->getDoctrine()->getRepository(News::class);
+        $news = $newsRepo->getNews($filter);
+
+        if (count($news))
+            $template = $this->render('news/more.html.twig', [ 'news' => $news, 'page' => $page ])->getContent();
+        else
+            $template = '';
+
+        $response = new JsonResponse([ 'page' => $page, 'tags' => $tags, 'html' => $template ]);
+
+        return $response;
     }
 
 }

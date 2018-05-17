@@ -1,5 +1,5 @@
 Feature: Smoky test to verify that deploy is success
-  The Smoky test must be very short and quit. It should not verify all or main functionality.
+  The Smoky test must be very short and quick. It should not verify all or main functionality.
   It should verify that web-page available (no 404 or 500 etc). And no exception exist on a page which means that
     Symfony start successfully and no database issues etc.
   Smoky test is used by Jenkins to understand that build deployed successfully.

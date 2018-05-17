@@ -204,6 +204,10 @@
         $('#exampleModal').modal('hide');
     }
 
+    document.addEventListener('DOMContentLoaded', function() {
+        $('.modal-footer').on('click', hidePopup);
+    });
+
 </script>
 
 {% endif %}
