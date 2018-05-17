@@ -41,6 +41,12 @@ def before_all(context):
         chrome_options.add_argument("--window-size=1920x1080")
         context.browser = webdriver.Chrome(chrome_options=chrome_options)
 
+    if os.environ.get('DEPLOY_HOST') is None:
+        os.environ["DEPLOY_HOST"] = 'tkln-test.usetech.ru'
+
+    # store host in context to be able get it from any steps and use it to quick jump to the pages
+    context.host = 'http://'+os.environ.get('DEPLOY_HOST')
+
 
 def after_all(context):
     """
@@ -52,14 +58,12 @@ def after_all(context):
     context.browser.quit()
 
 
-def before_scenario(context, scenario):
-    """
-    This hook executed before scenario and try to reach Taklimakan main page
-    :param context: test context
-    :param scenario: current scenario name (not used for now)
-    :return: none
-    """
-    if os.environ.get('DEPLOY_HOST') is None:
-        os.environ["DEPLOY_HOST"] = 'tkln-test.usetech.ru'
-
-    context.browser.get('http://'+os.environ.get('DEPLOY_HOST'))
+# def before_scenario(context, scenario):
+#    """
+#    This hook executed before scenario and try to reach Taklimakan main page
+#    :param context: test context
+#    :param scenario: current scenario name (not used for now)
+#    :return: none
+#    """
+#
+#    context.browser.get(context.browser.host)
