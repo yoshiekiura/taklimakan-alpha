@@ -427,7 +427,8 @@ echo "      # remove file or folder" >> createSL.bash
 echo "      rm -rf \\$shortname" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "" >> createSL.bash
-echo "    ln -sfn ../\\$public_entry \\$shortname" >> createSL.bash
+echo "    ln -sfn ../DEPLOY/\\$versionId/public/\\$public_entry \\$shortname" >> createSL.bash
+echo "    echo \\"Creating symbolic link from \\$public_entry to .. \\$shortname ... done\\"" >> createSL.bash
 echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
