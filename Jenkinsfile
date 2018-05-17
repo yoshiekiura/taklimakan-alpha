@@ -415,10 +415,10 @@ echo "  mkdir public" >> createSL.bash
 echo "  mkdir public/images" >> createSL.bash
 echo "fi" >> createSL.bash
 echo "" >> createSL.bash
-echo "for public_entry in \\`ls -d DEPLOY/\\$versionId/public/*\\`; do" >> createSL.bash
+echo "for public_entry in \\`ls -a DEPLOY/\\$versionId/public\\`; do" >> createSL.bash
 echo "  shortname=\\$(basename \\$public_entry)" >> createSL.bash
 echo "  #create symbolic links inside public for all items except images" >> createSL.bash
-echo "  if [ \\"\\$shortname\\" != \\"images\\" ]; then" >> createSL.bash
+echo "  if [ \\"\\$shortname\\" != \\"images\\" ] && [ \\"\\$shortname\\" != \\".\\" ] && [ \\"\\$shortname\\" != \\"..\\" ]; then" >> createSL.bash
 echo "    # create new symbolic link" >> createSL.bash
 echo "    cd public" >> createSL.bash
 echo "    # remove existing file/folder/symlink" >> createSL.bash
