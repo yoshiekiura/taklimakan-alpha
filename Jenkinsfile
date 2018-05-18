@@ -499,6 +499,10 @@ export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
+OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
+echo "$BUILD_NUMBER.$OUTPUT" > success.last
+
+dir DEPLOY/$BUILD_NUMBER.$OUTPUT
 
 if [ "$BRANCH_NAME" == "master" ]; then
   export DEPLOY_HOST=$PRODUCTION_HOST
