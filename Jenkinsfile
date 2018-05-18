@@ -565,7 +565,7 @@ else
   DEPLOY_PORT=$RELEASE_PORT
 fi
 
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
+//ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
             }
 
 
