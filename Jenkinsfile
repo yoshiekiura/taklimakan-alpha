@@ -607,13 +607,13 @@ behave -c --junit --junit-directory results features/'''
       }
     }
     environment {
-      DEVELOP_HOST = '159.69.7.93'
-      DEVELOP_PORT = '22'
+      DEVELOP_HOST = '192.168.100.125'
+      DEVELOP_PORT = '8022'
       RELEASE_HOST = '192.168.100.126'
       RELEASE_PORT = '8022'
       PRODUCTION_HOST = '192.168.100.127'
       PRODUCTION_PORT = '8022'
-      SSH_USER = 'root'
+      SSH_USER = 'tkln'
     }
     post {
       always {
