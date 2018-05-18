@@ -4,9 +4,9 @@ nelmio_security:
     clickjacking:
         paths:
             '^/charts/100': ALLOW
-            '^/tradingview': ALLOW
-            '^/charting_library': ALLOW
-            #'^/api/v1/udf': ALLOW
+            '^/tradingview/': ALLOW
+            '^/charting_library/': ALLOW
+            '^/api/': ALLOW
             '^/.*': DENY
 
     # disables content type sniffing for script resources
