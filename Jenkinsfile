@@ -470,16 +470,16 @@ fi
 echo "Deploy Host: $DEPLOY_HOST:$DEPLOY_PORT"
 
 echo "Upload file to host"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT mkdir -p /var/www/DEPLOY
-scp -P $DEPLOY_PORT taklimakan-alpha.zip tkln@$DEPLOY_HOST:/var/www/DEPLOY/taklimakan-alpha.zip
-scp -P $DEPLOY_PORT deploy tkln@$DEPLOY_HOST:/var/www/deploy
-scp -P $DEPLOY_PORT createSL.bash tkln@$DEPLOY_HOST:/var/www/createSL.bash
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT mkdir -p /var/www/DEPLOY
+scp -P $DEPLOY_PORT taklimakan-alpha.zip $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/taklimakan-alpha.zip
+scp -P $DEPLOY_PORT deploy $SSH_USER@$DEPLOY_HOST:/var/www/deploy
+scp -P $DEPLOY_PORT createSL.bash $SSH_USER@$DEPLOY_HOST:/var/www/createSL.bash
 
 echo "Run deploy script"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
           }
 
         }
@@ -607,12 +607,13 @@ behave -c --junit --junit-directory results features/'''
       }
     }
     environment {
-      DEVELOP_HOST = '192.168.100.125'
-      DEVELOP_PORT = '8022'
+      DEVELOP_HOST = '159.69.7.93'
+      DEVELOP_PORT = '22'
       RELEASE_HOST = '192.168.100.126'
       RELEASE_PORT = '8022'
       PRODUCTION_HOST = '192.168.100.127'
       PRODUCTION_PORT = '8022'
+      SSH_USER = 'root'
     }
     post {
       always {
