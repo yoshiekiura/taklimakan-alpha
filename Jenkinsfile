@@ -434,9 +434,7 @@ echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
-echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "find /var/www/DEPLOY/\\$versionId/var/cache -type d -exec chmod 777 {} \\;" >> createSL.bash
-echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
@@ -450,7 +448,6 @@ echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
-echo "dir \\$versionId" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
@@ -495,9 +492,9 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
         }
         steps {
           sh '''#!/bin/bash
-echo env | grep PATH
+env | grep PATH
 
-#export PATH=$PATH:/usr/lib/chromium-browser/
+export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
@@ -550,6 +547,7 @@ scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'
           }
 
           sh 'rm -rf success.last'
+          sh 'env | grep PATH'
         }
         post {
           failure {
