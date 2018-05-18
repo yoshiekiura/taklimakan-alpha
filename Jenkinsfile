@@ -495,18 +495,13 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
         }
         steps {
           sh '''#!/bin/bash
-export PATH=$PATH:/usr/lib/chromium-browser/
-
-# it is necessary to set DEPLOY_HOST 
-#  to be able to execute Smoky Test on correct web-server
-OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-echo "$BUILD_NUMBER.$OUTPUT" > success.last
+#export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
 echo $BRANCH_NAME
-DeployHost = $DEVELOP_HOST
-DeployPort = $DEVELOP_PORT
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
   DeployHost=$PRODUCTION_HOST
@@ -591,13 +586,13 @@ fi
         }
         steps {
           sh '''#!/bin/bash
-export PATH=$PATH:/usr/lib/chromium-browser/
+#export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
 echo $BRANCH_NAME
-DeployHost = $DEVELOP_HOST
-DeployPort = $DEVELOP_PORT
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
   DeployHost=$PRODUCTION_HOST
