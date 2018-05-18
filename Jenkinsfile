@@ -590,7 +590,8 @@ fi
 
         }
         steps {
-          sh '''export PATH=$PATH:/usr/lib/chromium-browser/
+          sh '''#!/bin/bash
+export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
