@@ -68,19 +68,19 @@ def after_all(context):
 #
 #    context.browser.get(context.browser.host)
 
-# def after_scenario(context,scenario):
-#     """
-#     this should make a screenshot if scenario fails
-#     :param context:
-#     :param scenario:
-#     :return:
-#     """
-#     if scenario.status == 'failed':
-#         if not os.path.isdir('Screenshots'):
-#             os.mkdir('Screenshots')
-#
-#         scn_name: str = scenario(context)
-#         if not context.browser.get_screenshot_as_file('Screenshots/' + scn_name + '.png'):
-#             print("No screenshot taken\n")
-#         else:
-#             print("Screenshot: " + scn_name + ".png taken")
+def after_scenario(context, scenario):
+    """
+    this should make a screenshot if scenario fails
+    :param context: behave.runner.Context
+    :param scenario: current scenario
+    :return: none
+    """
+    if scenario.status == "failed":
+        if not os.path.isdir('Screenshots'):
+            os.mkdir('Screenshots')
+
+        scn_name = scenario.name.replace(' ','_')
+        if not context.browser.save_screenshot('Screenshots/' + scn_name + '.png'):
+            print("No screenshot taken\n")
+        else:
+            print("Screenshot: " + scn_name + ".png taken")

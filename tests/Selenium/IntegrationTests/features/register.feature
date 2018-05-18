@@ -13,9 +13,19 @@ Feature: Register on Taklimakan Network
     Then I should see Email Verification form
   #Cannot proceed now as no emails are sent from dev and test servers
 
+  @sanity
   Scenario: Successful registration with a wallet
+    When I click 'Sign Up' button in top menu
+    And I fill in registration form with wallet
+    And I submit the form
+    Then I should see Email Verification form
+  #Cannot proceed now as no emails are sent from dev and test servers
 
-  Scenario: Names fields validation
+  Scenario: Empty fields validation
+    When I click 'Sign Up' button in top menu
+    And I submit the form
+    Then I should see registration form validation messages
+
 
   Scenario: Email field validation
 

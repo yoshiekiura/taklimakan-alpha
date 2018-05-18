@@ -99,9 +99,12 @@ def step_impl(context, button):
     """
     if button == 'Subscribe':
         button = 'a.btn-sub'
+        context.browser.find_element(By.CSS_SELECTOR, button).click()
+    elif button == 'Crypto100':
+        button = "//STRONG[text()='TN Crypto 100']"
+        context.browser.find_element(By.XPATH, button).click()
     else:
         print('Selector for button is not defined')
-    context.browser.find_element(By.CSS_SELECTOR, button).click()
 
 @when("I fill in registration form {option} wallet")
 def step_impl(context, option):
@@ -143,6 +146,7 @@ def step_impl(context):
     """
     context.browser.find_element(By.CSS_SELECTOR, 'input.btn.btn-buy.btn-block').click()
     time.sleep(2)
+
 """
 ###THEN###
 """
@@ -184,9 +188,8 @@ def step_impl(context):
     :return:
     """
     try:
-        email_ver = context.browser.find_element\
+        context.browser.find_element\
             (By.XPATH, "(//H5[@class='modal-title reg-title'][text()='Email Verification'][text()='Email Verification'])[1]")
-        assert 'Email Verification' in email_ver.text
     except:
         print("Email ver form was not found")
         raise
@@ -201,12 +204,32 @@ def step_impl(context):
     """
     pass
 
-# TODO implement step when subscription in implemented in TKLN
-@then('I should see validation message')
+@then('I should see registration form validation messages')
 def step_impl(context):
     """
     This step should verify validation message has appeared
-    :param context:
+    :param context: behave.runner.Context
     :return:
     """
+    try:
+        context.browser.find_element\
+            (By.XPATH, "(//SMALL[@class='form-text text-muted valid-error'][text()='Required'][text()='Required'])[1]")
+        context.browser.find_element\
+            (By.XPATH, "(//SMALL[@class='form-text text-muted valid-error'][text()='Required'][text()='Required'])[2]")
+        context.browser.find_element\
+            (By.XPATH, "//SMALL[@class='form-text text-muted valid-error'][text()='Enter correct email address']")
+        context.browser.find_element(By.XPATH, "//SMALL[@id='passwordHelp']")
+    except:
+        print("SOme validation message was not found")
+        raise
+
+@then('I should see active {chart} chart')
+def step_impl(context, chart):
+    """
+        This step should verify validation message has appeared
+        :param context: behave.runner.Context
+        :param chart: chart name from the step, string
+        :return:
+    """
     pass
+#TODO implement the step above
