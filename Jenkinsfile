@@ -587,7 +587,7 @@ fi
         }
         steps {
           sh '''#!/bin/bash
-#export PATH=$PATH:/usr/lib/chromium-browser/
+export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
@@ -611,7 +611,7 @@ export DEPLOY_HOST=$DeployHost
 export DEPLOY_PORT=$DeployPort
 export BRANCH_NAME=$BRANCH_NAME
 
-echo "Host Used for testing purposes: $DEPLOY_HOST"
+echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
