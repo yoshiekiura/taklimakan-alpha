@@ -502,7 +502,8 @@ export PATH=$PATH:/usr/lib/chromium-browser/
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 echo "$BUILD_NUMBER.$OUTPUT" > success.last
 
-dir DEPLOY/$BUILD_NUMBER.$OUTPUT
+dir 
+dir DEPLOY/$BUILD_NUMBER.$OUTPUT/*
 
 if [ "$BRANCH_NAME" == "master" ]; then
   export DEPLOY_HOST=$PRODUCTION_HOST
@@ -515,6 +516,7 @@ else
   export DEPLOY_HOST=$RELEASE_HOST
   export DEPLOY_PORT=$RELEASE_PORT
 fi
+
 cd tests/Selenium/SmokyTest
 
 behave -c --no-junit features/
