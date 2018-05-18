@@ -549,6 +549,7 @@ RequestProcessor.prototype.processRequest = function (action, query, response) {
 			this._sendSymbolInfo(query["symbol"], response);
 		}
 		else if (action === "/search") {
+            console.log(`${query["query"]}, ${query["type"]}, ${query["exchange"]}, ${query["limit"]}`);
 			this._sendSymbolSearchResults(query["query"], query["type"], query["exchange"], query["limit"], response);
 		}
 		else if (action === "/history") {

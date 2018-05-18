@@ -4,6 +4,9 @@ nelmio_security:
     clickjacking:
         paths:
             '^/charts/100': ALLOW
+            '^/tradingview/': ALLOW
+            '^/charting_library/': ALLOW
+            '^/api/': ALLOW
             '^/.*': DENY
 
     # disables content type sniffing for script resources
@@ -30,7 +33,7 @@ nelmio_security:
 
     # Taklimakan Settings
 
-    # CSP 
+    # CSP
     # https://github.com/nelmio/NelmioSecurityBundle#content-security-policy
 
     csp:
@@ -48,10 +51,11 @@ nelmio_security:
             browser_adaptive:
                 enabled: false
             # report-uri: %router.request_context.base_url%/nelmio/csp/report
-            #default-src: 
+            #default-src:
             #    - self
             #    - unsafe-inline
-            frame-src: 
+            frame-src:
+                - self
                 - disqus.com
                 - s7.addthis.com
                 - www.youtube.com
@@ -78,14 +82,17 @@ nelmio_security:
                 - cdnjs.cloudflare.com
                 - www.googletagmanager.com
                 - www.google-analytics.com
+                
             #font-src:
             #    - self
 
 
             #style-src:
-            #    - 'self'
+            #    - self
+            #    - cdn.anychart.com
+            #    - fonts.googleapis.com
             #    - 'unsafe-inline'
-            #    - 'cdn.anychart.com'
+
             #img-src:
             #    - self
             #    - unsafe-inline

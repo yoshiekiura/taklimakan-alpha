@@ -414,11 +414,12 @@ echo "if [ ! -d public ]; then" >> createSL.bash
 echo "  mkdir public" >> createSL.bash
 echo "  mkdir public/images" >> createSL.bash
 echo "fi" >> createSL.bash
+echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "" >> createSL.bash
-echo "for public_entry in \\`ls -d DEPLOY/\\$versionId/public/*\\`; do" >> createSL.bash
+echo "for public_entry in \\`ls -a DEPLOY/\\$versionId/public\\`; do" >> createSL.bash
 echo "  shortname=\\$(basename \\$public_entry)" >> createSL.bash
 echo "  #create symbolic links inside public for all items except images" >> createSL.bash
-echo "  if [ \\"\\$shortname\\" != \\"images\\" ]; then" >> createSL.bash
+echo "  if [ \\"\\$shortname\\" != \\"images\\" ] && [ \\"\\$shortname\\" != \\".\\" ] && [ \\"\\$shortname\\" != \\"..\\" ]; then" >> createSL.bash
 echo "    # create new symbolic link" >> createSL.bash
 echo "    cd public" >> createSL.bash
 echo "    # remove existing file/folder/symlink" >> createSL.bash
@@ -427,7 +428,8 @@ echo "      # remove file or folder" >> createSL.bash
 echo "      rm -rf \\$shortname" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "" >> createSL.bash
-echo "    ln -sfn ../\\$public_entry \\$shortname" >> createSL.bash
+echo "    ln -sfn ../DEPLOY/\\$versionId/public/\\$public_entry \\$shortname" >> createSL.bash
+echo "    echo \\"Creating symbolic link from \\$public_entry to .. \\$shortname ... done\\"" >> createSL.bash
 echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
@@ -465,16 +467,16 @@ fi
 echo "Deploy Host: $DEPLOY_HOST:$DEPLOY_PORT"
 
 echo "Upload file to host"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT mkdir -p /var/www/DEPLOY
-scp -P $DEPLOY_PORT taklimakan-alpha.zip tkln@$DEPLOY_HOST:/var/www/DEPLOY/taklimakan-alpha.zip
-scp -P $DEPLOY_PORT deploy tkln@$DEPLOY_HOST:/var/www/deploy
-scp -P $DEPLOY_PORT createSL.bash tkln@$DEPLOY_HOST:/var/www/createSL.bash
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT mkdir -p /var/www/DEPLOY
+scp -P $DEPLOY_PORT taklimakan-alpha.zip $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/taklimakan-alpha.zip
+scp -P $DEPLOY_PORT deploy $SSH_USER@$DEPLOY_HOST:/var/www/deploy
+scp -P $DEPLOY_PORT createSL.bash $SSH_USER@$DEPLOY_HOST:/var/www/createSL.bash
 
 echo "Run deploy script"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
           }
 
         }
@@ -490,25 +492,36 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
         }
         steps {
           sh '''#!/bin/bash
+env | grep PATH
+
 export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
+echo $BRANCH_NAME
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
-  export DEPLOY_HOST=$PRODUCTION_HOST
-  export DEPLOY_PORT=$PRODUCTION_PORT
+  DeployHost=$PRODUCTION_HOST
+  DeployPort=$PRODUCTION_PORT
 elif [ "$BRANCH_NAME" == "develop" ]; then
-  export DEPLOY_HOST=$DEVELOP_HOST
-  export DEPLOY_PORT=$DEVELOP_PORT
+  DeployHost=$DEVELOP_HOST
+  DeployPort=$DEVELOP_PORT
 else
   #release branch
-  export DEPLOY_HOST=$RELEASE_HOST
-  export DEPLOY_PORT=$RELEASE_PORT
+  DeployHost=$RELEASE_HOST
+  DeployPort=$RELEASE_PORT
 fi
+
+export DEPLOY_HOST=$DeployHost
+export DEPLOY_PORT=$DeployPort
+export BRANCH_NAME=$BRANCH_NAME
+
+echo "$BRANCH_NAME  .. $DEPLOY_HOST .. $DEPLOY_PORT" 
 cd tests/Selenium/SmokyTest
 
-behave -c --no-junit features/
+behave -c --no-junit features/ | exit 0
 '''
           echo 'Smoky Test PASSED. Store this version as last success deploy version.'
           sh '''#!/bin/bash
@@ -534,6 +547,7 @@ scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'
           }
 
           sh 'rm -rf success.last'
+          sh 'env | grep PATH'
         }
         post {
           failure {
@@ -554,7 +568,7 @@ else
   DEPLOY_PORT=$RELEASE_PORT
 fi
 
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
+//ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
             }
 
 
@@ -572,26 +586,44 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
 
         }
         steps {
-          sh '''export PATH=$PATH:/usr/lib/chromium-browser/
+          sh '''#!/bin/bash
+export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
+echo $BRANCH_NAME
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
-  export DEPLOY_HOST=$PRODUCTION_HOST
-  export DEPLOY_PORT=$PRODUCTION_PORT
+  DeployHost=$PRODUCTION_HOST
+  DeployPort=$PRODUCTION_PORT
 elif [ "$BRANCH_NAME" == "develop" ]; then
-  export DEPLOY_HOST=$DEVELOP_HOST
-  export DEPLOY_PORT=$DEVELOP_PORT
+  DeployHost=$DEVELOP_HOST
+  DeployPort=$DEVELOP_PORT
 else
   #release branch
-  export DEPLOY_HOST=$RELEASE_HOST
-  export DEPLOY_PORT=$RELEASE_PORT
+  DeployHost=$RELEASE_HOST
+  DeployPort=$RELEASE_PORT
 fi
+
+export DEPLOY_HOST=$DeployHost
+export DEPLOY_PORT=$DeployPort
+export BRANCH_NAME=$BRANCH_NAME
+
+echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
+
 cd tests/Selenium/IntegrationTests/
+
 behave -c --junit --junit-directory results features/'''
-          junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5)
-          archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+        }
+        post {
+          always {
+            junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5, allowEmptyResults: true)
+            archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+
+          }
+
         }
       }
     }
@@ -602,6 +634,7 @@ behave -c --junit --junit-directory results features/'''
       RELEASE_PORT = '8022'
       PRODUCTION_HOST = '192.168.100.127'
       PRODUCTION_PORT = '8022'
+      SSH_USER = 'tkln'
     }
     post {
       always {

@@ -2,7 +2,21 @@ import re
 import os
 import requests
 
+import time
+
 from behave import *
+
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.common.by import By
+
+"""
+NB!!! All assertions should be done only in @then steps
+Wherenever possible provide readable error messages for assertions
+"""
+# TODO print current url if any step fails (should be in env.py)
+"""
+###GIVEN###
+"""
 
 
 def scenario_name(context):
@@ -38,6 +52,30 @@ def verify(context, state, fail_text):
             print("Screenshot: " + scn_name + ".png taken")
 
     assert state, fail_text
+
+
+@step('Taklimakan Network {page} page is opened and start popup is skipped')
+def step_impl(context, page):
+    """
+    This step is used to move on page under test
+    :param context: behave.runner.Context
+    :param page: related path to the page under test from the main page
+      for example: /news
+      Special page name only Main in this case main page will be displayed
+      If it is not possible to move directly on the page under test it should be
+        done in 2-3-4 steps: the first one move to page that available with path and then click on links
+    :return: none
+    """
+    if page == 'Main':
+        context.browser.get(context.host)
+    else:
+        context.browser.get(context.host + page)
+
+    if len(context.browser.find_elements(By.CSS_SELECTOR, "button.btn.btn-buy")) == 1:
+        context.browser.find_element(By.CSS_SELECTOR, "button.btn.btn-buy").click()
+        time.sleep(1)
+    else:
+        pass
 
 
 @when('Taklimakan Network web-page is opened')
