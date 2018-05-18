@@ -495,28 +495,31 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
         }
         steps {
           sh '''#!/bin/bash
-export PATH=$PATH:/usr/lib/chromium-browser/
+#export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
-OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-echo "$BUILD_NUMBER.$OUTPUT" > success.last
-
-dir 
-dir DEPLOY/$BUILD_NUMBER.$OUTPUT/*
+echo $BRANCH_NAME
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
-  export DEPLOY_HOST=$PRODUCTION_HOST
-  export DEPLOY_PORT=$PRODUCTION_PORT
+  DeployHost=$PRODUCTION_HOST
+  DeployPort=$PRODUCTION_PORT
 elif [ "$BRANCH_NAME" == "develop" ]; then
-  export DEPLOY_HOST=$DEVELOP_HOST
-  export DEPLOY_PORT=$DEVELOP_PORT
+  DeployHost=$DEVELOP_HOST
+  DeployPort=$DEVELOP_PORT
 else
   #release branch
-  export DEPLOY_HOST=$RELEASE_HOST
-  export DEPLOY_PORT=$RELEASE_PORT
+  DeployHost=$RELEASE_HOST
+  DeployPort=$RELEASE_PORT
 fi
 
+export DEPLOY_HOST=$DeployHost
+export DEPLOY_PORT=$DeployPort
+export BRANCH_NAME=$BRANCH_NAME
+
+echo "$BRANCH_NAME  .. $DEPLOY_HOST .. $DEPLOY_PORT" 
 cd tests/Selenium/SmokyTest
 
 behave -c --no-junit features/ | exit 0
@@ -583,25 +586,32 @@ fi
 
         }
         steps {
-          sh '''export PATH=$PATH:/usr/lib/chromium-browser/
+          sh '''#!/bin/bash
+#export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
 echo $BRANCH_NAME
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
-  export DEPLOY_HOST=$PRODUCTION_HOST
-  export DEPLOY_PORT=$PRODUCTION_PORT
+  DeployHost=$PRODUCTION_HOST
+  DeployPort=$PRODUCTION_PORT
 elif [ "$BRANCH_NAME" == "develop" ]; then
-  export DEPLOY_HOST=$DEVELOP_HOST
-  export DEPLOY_PORT=$DEVELOP_PORT
+  DeployHost=$DEVELOP_HOST
+  DeployPort=$DEVELOP_PORT
 else
   #release branch
-  export DEPLOY_HOST=$RELEASE_HOST
-  export DEPLOY_PORT=$RELEASE_PORT
+  DeployHost=$RELEASE_HOST
+  DeployPort=$RELEASE_PORT
 fi
 
-echo $DEPLOY_HOST
+export DEPLOY_HOST=$DeployHost
+export DEPLOY_PORT=$DeployPort
+export BRANCH_NAME=$BRANCH_NAME
+
+echo "Host Used for testing purposes: $DEPLOY_HOST"
 
 cd tests/Selenium/IntegrationTests/
 
