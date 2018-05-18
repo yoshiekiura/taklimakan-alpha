@@ -587,6 +587,7 @@ fi
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
+echo $BRANCH_NAME
 
 if [ "$BRANCH_NAME" == "master" ]; then
   export DEPLOY_HOST=$PRODUCTION_HOST
@@ -599,9 +600,13 @@ else
   export DEPLOY_HOST=$RELEASE_HOST
   export DEPLOY_PORT=$RELEASE_PORT
 fi
+
+echo $DEPLOY_HOST
+
 cd tests/Selenium/IntegrationTests/
+
 behave -c --junit --junit-directory results features/'''
-          junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5)
+          junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5, allowEmptyResults: true)
           archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
         }
       }
