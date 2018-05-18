@@ -588,18 +588,23 @@ fi
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
 echo $BRANCH_NAME
+DeployHost = $PRODUCTION_HOST
+DeployPort = $PRODUCTION_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
-  export DEPLOY_HOST=$PRODUCTION_HOST
-  export DEPLOY_PORT=$PRODUCTION_PORT
+  DeployHost=$PRODUCTION_HOST
+  DeployPort=$PRODUCTION_PORT
 elif [ "$BRANCH_NAME" == "develop" ]; then
-  export DEPLOY_HOST=$DEVELOP_HOST
-  export DEPLOY_PORT=$DEVELOP_PORT
+  DeployHost=$DEVELOP_HOST
+  DeployPort=$DEVELOP_PORT
 else
   #release branch
-  export DEPLOY_HOST=$RELEASE_HOST
-  export DEPLOY_PORT=$RELEASE_PORT
+  DeployHost=$RELEASE_HOST
+  DeployPort=$RELEASE_PORT
 fi
+
+export DEPLOY_HOST=$DeployHost
+export DEPLOY_PORT=$DeployPort
 
 echo $DEPLOY_HOST
 
