@@ -29,18 +29,12 @@ def before_all(context):
     :return: none
     """
     # print("before all scenario hook\n")
-    # Verify that this is not Jenkins server
-    if os.environ.get('BRANCH_NAME') is None:
-        print("Open Regular Chrome browser")
-        context.browser = webdriver.Chrome()
-        context.browser.maximize_window()
-    else:
-        # this is Jenkins. Open headless browser
-        print("Open Headless Chrome brower")
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--window-size=1920x1080")
-        context.browser = webdriver.Chrome(chrome_options=chrome_options)
+    # Smoky Test will be executed always on headless browser
+    print("Open Headless Chrome brower")
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
+    context.browser = webdriver.Chrome(chrome_options=chrome_options)
 
     if os.environ.get('DEPLOY_HOST') is None:
         os.environ["DEPLOY_HOST"] = 'tkln-dev.usetech.ru'
