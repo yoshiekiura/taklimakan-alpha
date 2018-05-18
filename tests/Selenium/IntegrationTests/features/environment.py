@@ -33,12 +33,19 @@ def before_all(context):
     if os.environ.get('BRANCH_NAME') is None:
         # this is not Jenkins open regular Chrome browser
         context.browser = webdriver.Chrome()
+        context.browser.maximize_window()
     else:
         # this is Jenkins. Open headless browser
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size=1920x1080")
         context.browser = webdriver.Chrome(chrome_options=chrome_options)
+
+    if os.environ.get('DEPLOY_HOST') is None:
+        os.environ["DEPLOY_HOST"] = 'tkln-dev.usetech.ru'
+
+    # store host in context to be able get it from any steps and use it to quick jump to the pages
+    context.host = 'http://'+os.environ.get('DEPLOY_HOST')
 
 
 def after_all(context):
@@ -51,15 +58,29 @@ def after_all(context):
     context.browser.quit()
 
 
-def before_scenario(context, scenario):
-    """
-    This hook executed before scenario and try to reach Taklimakan main page
-    :param context: test context
-    :param scenario: current scenario name (not used for now)
-    :return: none
-    """
-    if os.environ.get('DEPLOY_HOST') is None:
-        # TODO: switch to taklimakan.io or some other ask Alexandra Kalm
-        os.environ["DEPLOY_HOST"] = '192.168.100.125'
+# def before_scenario(context, scenario):
+#    """
+#    This hook executed before scenario and try to reach Taklimakan main page
+#    :param context: test context
+#    :param scenario: current scenario name (not used for now)
+#    :return: none
+#    """
+#
+#    context.browser.get(context.browser.host)
 
-    context.browser.get('http://'+os.environ.get('DEPLOY_HOST'))
+# def after_scenario(context,scenario):
+#     """
+#     this should make a screenshot if scenario fails
+#     :param context:
+#     :param scenario:
+#     :return:
+#     """
+#     if scenario.status == 'failed':
+#         if not os.path.isdir('Screenshots'):
+#             os.mkdir('Screenshots')
+#
+#         scn_name: str = scenario(context)
+#         if not context.browser.get_screenshot_as_file('Screenshots/' + scn_name + '.png'):
+#             print("No screenshot taken\n")
+#         else:
+#             print("Screenshot: " + scn_name + ".png taken")
