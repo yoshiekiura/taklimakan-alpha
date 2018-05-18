@@ -414,6 +414,7 @@ echo "if [ ! -d public ]; then" >> createSL.bash
 echo "  mkdir public" >> createSL.bash
 echo "  mkdir public/images" >> createSL.bash
 echo "fi" >> createSL.bash
+echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "" >> createSL.bash
 echo "for public_entry in \\`ls -a DEPLOY/\\$versionId/public\\`; do" >> createSL.bash
 echo "  shortname=\\$(basename \\$public_entry)" >> createSL.bash
@@ -433,7 +434,9 @@ echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
+echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "find /var/www/DEPLOY/\\$versionId/var/cache -type d -exec chmod 777 {} \\;" >> createSL.bash
+echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
@@ -447,6 +450,7 @@ echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
+echo "dir \\$versionId" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
@@ -495,6 +499,11 @@ export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
+OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
+echo "$BUILD_NUMBER.$OUTPUT" > success.last
+
+dir 
+dir DEPLOY/$BUILD_NUMBER.$OUTPUT/*
 
 if [ "$BRANCH_NAME" == "master" ]; then
   export DEPLOY_HOST=$PRODUCTION_HOST
@@ -507,6 +516,7 @@ else
   export DEPLOY_HOST=$RELEASE_HOST
   export DEPLOY_PORT=$RELEASE_PORT
 fi
+
 cd tests/Selenium/SmokyTest
 
 behave -c --no-junit features/
@@ -555,7 +565,7 @@ else
   DEPLOY_PORT=$RELEASE_PORT
 fi
 
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
+//ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
             }
 
 
