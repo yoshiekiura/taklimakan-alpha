@@ -3,11 +3,10 @@
          <div class="news-item">
              <div class="news-img" style="overflow: hidden;">
                 {% if 'http://' in el.image or 'https://' in el.image %}
-                    <img src="{{el.image}}" alt="" class="img-shelf">
+                    <img src="{{el.image}}" alt="" class="scale">
                 {% else %}
-                    <img src="/images/news/{{el.image}}" alt="" class="scale" data-scale="fill" data-align="center">
+                    <img src="/images/news/{{el.image}}" alt="" class="scale">
                 {% endif %}
-                {# <img src="/images/news/{{ el.image }}" alt=""> #}
                  <a class="news-date" href="#">{# {{ el.date|date("F jS \\a\\t g:ia") }} #}{{ el.date|date("F jS / H:i") }}</a>
                  <a class="news-source" href="{{ el.source }}" target="_blank">{#Source:#}&#9656;&nbsp;&nbsp;<span>{{ el.source|source }}</span></a>
              </div>
