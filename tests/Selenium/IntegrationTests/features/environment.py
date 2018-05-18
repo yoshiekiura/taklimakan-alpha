@@ -43,6 +43,7 @@ def before_all(context):
 
     if os.environ.get('DEPLOY_HOST') is None:
         os.environ["DEPLOY_HOST"] = 'tkln-dev.usetech.ru'
+    print('Test executed on: ' + os.environ["DEPLOY_HOST"]+'\n')
 
     # store host in context to be able get it from any steps and use it to quick jump to the pages
     context.host = 'http://'+os.environ.get('DEPLOY_HOST')
