@@ -450,7 +450,7 @@ echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
-echo "dir DEPLOY/\\$versionId" >> createSL.bash
+echo "dir \\$versionId" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
