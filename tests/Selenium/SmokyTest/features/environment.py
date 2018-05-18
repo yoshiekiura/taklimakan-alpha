@@ -31,11 +31,12 @@ def before_all(context):
     # print("before all scenario hook\n")
     # Verify that this is not Jenkins server
     if os.environ.get('BRANCH_NAME') is None:
-        # this is not Jenkins open regular Chrome browser
+        print("Open Regular Chrome browser")
         context.browser = webdriver.Chrome()
         context.browser.maximize_window()
     else:
         # this is Jenkins. Open headless browser
+        print("Open Headless Chrome brower")
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size=1920x1080")
@@ -46,6 +47,7 @@ def before_all(context):
 
     # store host in context to be able get it from any steps and use it to quick jump to the pages
     context.host = 'http://' + os.environ.get('DEPLOY_HOST')
+    print("Testing Host: " + os.environ.get('DEPLOY_HOST'))
 
 
 def after_all(context):
