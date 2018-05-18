@@ -69,6 +69,7 @@ def step_impl(context, text):
     :return: none
     """
     context.browser.find_element(By.LINK_TEXT, text).click()
+    time.sleep(1)
 
 
 @when("I input {email} into subscription form")
@@ -102,7 +103,46 @@ def step_impl(context, button):
         print('Selector for button is not defined')
     context.browser.find_element(By.CSS_SELECTOR, button).click()
 
+@when("I fill in registration form {option} wallet")
+def step_impl(context, option):
+    """
+        This step is used fill all the fields in registration form
+        :param context: behave.runner.Context
+        :param option: can be 'with' or 'without' entering the wallet in reg form
+        :return: none
+    """
+    first_name = context.browser.find_element(By.NAME, 'registration[first_name]')
+    last_name = context.browser.find_element(By.NAME, 'registration[last_name]')
+    email = context.browser.find_element(By.NAME, 'registration[email]')
+    wallet = context.browser.find_element(By.NAME, 'registration[erc20_token]')
+    password = context.browser.find_element(By.NAME, 'registration[password][first]')
+    password_confirm = context.browser.find_element(By.NAME, 'registration[password][second]')
+    first_name.clear()
+    first_name.send_keys('Test')
+    last_name.clear()
+    last_name.send_keys('User')
+    email.clear()
+    email.send_keys('test_tkln@yopmail.com')
+    password.clear()
+    password.send_keys('freestyle11')
+    password_confirm.clear()
+    password_confirm.send_keys('freestyle11')
 
+    if option == 'with':
+        wallet.clear()
+        wallet.send_keys('0x64d8D5ea88e7525c95E85e533462AD34f43b70AE')
+    else:
+        pass
+
+@when('I submit the form')
+def step_impl(context):
+    """
+            This step is used submit registration, login and enter code forms
+            :param context: behave.runner.Context
+            :return: none
+    """
+    context.browser.find_element(By.CSS_SELECTOR, 'input.btn.btn-buy.btn-block').click()
+    time.sleep(2)
 """
 ###THEN###
 """
@@ -136,6 +176,20 @@ def step_impl(context):
         print("Crypto100 chart was not found")
         raise
 
+@then('I should see Email Verification form')
+def step_impl(context):
+    """
+    This step is used to verify the email verification form has actually appeared
+    :param context: behave.runner.Context
+    :return:
+    """
+    try:
+        email_ver = context.browser.find_element\
+            (By.XPATH, "(//H5[@class='modal-title reg-title'][text()='Email Verification'][text()='Email Verification'])[1]")
+        assert 'Email Verification' in email_ver.text
+    except:
+        print("Email ver form was not found")
+        raise
 
 # TODO implement step when subscription in implemented in TKLN
 @then('I should see You have been subscribed message')
