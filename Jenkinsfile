@@ -519,6 +519,7 @@ export DEPLOY_HOST=$DeployHost
 export DEPLOY_PORT=$DeployPort
 export BRANCH_NAME=$BRANCH_NAME
 
+echo "$BRANCH_NAME  .. $DEPLOY_HOST .. $DEPLOY_PORT" 
 cd tests/Selenium/SmokyTest
 
 behave -c --no-junit features/ | exit 0
