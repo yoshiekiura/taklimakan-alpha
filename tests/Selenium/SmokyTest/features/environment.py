@@ -17,37 +17,23 @@
      otherwise these hooks will not be executed
 """
 import os
-import re
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
-
-def scenario_name(context):
-    """
-    Get scenario name from context.scenario and replace spaces with underscores
-    :param context: behave.runner.Context
-    :return: scenario name
-
-    WARNING: this function should be called only in scenario scope, for example in before_all it failed
-    """
-    return re.sub(r' ', '_', context.scenario.name)
-
 
 
 def before_all(context):
     """
     This hook is called before all features and called only once during execution.
     This script open new selenium web-driver (Headless browser for Jenkins and Chrome otherwise)
-    :param context: behave.runner.Context
+    :param context: test context
     :return: none
     """
     # print("before all scenario hook\n")
-
     # Verify that this is not Jenkins server
     if os.environ.get('BRANCH_NAME') is None:
         # this is not Jenkins open regular Chrome browser
         context.browser = webdriver.Chrome()
+        context.browser.maximize_window()
     else:
         # this is Jenkins. Open headless browser
         chrome_options = Options()
@@ -56,30 +42,17 @@ def before_all(context):
         context.browser = webdriver.Chrome(chrome_options=chrome_options)
 
     if os.environ.get('DEPLOY_HOST') is None:
-        os.environ["DEPLOY_HOST"] = 'tkln-test.usetech.ru'
-    print('Test executed on: ' + os.environ["DEPLOY_HOST"]+'\n')
+        os.environ["DEPLOY_HOST"] = 'tkln-dev.usetech.ru'
+
+    # store host in context to be able get it from any steps and use it to quick jump to the pages
+    context.host = 'http://' + os.environ.get('DEPLOY_HOST')
 
 
 def after_all(context):
     """
     Close Selenium web-driver at the end of all tests execution
-    :param context: behave.runner.Context
+    :param context: test context
     :return: none
     """
     # print("after all scenario hook\n")
     context.browser.quit()
-
-
-def before_scenario(context, scenario):
-    """
-    This hook executed before scenario and try to reach Taklimakan main page
-    :param context: behave.runner.Context
-    :param scenario: current scenario name (not used for now)
-    :return: none
-    """
-
-    # remove previously created screenshots if exist
-    if os.path.exists('Screenshots/' + scenario_name(context) + '.png'):
-        os.remove('Screenshots/' + scenario_name(context) + '.png')
-
-    context.browser.get('http://'+os.environ.get('DEPLOY_HOST'))
