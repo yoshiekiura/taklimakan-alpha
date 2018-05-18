@@ -414,6 +414,7 @@ echo "if [ ! -d public ]; then" >> createSL.bash
 echo "  mkdir public" >> createSL.bash
 echo "  mkdir public/images" >> createSL.bash
 echo "fi" >> createSL.bash
+echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "" >> createSL.bash
 echo "for public_entry in \\`ls -a DEPLOY/\\$versionId/public\\`; do" >> createSL.bash
 echo "  shortname=\\$(basename \\$public_entry)" >> createSL.bash
@@ -433,7 +434,9 @@ echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
+echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "find /var/www/DEPLOY/\\$versionId/var/cache -type d -exec chmod 777 {} \\;" >> createSL.bash
+echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
@@ -447,6 +450,7 @@ echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
+echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
