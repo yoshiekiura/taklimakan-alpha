@@ -495,6 +495,8 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
         }
         steps {
           sh '''#!/bin/bash
+echo env | grep PATH
+
 #export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
