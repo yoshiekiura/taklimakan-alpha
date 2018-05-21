@@ -520,8 +520,13 @@ echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
-#behave -c --tags @smoke --no-junit features/
-behave -c -i smoke_test.feature --no-junit features/'''
+# run all features which have @smoke tag
+behave -c --tags @smoke --no-junit features/
+# if the test execution performed by the @smoke tag is too long 
+#   then comment line above and the uncomment line below
+#behave -c -i smoke_test.feature --no-junit features/
+
+exit 1'''
           sh '''#!/bin/bash
 
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
@@ -546,6 +551,32 @@ scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.
           }
 
           sh 'rm -rf success.last'
+        }
+        post {
+          failure {
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              sh '''#!/bin/bash
+echo "Branch Name: $BRANCH_NAME"
+if [ "$BRANCH_NAME" == "master" ]; then
+  DEPLOY_HOST=$PRODUCTION_HOST
+  DEPLOY_PORT=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  DEPLOY_HOST=$DEVELOP_HOST
+  DEPLOY_PORT=$DEVELOP_PORT
+else
+  #release branch
+  DEPLOY_HOST=$RELEASE_HOST
+  DEPLOY_PORT=$RELEASE_PORT
+fi
+
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail
+'''
+            }
+
+            archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+
+          }
+
         }
       }
       stage('Integration Tests (Selenium)') {
