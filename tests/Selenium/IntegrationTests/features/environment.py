@@ -46,7 +46,7 @@ def before_all(context):
     print('Test executed on: ' + os.environ["DEPLOY_HOST"]+'\n')
 
     # store host in context to be able get it from any steps and use it to quick jump to the pages
-    context.host = 'http://'+os.environ.get('DEPLOY_HOST')
+    context.host = 'https://'+os.environ.get('DEPLOY_HOST')
 
 
 def after_all(context):

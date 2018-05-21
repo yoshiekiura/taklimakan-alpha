@@ -11,11 +11,11 @@ use_step_matcher("parse")
 NB!!! All assertions should be done only in @then steps
 Wherenever possible provide readable error messages for assertions
 """
-#TODO print current url if any step fails (should be in env.py)
+
+
 """
 ###GIVEN###
 """
-
 
 @step('Taklimakan Network {page} page is opened and start popup is skipped')
 def step_impl(context, page):
@@ -102,6 +102,21 @@ def step_impl(context, button):
         context.browser.find_element(By.CSS_SELECTOR, button).click()
     elif button == 'Crypto100':
         button = "//STRONG[text()='TN Crypto 100']"
+        context.browser.find_element(By.XPATH, button).click()
+    elif button == 'Price':
+        button = "//A[@href='#price'][text()='Price']"
+        context.browser.find_element(By.XPATH, button).click()
+    elif button == 'Volatility':
+        button = "//A[@href='#volatility'][text()='Volatility']"
+        context.browser.find_element(By.XPATH, button).click()
+    elif button == 'Alpha':
+        button = "//A[@href='#alpha'][text()='Alpha']"
+        context.browser.find_element(By.XPATH, button).click()
+    elif button == 'Beta':
+        button = "//A[@href='#beta'][text()='Beta']"
+        context.browser.find_element(By.XPATH, button).click()
+    elif button == 'Sharpe ratio':
+        button = "//A[@href='#sharpe'][text()='Sharpe Ratio']"
         context.browser.find_element(By.XPATH, button).click()
     else:
         print('Selector for button is not defined')
@@ -223,13 +238,16 @@ def step_impl(context):
         print("SOme validation message was not found")
         raise
 
-@then('I should see active {chart} chart')
+@then('I should see {chart} chart in the URL')
 def step_impl(context, chart):
     """
         This step should verify validation message has appeared
         :param context: behave.runner.Context
-        :param chart: chart name from the step, string
+        :param chart: string of a page current URL for assertion
         :return:
     """
-    pass
-#TODO implement the step above
+    try:
+        assert context.host+'/charts/all#'+chart == context.browser.current_url
+    except:
+        print(context.browser.current_url)
+        raise
