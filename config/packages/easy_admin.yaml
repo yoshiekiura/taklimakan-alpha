@@ -61,6 +61,9 @@ easy_admin:
             # - '/js/datepicker.js'
             - '/js/froala.js'
             - '/js/image.min.js'
+            - 'https://cdn.embedly.com/widgets/platform.js'
+            - '/js/embedly.min.js'
+            - '/css/embedly.min.css'
 
     entities:
 
