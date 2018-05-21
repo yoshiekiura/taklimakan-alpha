@@ -5,8 +5,11 @@ Feature: Smoky test to verify that deploy is success
   Smoky test is used by Jenkins to understand that build deployed successfully.
     It means that build could be used for testing purposes if it is develop or release or it is in production if master
 
+  Background:
+    Given Taklimakan Network Main page is opened and start popup is skipped
+
   Scenario: Smoky test
-  This scenario open web-browser and go to Taklimakan web-page and verify that page is reached and no exceptions on it
+    This scenario open web-browser and go to Taklimakan web-page and verify that page is reached and no exceptions on it
 
     When Taklimakan Network web-page is opened
 
