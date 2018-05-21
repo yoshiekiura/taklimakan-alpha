@@ -60,6 +60,7 @@ easy_admin:
             - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/js/froala_editor.pkgd.min.js'
             # - '/js/datepicker.js'
             - '/js/froala.js'
+            - '/js/image.min.js'
 
     entities:
 
