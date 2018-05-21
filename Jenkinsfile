@@ -520,7 +520,8 @@ echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
-behave -c --tags @smoke --no-junit features/'''
+#behave -c --tags @smoke --no-junit features/
+behave -c behave -i features/smoke_test.feature --no-junit'''
         }
       }
       stage('Integration Tests (Selenium)') {
