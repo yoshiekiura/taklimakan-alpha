@@ -522,6 +522,30 @@ cd tests/Selenium/IntegrationTests/
 
 #behave -c --tags @smoke --no-junit features/
 behave -c -i smoke_test.feature --no-junit features/'''
+          sh '''#!/bin/bash
+
+OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
+echo $BUILD_NUMBER.$OUTPUT > success.last'''
+          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+            sh '''#!/bin/bash
+echo "Branch Name: $BRANCH_NAME"
+if [ "$BRANCH_NAME" == "master" ]; then
+  DEPLOY_HOST=$PRODUCTION_HOST
+  DEPLOY_PORT=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  DEPLOY_HOST=$DEVELOP_HOST
+  DEPLOY_PORT=$DEVELOP_PORT
+else
+  #release branch
+  DEPLOY_HOST=$RELEASE_HOST
+  DEPLOY_PORT=$RELEASE_PORT
+fi
+
+scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.last
+'''
+          }
+
+          sh 'rm -rf success.last'
         }
       }
       stage('Integration Tests (Selenium)') {
