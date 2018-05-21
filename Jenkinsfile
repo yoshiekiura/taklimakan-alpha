@@ -521,10 +521,10 @@ echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 cd tests/Selenium/IntegrationTests/
 
 # run all features which have @smoke tag
-behave -c --tags @smoke --no-junit features/
-# if the test execution performed by the @smoke tag is too long 
-#   then comment line above and the uncomment line below
-#behave -c -i smoke_test.feature --no-junit features/'''
+# if it will be neceessary to have multiple smoke tests execute tests by @tag
+#behave -c --tags @smoke --no-junit features/
+
+behave -c -i smoke_test.feature --no-junit features/'''
           sh '''#!/bin/bash
 
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
@@ -640,7 +640,7 @@ behave -c --junit --junit-directory results features/'''
     }
     post {
       always {
-        publishHTML(allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
+        publishHTML(allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
 
       }
 
