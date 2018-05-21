@@ -188,8 +188,8 @@ def step_impl(context, text):
         # requests.get(context.host) == requests.codes.ok, 'Taklimakan Page is not load successfully'
         assert requests.get(context.host).status_code == requests.codes.ok, text + ' page is not loaded successfully'
 
-        assert text in context.browser.title, 'Expected Page Title is: ' + text + ' actual title is: ' \
-                                              + context.browser.title
+        assert text in context.browser.title, 'Expected Page Title is: \'' + text + '\' actual title is: \'' \
+                                              + context.browser.title + '\''
     except AssertionError:
         # print("Expected text " + text + " and " + context.browser.title + " do not match")
         create_screenshot(context)
