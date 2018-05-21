@@ -11,7 +11,7 @@ use_step_matcher("parse")
 
 """
 NB!!! All assertions should be done only in @then steps
-Wherenever possible provide readable error messages for assertions
+Whenever it is possible provide readable error messages for assertions
 """
 
 
@@ -131,10 +131,10 @@ def step_impl(context, button):
 @when("I fill in registration form {option} wallet")
 def step_impl(context, option):
     """
-        This step is used fill all the fields in registration form
-        :param context: behave.runner.Context
-        :param option: can be 'with' or 'without' entering the wallet in reg form
-        :return: none
+    This step is used fill all the fields in registration form
+    :param context: behave.runner.Context
+    :param option: can be 'with' or 'without' entering the wallet in reg form
+    :return: none
     """
     first_name = context.browser.find_element(By.NAME, 'registration[first_name]')
     last_name = context.browser.find_element(By.NAME, 'registration[last_name]')
@@ -163,9 +163,9 @@ def step_impl(context, option):
 @when('I submit the form')
 def step_impl(context):
     """
-            This step is used submit registration, login and enter code forms
-            :param context: behave.runner.Context
-            :return: none
+    This step is used submit registration, login and enter code forms
+    :param context: behave.runner.Context
+    :return: none
     """
     context.browser.find_element(By.CSS_SELECTOR, 'input.btn.btn-buy.btn-block').click()
     time.sleep(2)
@@ -188,7 +188,7 @@ def step_impl(context, text):
         # requests.get(context.host) == requests.codes.ok, 'Taklimakan Page is not load successfully'
         assert requests.get(context.host).status_code == requests.codes.ok, text + ' page is not loaded successfully'
 
-        assert text in context.browser.title, 'Expected Page Titele is: ' + text + ' actual title is: ' \
+        assert text in context.browser.title, 'Expected Page Title is: ' + text + ' actual title is: ' \
                                               + context.browser.title
     except AssertionError:
         # print("Expected text " + text + " and " + context.browser.title + " do not match")
@@ -203,7 +203,6 @@ def step_impl(context):
     :param context: behave.runner.Context
     :return: none
     """
-
     try:
         assert (True != ('Exception' in context.browser.page_source))
     except AssertionError:
@@ -214,10 +213,10 @@ def step_impl(context):
 @then('I should see Crypto100 chart')
 def step_impl(context):
     """
-        This step is used to verify that we have reached the page with charts
-        :param context: behave.runner.Context
-        :return: none
-        """
+    This step is used to verify that we have reached the page with charts
+    :param context: behave.runner.Context
+    :return: none
+    """
     try:
         context.browser.find_element(By.CSS_SELECTOR, 'div#crypto-index-card')
     except AssertionError:
