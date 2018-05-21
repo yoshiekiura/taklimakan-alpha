@@ -572,6 +572,7 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail
             }
 
             archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+            sh ' echo "Build FAILED! " '
 
           }
 
