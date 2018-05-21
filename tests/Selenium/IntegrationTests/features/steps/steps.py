@@ -1,4 +1,6 @@
 import time
+import os
+import requests
 
 from behave import *
 
@@ -9,9 +11,28 @@ use_step_matcher("parse")
 
 """
 NB!!! All assertions should be done only in @then steps
-Wherenever possible provide readable error messages for assertions
+Whenever it is possible provide readable error messages for assertions
 """
-#TODO print current url if any step fails (should be in env.py)
+
+
+# TODO print current url if any step fails (should be in env.py)
+def create_screenshot(context):
+    """
+    This function create screenshot and store it in file with scenario name
+    :param context:
+    :return:
+    """
+    # Create screenshot
+    if not os.path.isdir('Screenshots'):
+        os.mkdir('Screenshots')
+
+    scn_name: str = context.scenario.name.replace(' ', '_')
+    if not context.browser.save_screenshot('Screenshots/' + scn_name + '.png'):
+        print("No screenshot taken\n")
+    else:
+        print("Screenshot: " + scn_name + ".png taken")
+
+
 """
 ###GIVEN###
 """
@@ -32,7 +53,7 @@ def step_impl(context, page):
     if page == 'Main':
         context.browser.get(context.host)
     else:
-        context.browser.get(context.host+page)
+        context.browser.get(context.host + page)
 
     if len(context.browser.find_elements(By.CSS_SELECTOR, "button.btn.btn-buy")) == 1:
         context.browser.find_element(By.CSS_SELECTOR, "button.btn.btn-buy").click()
@@ -99,17 +120,21 @@ def step_impl(context, button):
     """
     if button == 'Subscribe':
         button = 'a.btn-sub'
+        context.browser.find_element(By.CSS_SELECTOR, button).click()
+    elif button == 'Crypto100':
+        button = "//STRONG[text()='TN Crypto 100']"
+        context.browser.find_element(By.XPATH, button).click()
     else:
         print('Selector for button is not defined')
-    context.browser.find_element(By.CSS_SELECTOR, button).click()
+
 
 @when("I fill in registration form {option} wallet")
 def step_impl(context, option):
     """
-        This step is used fill all the fields in registration form
-        :param context: behave.runner.Context
-        :param option: can be 'with' or 'without' entering the wallet in reg form
-        :return: none
+    This step is used fill all the fields in registration form
+    :param context: behave.runner.Context
+    :param option: can be 'with' or 'without' entering the wallet in reg form
+    :return: none
     """
     first_name = context.browser.find_element(By.NAME, 'registration[first_name]')
     last_name = context.browser.find_element(By.NAME, 'registration[last_name]')
@@ -134,15 +159,18 @@ def step_impl(context, option):
     else:
         pass
 
+
 @when('I submit the form')
 def step_impl(context):
     """
-            This step is used submit registration, login and enter code forms
-            :param context: behave.runner.Context
-            :return: none
+    This step is used submit registration, login and enter code forms
+    :param context: behave.runner.Context
+    :return: none
     """
     context.browser.find_element(By.CSS_SELECTOR, 'input.btn.btn-buy.btn-block').click()
     time.sleep(2)
+
+
 """
 ###THEN###
 """
@@ -157,24 +185,45 @@ def step_impl(context, text):
     :return: none
     """
     try:
-        assert text in context.browser.title
-    except(AssertionError):
-        print("Expected text " + text + " and " + context.browser.title + " do not match")
+        # requests.get(context.host) == requests.codes.ok, 'Taklimakan Page is not load successfully'
+        assert requests.get(context.host).status_code == requests.codes.ok, text + ' page is not loaded successfully'
+
+        assert text in context.browser.title, 'Expected Page Title is: \'' + text + '\' actual title is: \'' \
+                                              + context.browser.title + '\''
+    except AssertionError:
+        # print("Expected text " + text + " and " + context.browser.title + " do not match")
+        create_screenshot(context)
+        raise
+
+
+@then('no exceptions on a page')
+def step_impl(context):
+    """
+    Verify that Symfony not generate any exception and page started successfully
+    :param context: behave.runner.Context
+    :return: none
+    """
+    try:
+        assert (True != ('Exception' in context.browser.page_source))
+    except AssertionError:
+        create_screenshot(context)
         raise
 
 
 @then('I should see Crypto100 chart')
 def step_impl(context):
     """
-        This step is used to verify that we have reached the page with charts
-        :param context: behave.runner.Context
-        :return: none
-        """
+    This step is used to verify that we have reached the page with charts
+    :param context: behave.runner.Context
+    :return: none
+    """
     try:
         context.browser.find_element(By.CSS_SELECTOR, 'div#crypto-index-card')
-    except:
+    except AssertionError:
         print("Crypto100 chart was not found")
+        create_screenshot(context)
         raise
+
 
 @then('I should see Email Verification form')
 def step_impl(context):
@@ -184,12 +233,14 @@ def step_impl(context):
     :return:
     """
     try:
-        email_ver = context.browser.find_element\
-            (By.XPATH, "(//H5[@class='modal-title reg-title'][text()='Email Verification'][text()='Email Verification'])[1]")
-        assert 'Email Verification' in email_ver.text
-    except:
+        context.browser.find_element \
+            (By.XPATH,
+             "(//H5[@class='modal-title reg-title'][text()='Email Verification'][text()='Email Verification'])[1]")
+    except AssertionError:
         print("Email ver form was not found")
+        create_screenshot(context)
         raise
+
 
 # TODO implement step when subscription in implemented in TKLN
 @then('I should see You have been subscribed message')
@@ -201,12 +252,35 @@ def step_impl(context):
     """
     pass
 
-# TODO implement step when subscription in implemented in TKLN
-@then('I should see validation message')
+
+@then('I should see registration form validation messages')
 def step_impl(context):
     """
     This step should verify validation message has appeared
-    :param context:
-    :return:
+    :param context: behave.runner.Context
+    :return: none
+    """
+    try:
+        context.browser.find_element \
+            (By.XPATH, "(//SMALL[@class='form-text text-muted valid-error'][text()='Required'][text()='Required'])[1]")
+        context.browser.find_element \
+            (By.XPATH, "(//SMALL[@class='form-text text-muted valid-error'][text()='Required'][text()='Required'])[2]")
+        context.browser.find_element \
+            (By.XPATH, "//SMALL[@class='form-text text-muted valid-error'][text()='Enter correct email address']")
+        context.browser.find_element(By.XPATH, "//SMALL[@id='passwordHelp']")
+    except AssertionError:
+        print("Some validation message was not found")
+        create_screenshot(context)
+        raise
+
+
+@then('I should see active {chart} chart')
+def step_impl(context, chart):
+    """
+        This step should verify validation message has appeared
+        :param context: behave.runner.Context
+        :param chart: chart name from the step, string
+        :return:
     """
     pass
+# TODO implement the step above

@@ -43,6 +43,7 @@ def before_all(context):
 
     if os.environ.get('DEPLOY_HOST') is None:
         os.environ["DEPLOY_HOST"] = 'tkln-dev.usetech.ru'
+    print('Test executed on: ' + os.environ["DEPLOY_HOST"]+'\n')
 
     # store host in context to be able get it from any steps and use it to quick jump to the pages
     context.host = 'http://'+os.environ.get('DEPLOY_HOST')
@@ -68,19 +69,19 @@ def after_all(context):
 #
 #    context.browser.get(context.browser.host)
 
-# def after_scenario(context,scenario):
-#     """
-#     this should make a screenshot if scenario fails
-#     :param context:
-#     :param scenario:
-#     :return:
-#     """
-#     if scenario.status == 'failed':
-#         if not os.path.isdir('Screenshots'):
-#             os.mkdir('Screenshots')
-#
-#         scn_name: str = scenario(context)
-#         if not context.browser.get_screenshot_as_file('Screenshots/' + scn_name + '.png'):
-#             print("No screenshot taken\n")
-#         else:
-#             print("Screenshot: " + scn_name + ".png taken")
+def after_scenario(context, scenario):
+    """
+    this should make a screenshot if scenario fails
+    :param context: behave.runner.Context
+    :param scenario: current scenario
+    :return: none
+    """
+    if scenario.status == "failed":
+        if not os.path.isdir('Screenshots'):
+            os.mkdir('Screenshots')
+
+        scn_name = scenario.name.replace(' ','_')
+        if not context.browser.save_screenshot('Screenshots/' + scn_name + '.png'):
+            print("No screenshot taken\n")
+        else:
+            print("Screenshot: " + scn_name + ".png taken")

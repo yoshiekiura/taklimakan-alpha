@@ -232,7 +232,7 @@ var $allVideos = $("iframe[src^='//www.youtube.com']"),
 
 // Figure out and save aspect ratio for each video
 $allVideos.each(function() {
-//alert("YT!");
+
   $(this)
     .data('aspectRatio', this.height / this.width)
 
@@ -244,7 +244,7 @@ $allVideos.each(function() {
 
 // When the window is resized
 $(window).resize(function() {
-//alert("YT!");
+
   var newWidth = $fluidEl.width();
 
   // Resize all videos according to their own aspect ratio
@@ -268,140 +268,83 @@ $(window).resize(function() {
 
 <script nonce="{{ csp_nonce() }}">
 
-    $(function() {
-        scaleImages();
-    });
+    // This start scaling right after DOM is loaded - and we'll await actual image downloads inside the code of scaleImages
 
+    $(function() { scaleImages() });
+
+    // Smart scaling and cropping on the fly. Do not tracking page resize yet!
 
     function scaleImages() {
 
-        $('.scale').each(function(i, item) {
+        // Wait till images fully loaded
+        var deferreds = [];
+        $('.scale').each(function() {
+            if (!this.complete) {
+                var deferred = $.Deferred();
+                $(this).one('load', deferred.resolve);
+                deferreds.push(deferred);
+            }
+        });
 
-            // https://stackoverflow.com/questions/19361309/jquery-resizing-image-to-fit-div
-            // The JQuery way - CROP TO FIT (NO WHITESPACE):
+        $.when.apply($, deferreds).done(function() {
 
-        //    alert('UHH');
+            $('.scale').each(function(i, item) {
 
-            var wanted = 200; // We want 200 px image height
+                var nw = $(item).prop("naturalWidth");
+                var nh = $(item).prop("naturalHeight");
+                var w = $(item).prop("width");
+                var h = $(item).prop("height");
 
-            var nw = $(item).prop("naturalWidth");// +'\n'+  // Width  (Natural)
-            var nh = $(item).prop("naturalHeight");// +'\n'+ // Height (Natural)
-            var w = $(item).prop("width");// +'\n'+         // Width  (Rendered)
-            var h = $(item).prop("height");// +'\n'+        // Height (Rendered)
+                //if (!nw || !nh) { alert "NO";
+                //    return; }
 
-    //            var img_height = $(item).height();
-    //            var img_width = $(item).width();
-    //            var divH = $(item).parent().height();
-    //            var divW = $(item).parent().width();
+                // alert (nw + ' | ' + nh);
 
-    //            var img_height = nh;
-    //            var div_height = h;
+                var wanted = h; // Scale image by container height
 
-            var imageRatio = nw / nh;
-            var divRatio = w / h;
-            var factor = nw / w; // Just suppose that image width is more than container
+                var imageRatio = nw / nh;
+                var divRatio = w / h;
+                var factor = nw / w; // Suppose that image width is more than container
 
-            var neww = 0;
-            var newh = 0;
-            var newTopMargin = 0;
-            var newLeftMargin = 0;
+                var neww = 0;
+                var newh = 0;
+                var newTopMargin = 0;
+                var newLeftMargin = 0;
 
-        //    alert( ' | ' + nw + ' | ' + nh + ' | ' + w + ' | ' + h + ' | imageRatio = ' + imageRatio + ' | divRatio = ' + divRatio /*+ ' | newRatio = ' + newRatio*/);
+                // alert( ' | ' + nw + ' | ' + nh + ' | ' + w + ' | ' + h + ' | imageRatio = ' + imageRatio + ' | divRatio = ' + divRatio );
 
-            // Simply resize from big to small
-            if (nw > w && nh > h) {
+                // Image is BIGGER than container
+                if (factor >= 1) {
 
-                if ((h / factor) < wanted) {
-                //    alert ('1');
                     if (divRatio > imageRatio) {
-                    //    alert ('1-1');
                         neww = w;
                         newh = nh / factor;
                         newTopMargin = wanted - newh;
                     } else {
-                    //    alert ('1-2');
                         newh = wanted;
                         neww = nw / (nh / wanted);
                         newLeftMargin = w - neww;
                     }
-                } else {
-                    alert ('2');
 
-                    newh = wanted;
-                    neww = nw / (nh / wanted);
-                    newTopMargin = 0;
+                // Container is BIGGER than image
+                } else {
+
+                    if (divRatio > imageRatio) {
+                        neww = w;
+                        newh = h / factor;
+                        newTopMargin = - (newh - wanted);
+                    } else {
+                        newh = wanted;
+                        neww = nw / (nh / wanted);
+                        newLeftMargin = w - neww;
+                    }
 
                 }
 
-            } else {
-                    alert ('3');
-            }
+                $(item).css({'width': neww, 'height': newh, 'margin-top': newTopMargin, 'margin-left': newLeftMargin });
+                $(item).removeClass('scale'); // Do not scale when new block of news will be loaded
 
-    /*
-            if (h / newRatio < 200) {
-                newh = 200;
-                neww = nw / (nh / 200);
-            }
-
-            else {
-                neww = w;
-                newh = (nnw / w);
-            }
-    */
-    //            neww = w;
-    //            if (divRatio > imageRatio)
-    //                newh = h / (nw / w)
-
-    /*
-            if (divRatio > imageRatio) {
-                neww = w;
-                newh = h / (nw / w);
-                //else newh = h * (nw / w);
-            } else {
-            //    newh = h;
-            //    if (w > h) neww = nw / (nh / h);
-            //    else neww = nw * (nh / h);
-    //                neww = nw / (nh / h);
-
-            }
-    */
-
-
-
-
-        //    alert( ' | ' + nw + ' | ' + nh + ' | ' + w + ' | ' + h + ' | imageRatio = ' + imageRatio + ' | divRatio = ' + divRatio);
-
-            // $(item).css({'width': neww, 'height': newh, 'position': 'absolute' });
-            $(item).css({'width': neww, 'height': newh, 'margin-top': newTopMargin, 'margin-left': newLeftMargin });
-
-            $(item).removeClass('scale'); // Do not scale when new block of news will be loaded
-
-        //    alert( ' | neww ' + neww + ' | newh + ' + newh + ' | newMargin ' + newMargin );
-
-    /*
-            if (img_height < div_height) {
-                //INCREASE HEIGHT OF IMAGE TO MATCH CONTAINER
-                $(item).css({'width': 'auto', 'height': div_height });
-                //GET THE NEW WIDTH AFTER RESIZE
-                var img_width = $(item).width();
-                //GET THE PARENT WIDTH
-                var div_width = $(item).parent().width();
-                //GET THE NEW HORIZONTAL MARGIN
-                var newMargin = (div_width-img_width)/2+'px';
-                //SET THE NEW HORIZONTAL MARGIN (EXCESS IMAGE WIDTH IS CROPPED)
-                $(item).css({'margin-left': newMargin });
-            } else {
-                //CENTER IT VERTICALLY (EXCESS IMAGE HEIGHT IS CROPPED)
-                var newMargin = (div_height-img_height)/2+'px';
-                $(item).css({'margin-top': newMargin});
-            }
-    */
-
-
-    //            var newMargin = (div_height-img_height)/2+'px';
-    //            $(item).css({'margin-top': newMargin});
-
-
+            });
         });
     }
 

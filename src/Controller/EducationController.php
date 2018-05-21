@@ -65,7 +65,8 @@ class EducationController extends Controller
         if ($page) $filter['page'] = $page - 1;
 
         $limit = $request->query->get('limit') ? intval($request->query->get('limit')) : 6;
-        if ($limit) $filter['limit'] = $limit;
+        // if ($limit) $filter['limit'] = $limit;
+        // $filter['limit'] = 0; // We'll trim the list later
 
         $level = $request->query->get('level') ? intval($request->query->get('level')) : null;
         if ($level) $filter['level'] = $level;
@@ -84,7 +85,9 @@ class EducationController extends Controller
             $courses[] = $lecture;
         }
 
-        $courses = array_slice($courses, 0, $filter['limit']);
+        // Sort by date and trim by limit
+        usort($courses, "self::twoDates");
+        $courses = array_slice($courses, ($page - 1) * $page, $limit);
 
         $tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
         $allTags = $tagsRepo->findAll();
@@ -103,7 +106,8 @@ class EducationController extends Controller
                 'total' => null,   // Total items for paginator / NB! Do not count for now
                 'page'  => $page,  // Current Page
                 'limit' => $limit, // Max items on the page
-            ]
+            ],
+            'page' => $page
         ]);
     }
 
@@ -215,5 +219,63 @@ class EducationController extends Controller
         ]);
     }
 
+    // Callback Helper for AJAX News <Load More> Button
+
+    /**
+     * @Route("/courses/more", name="courses_more")
+     */
+    public function more(Request $request)
+    {
+        if (!$request->isXMLHttpRequest())
+            throw new BadRequestHttpException("[ERR] Only AJAX requests are allowed!");
+
+        $content = $request->getContent();
+        $params = json_decode($content, true);
+        $page = $params['page'] > 0 ? intval($params['page']) : 0;
+        $tags = [];
+        $level = count($params['level']) > 0 ? $params['level'] : 0;
+        $limit = 6;
+
+        $filter = [];
+        $filter['page'] = $page;
+        $filter['tags'] = []; // $tags;
+        $filter['level'] = $level;
+
+        // We'll limit the list later, when combine courses and standalone lectures
+        // $filter['limit'] = 0;
+
+        $courseRepo = $this->getDoctrine()->getRepository(Course::class);
+        $courses = $courseRepo->getCourses($filter);
+        foreach ($courses as &$course)
+            $course['type'] = 'course';
+
+        $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
+        $filter['course'] = null;
+        $standaloneLectures = $lectureRepo->getLectures($filter);
+
+        foreach ($standaloneLectures as $lecture) {
+        //    $lecture['type'] = 'lecture';
+            $courses[] = $lecture;
+        }
+
+        // Sort by date And trim the list for default limit
+        usort($courses, "self::twoDates");
+        $courses = array_slice($courses, $page * $limit, $limit);
+
+        if (count($courses))
+            $template = $this->render('courses/more.html.twig', [ 'courses' => $courses, 'page' => $page ])->getContent();
+        else
+            $template = '';
+
+        $response = new JsonResponse([ 'page' => $page, 'tags' => $tags, 'html' => $template ]);
+
+        return $response;
+
+    }
+
+    private static function twoDates($a, $b)
+    {
+        return $a["date"] < $b["date"];
+    }
 
 }

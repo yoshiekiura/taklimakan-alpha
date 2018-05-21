@@ -434,9 +434,7 @@ echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
-echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "find /var/www/DEPLOY/\\$versionId/var/cache -type d -exec chmod 777 {} \\;" >> createSL.bash
-echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
@@ -450,7 +448,6 @@ echo "    fi" >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
-echo "dir \\$versionId" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
@@ -484,7 +481,7 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
 
         }
       }
-      stage('Smoky Test') {
+      stage('Smoke Test') {
         when {
           anyOf {
             branch 'master'
@@ -499,14 +496,9 @@ export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
-OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-echo "$BUILD_NUMBER.$OUTPUT" > success.last
-
-# it is necessary to set DEPLOY_HOST 
-#  to be able to execute Smoky Test on correct web-server
 echo $BRANCH_NAME
-DeployHost = $DEVELOP_HOST
-DeployPort = $DEVELOP_PORT
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
   DeployHost=$PRODUCTION_HOST
@@ -524,18 +516,22 @@ export DEPLOY_HOST=$DeployHost
 export DEPLOY_PORT=$DeployPort
 export BRANCH_NAME=$BRANCH_NAME
 
-cd tests/Selenium/SmokyTest
+echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
-behave -c --no-junit features/ | exit 0
-'''
-          echo 'Smoky Test PASSED. Store this version as last success deploy version.'
+cd tests/Selenium/IntegrationTests/
+
+# run all features which have @smoke tag
+# if it will be neceessary to have multiple smoke tests execute tests by @tag
+#behave -c --tags @smoke --no-junit features/
+
+behave -c -i smoke_test.feature --no-junit features/'''
           sh '''#!/bin/bash
+
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-echo "$BUILD_NUMBER.$OUTPUT" > success.last
-'''
+echo $BUILD_NUMBER.$OUTPUT > success.last'''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
-
+echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
   DEPLOY_PORT=$PRODUCTION_PORT
@@ -548,18 +544,17 @@ else
   DEPLOY_PORT=$RELEASE_PORT
 fi
 
-scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'''
+scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.last
+'''
           }
 
           sh 'rm -rf success.last'
         }
         post {
           failure {
-            echo 'Smoky Test FAILED! Rollback web-site to the last success deployed version.'
-            archiveArtifacts(artifacts: 'tests/Selenium/SmokyTest/Screenshots/*.png', allowEmptyArchive: true)
             sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
               sh '''#!/bin/bash
-
+echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
   DEPLOY_PORT=$PRODUCTION_PORT
@@ -572,9 +567,12 @@ else
   DEPLOY_PORT=$RELEASE_PORT
 fi
 
-//ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail
+'''
             }
 
+            archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+            sh ' echo "Build FAILED! " '
 
           }
 
@@ -596,8 +594,8 @@ export PATH=$PATH:/usr/lib/chromium-browser/
 # it is necessary to set DEPLOY_HOST 
 #  to be able to execute Smoky Test on correct web-server
 echo $BRANCH_NAME
-DeployHost = $DEVELOP_HOST
-DeployPort = $DEVELOP_PORT
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
   DeployHost=$PRODUCTION_HOST
@@ -615,13 +613,19 @@ export DEPLOY_HOST=$DeployHost
 export DEPLOY_PORT=$DeployPort
 export BRANCH_NAME=$BRANCH_NAME
 
-echo "Host Used for testing purposes: $DEPLOY_HOST"
+echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
 behave -c --junit --junit-directory results features/'''
-          junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5, allowEmptyResults: true)
-          archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+        }
+        post {
+          always {
+            junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 5, allowEmptyResults: true)
+            archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+
+          }
+
         }
       }
     }
@@ -636,7 +640,7 @@ behave -c --junit --junit-directory results features/'''
     }
     post {
       always {
-        publishHTML(allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
+        publishHTML(allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
 
       }
 
