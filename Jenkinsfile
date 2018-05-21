@@ -524,9 +524,7 @@ cd tests/Selenium/IntegrationTests/
 behave -c --tags @smoke --no-junit features/
 # if the test execution performed by the @smoke tag is too long 
 #   then comment line above and the uncomment line below
-#behave -c -i smoke_test.feature --no-junit features/
-
-exit 1'''
+#behave -c -i smoke_test.feature --no-junit features/'''
           sh '''#!/bin/bash
 
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
