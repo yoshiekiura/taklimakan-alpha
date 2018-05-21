@@ -481,7 +481,7 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
 
         }
       }
-      stage('Smoky Test') {
+      stage('Smoke Test') {
         when {
           anyOf {
             branch 'master'
@@ -521,7 +521,7 @@ export BRANCH_NAME=$BRANCH_NAME
 echo "$BRANCH_NAME  .. $DEPLOY_HOST .. $DEPLOY_PORT" 
 cd tests/Selenium/SmokyTest
 
-behave -c --no-junit features/ | exit 0
+behave --tags=@smoky --no-junit features/ | exit 0
 '''
           echo 'Smoky Test PASSED. Store this version as last success deploy version.'
           sh '''#!/bin/bash
