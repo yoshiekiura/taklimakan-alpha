@@ -81,21 +81,12 @@
             <!-- Карточки -->
             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
-
-                <div class="row">
-
-                    {% for course in courses %}
-
-                        {% include 'edu/course-card.html.twig' %}
-
-                    {% endfor %}
-
-                </div> <!-- ROW -->
+            {% include 'courses/more.html.twig' %}
 
             </div>
         </div>
 
-        {% include 'courses/pagination.html.twig' %}
+        {% include 'courses/load-more.html.twig' %}
 
     </div>
 </div>

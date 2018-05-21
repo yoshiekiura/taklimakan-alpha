@@ -1,0 +1,10 @@
+
+    <!-- Courses Block {{page}} -->
+
+    <div class="row" data-page="{{page}}">
+
+        {% for course in courses %}
+            {% include 'edu/course-card.html.twig' %}
+        {% endfor %}
+
+    </div>
