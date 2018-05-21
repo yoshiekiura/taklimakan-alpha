@@ -2254,6 +2254,7 @@ a.news-status {
 
 .news-img {
     position: relative;
+    overflow: hidden;
 }
 
 .news-img img {
@@ -2288,4 +2289,4 @@ a.news-status {
     .news-img-include img { height: 500px; }
 }
 
-.p-content img { display: block; width: auto; margin: 20px auto; }
+.p-content img { display: block; width: auto; margin: 25px auto; }

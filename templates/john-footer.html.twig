@@ -232,7 +232,7 @@ var $allVideos = $("iframe[src^='//www.youtube.com']"),
 
 // Figure out and save aspect ratio for each video
 $allVideos.each(function() {
-//alert("YT!");
+
   $(this)
     .data('aspectRatio', this.height / this.width)
 
@@ -244,7 +244,7 @@ $allVideos.each(function() {
 
 // When the window is resized
 $(window).resize(function() {
-//alert("YT!");
+
   var newWidth = $fluidEl.width();
 
   // Resize all videos according to their own aspect ratio
@@ -290,8 +290,6 @@ $(window).resize(function() {
 
             $('.scale').each(function(i, item) {
 
-                // var wanted = 200; // We want 200 px image height
-
                 var nw = $(item).prop("naturalWidth");
                 var nh = $(item).prop("naturalHeight");
                 var w = $(item).prop("width");
@@ -310,56 +308,35 @@ $(window).resize(function() {
 
                 // alert( ' | ' + nw + ' | ' + nh + ' | ' + w + ' | ' + h + ' | imageRatio = ' + imageRatio + ' | divRatio = ' + divRatio );
 
-                // This works great when images actually bigger then container
-                // if (nw > w && nh > h) {
+                // Image is BIGGER than container
+                if (factor >= 1) {
 
-                    // if ((h / factor) < wanted) {
-
-                    // Image is BIGGER than container
-                    if (factor >= 1) {
-
-                        // alert ('1');
-                        if (divRatio > imageRatio) {
-                            // alert ('1-1');
-                            neww = w;
-                            newh = nh / factor;
-                            newTopMargin = wanted - newh;
-                        } else {
-                            // alert ('1-2');
-                            newh = wanted;
-                            neww = nw / (nh / wanted);
-                            newLeftMargin = w - neww;
-                        }
-
-                    // Container is BIGGER than image
+                    if (divRatio > imageRatio) {
+                        neww = w;
+                        newh = nh / factor;
+                        newTopMargin = wanted - newh;
                     } else {
-
-                        // alert ('2');
-                        if (divRatio > imageRatio) {
-                            // alert ('2-1');
-                            neww = w;
-                            newh = h / factor;
-                            newTopMargin = - (newh - wanted);
-                        } else {
-                            alert ('2-2');
-                            newh = wanted;
-                            neww = nw / (nh / wanted);
-                            newLeftMargin = w - neww;
-                        }
-
-
+                        newh = wanted;
+                        neww = nw / (nh / wanted);
+                        newLeftMargin = w - neww;
                     }
 
-                    //} else { alert ('2'); }
+                // Container is BIGGER than image
+                } else {
 
-                // Oh, not? Then upscale
-                //} else {
-                //    alert ('3');
-                //    alert( ' | ' + nw + ' | ' + nh + ' | ' + w + ' | ' + h + ' | imageRatio = ' + imageRatio + ' | divRatio = ' + divRatio );
-                //}
+                    if (divRatio > imageRatio) {
+                        neww = w;
+                        newh = h / factor;
+                        newTopMargin = - (newh - wanted);
+                    } else {
+                        newh = wanted;
+                        neww = nw / (nh / wanted);
+                        newLeftMargin = w - neww;
+                    }
+
+                }
 
                 $(item).css({'width': neww, 'height': newh, 'margin-top': newTopMargin, 'margin-left': newLeftMargin });
-
                 $(item).removeClass('scale'); // Do not scale when new block of news will be loaded
 
             });
