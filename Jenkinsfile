@@ -519,7 +519,7 @@ export DEPLOY_PORT=$DeployPort
 export BRANCH_NAME=$BRANCH_NAME
 
 echo "$BRANCH_NAME  .. $DEPLOY_HOST .. $DEPLOY_PORT" 
-cd tests/Selenium/SmokyTest
+cd tests/Selenium/IntegrationTests
 
 behave --tags=@smoky --no-junit features/ | exit 0
 '''
@@ -552,7 +552,7 @@ scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'
         post {
           failure {
             echo 'Smoky Test FAILED! Rollback web-site to the last success deployed version.'
-            archiveArtifacts(artifacts: 'tests/Selenium/SmokyTest/Screenshots/*.png', allowEmptyArchive: true)
+            archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
             sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
               sh '''#!/bin/bash
 
