@@ -295,6 +295,11 @@ $(window).resize(function() {
                 var w = $(item).prop("width");
                 var h = $(item).prop("height");
 
+                //if (!nw || !nh) { alert "NO";
+                //    return; }
+
+                // alert (nw + ' | ' + nh);
+
                 var wanted = h; // Scale image by container height
 
                 var imageRatio = nw / nh;
