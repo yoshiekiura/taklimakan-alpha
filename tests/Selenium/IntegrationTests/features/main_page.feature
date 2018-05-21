@@ -8,7 +8,7 @@ Feature: Main page
   @sanity
   Scenario: Open news list from the main page by See all button
     When I click 'See all news' on the main page
-    Then I should see 'News' page
+    Then I should see 'Taklimakan News' page
 
   @sanity
   Scenario: Open news list from the main page by top menu button
@@ -40,13 +40,13 @@ Feature: Main page
     And I click on Subscribe button
     Then I should see You have been subscribed message
 
-  Scenario Outline: Email field validation
-    When I input <incorrect_email> into subscription form
-    And I click on Subscribe button
-    Then I should see validation message
-    Examples:
-      | incorrect_email |
-      | mytest@         |
-      | mytest@mail     |
-      | not_an_email    |
-      |                 |
+#  Scenario Outline: Email field validation
+#    When I input <incorrect_email> into subscription form
+#    And I click on Subscribe button
+#    Then I should see validation message
+#    Examples:
+#      | incorrect_email |
+#      | mytest@         |
+#      | mytest@mail     |
+#      | not_an_email    |
+#      |                 |
