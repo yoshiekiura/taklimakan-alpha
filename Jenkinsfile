@@ -481,7 +481,7 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
 
         }
       }
-      stage('Smoky Test') {
+      stage('Smoke Test') {
         when {
           anyOf {
             branch 'master'
@@ -492,8 +492,6 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
         }
         steps {
           sh '''#!/bin/bash
-env | grep PATH
-
 export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
@@ -518,62 +516,12 @@ export DEPLOY_HOST=$DeployHost
 export DEPLOY_PORT=$DeployPort
 export BRANCH_NAME=$BRANCH_NAME
 
-echo "$BRANCH_NAME  .. $DEPLOY_HOST .. $DEPLOY_PORT" 
-cd tests/Selenium/SmokyTest
+echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
-behave -c --no-junit features/ | exit 0
-'''
-          echo 'Smoky Test PASSED. Store this version as last success deploy version.'
-          sh '''#!/bin/bash
-OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-echo "$BUILD_NUMBER.$OUTPUT" > success.last
-'''
-          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            sh '''#!/bin/bash
+cd tests/Selenium/IntegrationTests/
 
-if [ "$BRANCH_NAME" == "master" ]; then
-  DEPLOY_HOST=$PRODUCTION_HOST
-  DEPLOY_PORT=$PRODUCTION_PORT
-elif [ "$BRANCH_NAME" == "develop" ]; then
-  DEPLOY_HOST=$DEVELOP_HOST
-  DEPLOY_PORT=$DEVELOP_PORT
-else
-  #release branch
-  DEPLOY_HOST=$RELEASE_HOST
-  DEPLOY_PORT=$RELEASE_PORT
-fi
-
-scp -P $DEPLOY_PORT success.last tkln@$DEPLOY_HOST:/var/www/DEPLOY/success.last'''
-          }
-
-          sh 'rm -rf success.last'
-          sh 'env | grep PATH'
-        }
-        post {
-          failure {
-            echo 'Smoky Test FAILED! Rollback web-site to the last success deployed version.'
-            archiveArtifacts(artifacts: 'tests/Selenium/SmokyTest/Screenshots/*.png', allowEmptyArchive: true)
-            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-              sh '''#!/bin/bash
-
-if [ "$BRANCH_NAME" == "master" ]; then
-  DEPLOY_HOST=$PRODUCTION_HOST
-  DEPLOY_PORT=$PRODUCTION_PORT
-elif [ "$BRANCH_NAME" == "develop" ]; then
-  DEPLOY_HOST=$DEVELOP_HOST
-  DEPLOY_PORT=$DEVELOP_PORT
-else
-  #release branch
-  DEPLOY_HOST=$RELEASE_HOST
-  DEPLOY_PORT=$RELEASE_PORT
-fi
-
-//ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail'''
-            }
-
-
-          }
-
+#behave -c --tags @smoke --no-junit features/
+behave -c -i smoke_test.feature --no-junit features/'''
         }
       }
       stage('Integration Tests (Selenium)') {

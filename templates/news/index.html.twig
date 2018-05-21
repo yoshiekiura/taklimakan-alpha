@@ -39,14 +39,15 @@
 
             <script nonce="{{ csp_nonce() }}">
 
-                var page = Number(getParam("page") ? getParam("page") : 0);
+                var page = getParam("page") ? getParam("page") : 0;
+                var level = getParam("level") ? getParam("level") : 0;
                 var tag = getParam("tags");
 
                 document.addEventListener('DOMContentLoaded', function() {
                     $('.btn-load').on('click', loadMore);
                 });
 
-                <!-- Get parameter from URL
+                // Get parameter from URL
 
                 function getParam (k) {
                     var p = {};
@@ -61,7 +62,7 @@
                         type: 'POST',
                         contentType: 'application/json',
                         dataType: 'json',
-                        data: JSON.stringify({ 'page': Number(page + 1), 'tags': [ tag ] }),
+                        data: JSON.stringify({ 'page': Number(page + 1), 'tags': [], 'level': Number(level) }),
                         processData: false,
                         success:
                             function(data, textStatus, jQxhr) {

@@ -81,6 +81,9 @@ class IndexController extends Controller
     foreach ($courses as &$course)
         $course['type'] = 'course';
 
+    // Show only FULL courses on the Home page
+
+/*
     $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
     $filter['course'] = null;
     $standaloneLectures = $lectureRepo->getLectures($filter);
@@ -94,12 +97,7 @@ class IndexController extends Controller
 //    $allTags = $tagsRepo->findAll();
 
     $courses = array_slice($courses, 0, $filter['limit']);
-
-
-
-
-
-
+*/
 
 // just setup a fresh $task object (remove the dummy data)
 //    $task = new Task();
