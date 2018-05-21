@@ -57,11 +57,10 @@
                             <div class="news-include">
                                 <div class="news-img news-img-include">
                                     {% if 'http://' in news.image or 'https://' in news.image %}
-                                        <img src="{{news.image}}" alt="">
+                                        <img src="{{news.image}}"> <!-- alt="" class="scale" -->
                                     {% else %}
-                                        <img src="/images/news/{{news.image}}" alt="">
+                                        <img src="/images/news/{{news.image}}"> <!-- alt="" class="scale" -->
                                     {% endif %}
-                                    {# <img src="/images/news/{{news.image}}" alt=""> #}
                                     <a class="news-date" href="#">{{ news.date|date("F jS / H:i") }}</a>
                                 </div>
                                 <div class="news-body news-body-include">

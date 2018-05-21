@@ -13,9 +13,8 @@ use Symfony\Bundle\MakerBundle\Validator;
 
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-use App\Entity\usd\Symbol;
+use App\Entity\udf\Symbol;
 use App\Repository\udf\SymbolRepository;
-
 
 class UDFFeedController extends Controller
 {
@@ -84,26 +83,30 @@ class UDFFeedController extends Controller
     {
         $symbolName = $request->query->get("symbol");
 
-        $symrepo = new SymbolRepository();
+        $symrepo = $this->getDoctrine()->getRepository(Symbol::class);
+        $symrepo->initSymbols();
         $symbolInfo = $symrepo->getSymbolInfo($symbolName);
 
-        $ret = [
-            "name" => $symbolInfo->getName(),
-            "exchange-traded" => $symbolInfo->getExchange(),
-            "exchange-listed" => $symbolInfo->getExchange(),
-            "timezone" => "America/New_York",
-            "minmov" => 1,
-            "minmov2" => 0,
-            "pointvalue" => 1,
-            "session" => "0930-1630",
-            "has_intraday" => false,
-            "has_no_volume" => $symbolInfo->getType() !== "stock",
-            "description" => $symbolInfo->getDescription(),
-            "type" => $symbolInfo->getType(),
-            "supported_resolutions" => ["1H", "D", "2D", "3D", "W", "3W", "M", "6M"],
-            "pricescale" => 100,
-            "ticker" => $symbolInfo->getName()
-        ];
+        $ret = [];
+        if ($symbolInfo !== null) {
+            $ret = [
+                "name" => $symbolInfo->getName(),
+                "exchange-traded" => $symbolInfo->getExchange(),
+                "exchange-listed" => $symbolInfo->getExchange(),
+                "timezone" => "America/New_York",
+                "minmov" => 1,
+                "minmov2" => 0,
+                "pointvalue" => 1,
+                "session" => "24x7",
+                "has_intraday" => false,
+                "has_no_volume" => $symbolInfo->getType() !== "stock",
+                "description" => $symbolInfo->getDescription(),
+                "type" => $symbolInfo->getType(),
+                "supported_resolutions" => ["1H", "D", "2D", "3D", "W", "3W", "M", "6M"],
+                "pricescale" => 100,
+                "ticker" => $symbolInfo->getName()
+            ];
+        }
 
         return $this->json($ret);
     }
@@ -118,7 +121,8 @@ class UDFFeedController extends Controller
         $exchange = $request->query->get("exchange");
         $maxRecords = $request->query->get("limit");
 
-        $symrepo = new SymbolRepository();
+        $symrepo = $this->getDoctrine()->getRepository(Symbol::class);
+        $symrepo->initSymbols();
         $results = $symrepo->search($searchString, $type, $exchange, $maxRecords);
 
         $returnArray = [];
@@ -138,9 +142,9 @@ class UDFFeedController extends Controller
     }
 
 
-    private function getSymbolHistory($symbol, $type_id)
+    private function getSymbolHistory($symbol, $type_id, $startDt, $stopDt)
     {
-        $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "1" AND pair = "BTC-USD"';
+        $sql = "SELECT * FROM numerical_analytics WHERE type_id = '$type_id' AND pair = '$symbol' AND DATE(dt) >= '$startDt' AND DATE(dt) <= '$stopDt'";
         $query = $this->getDoctrine()->getConnection()->prepare($sql);
         $query->execute();
 
@@ -164,9 +168,23 @@ class UDFFeedController extends Controller
         $resolution = $request->query->get("resolution");
 
         $fromSec = intval($startDateTimestamp);
-    	$toSec = intval($endDateTimestamp);
+        $toSec = intval($endDateTimestamp);
 
-    	// Generate some symbol data (sin)
+        // Load real data from DB
+        $inputFields = explode(" - ", $symbol);
+        $dbSym = $inputFields[0];
+        $type_id = intval($inputFields[1]);
+
+        $startDt = date("Y-m-d", $fromSec);
+        $stopDt = date("Y-m-d", $toSec);
+        $values = $this->getSymbolHistory($dbSym, $type_id, $startDt, $stopDt);
+
+        // Get volume simultaneously with price
+        if ($type_id == "1") {
+            $volValues = $this->getSymbolHistory($dbSym, "2", $startDt, $stopDt);
+        }
+
+        // Format UDF output
         $data = (object) [
             "t" => [],
             "o" => [],
@@ -177,24 +195,30 @@ class UDFFeedController extends Controller
             "s" => "ok"
         ];
 
-        for ($i=$fromSec; $i<=$toSec; $i += 3600*24) {
-            $freq = 1 / (100 * 3600 * 24);
-            $vfreq = 1 / (1234 * 24);
-            if ($symbol == 'TST') {
-                $freq = 1 / (200 * 3600 * 24);
-                $vfreq = 1 / (4321 * 24);
+        $len = count($values);
+        for ($i=0; $i<$len; $i++) {
+            $val = $values[$i];
+            $epochTime = strtotime($val[0]);
+
+            $data->t[] = $epochTime;
+
+            // For now we only have one (averaged) price instead of open, close, high, low
+            // So we use previous candle close for next candle open, min for low, and max for high
+            $prev = $values[$i][1];
+            if ($i > 0) {
+                $prev = $values[$i-1][1];
             }
+            $data->o[] = $prev;
+            $data->c[] = $val[1];
+            $data->h[] = max($prev, $val[1]);
+            $data->l[] = min($prev, $val[1]);
 
-            $val = abs(100 * sin(3.141 * 2 * $i * $freq));
-            $valNext = abs(100 * sin(3.141 * 2 * ($i + 3600 * 24) * $freq));
-            $vol = abs(1000 * sin(3.141 * 2 * $i * $vfreq));
 
-            $data->t[] = $i;
-            $data->o[] = $val;
-            $data->c[] = $valNext;
-            $data->h[] = $valNext + 5;
-            $data->l[] = $val * 0.995;
-            $data->v[] = $vol;
+            if ($type_id == "1") {
+                $data->v[] = $volValues[$i][1];
+            } else {
+                $data->v[] = 0;
+            }
         }
 
         return $this->json($data);

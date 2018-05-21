@@ -3,10 +3,10 @@
 namespace App\Entity\udf;
 
 // For future Doctrine use. Now ORM modificators are purposefully left without "@" symbol
-//use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ORM\Entity(repositoryClass="App\Repository\udf\SymbolRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\udf\SymbolRepository")
  */
 class Symbol
 {
@@ -18,7 +18,13 @@ class Symbol
     }
 
     /**
-     * ORM\Name()
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
      * ORM\Column(type="string", length=32)
      */
     private $name;

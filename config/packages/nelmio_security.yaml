@@ -59,6 +59,8 @@ nelmio_security:
                 - disqus.com
                 - s7.addthis.com
                 - www.youtube.com
+                - platform.twitter.com
+                - syndication.twitter.com
             script-src:
                 - self
                 - unsafe-inline
@@ -71,13 +73,16 @@ nelmio_security:
                 - disqus.com
                 - taklimakan.disqus.com
                 - c.disquscdn.com
-                - cdn.jsdelivr.net
+                - realtime.services.disqus.com
+                - cdn.jsdelivr.net                
                 - graph.facebook.com
+                - platform.twitter.com
+                - cdn.syndication.twimg.com
                 - www.linkedin.com
                 - cdnjs.cloudflare.com
                 - www.googletagmanager.com
                 - www.google-analytics.com
-
+                
             #font-src:
             #    - self
 

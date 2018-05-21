@@ -31,7 +31,7 @@
             fullscreen: false,
             width: "70%",
             height: "700px",
-            symbol: 'ABSSIN',
+            symbol: 'BTC-USD - 1',
             interval: 'D',
             container_id: "tv_chart_container",
             //	BEWARE: no trailing slash is expected in feed URL
@@ -42,8 +42,12 @@
             //locale: getParameterByName('lang') || "en",
             //	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
             drawings_access: { type: 'black', tools: [ { name: "Regression Trend" } ] },
-            disabled_features: [/*"use_localstorage_for_settings",*/ "compare_symbol"],
+            disabled_features: ["use_localstorage_for_settings"],
             enabled_features: ["study_templates"],
+            overrides: {
+                "mainSeriesProperties.style": 3,
+                "symbolWatermarkProperties.color" : "#944"
+            },
             studies_overrides: {
                 "volume.volume.color.0": "#00FFFF",
                 "volume.volume.color.1": "#0000FF",
@@ -53,7 +57,10 @@
                 "volume.volume ma.linewidth": 5,
                 "volume.show ma": true,
                 "bollinger bands.median.color": "#33FF88",
-                "bollinger bands.upper.linewidth": 7
+                "bollinger bands.upper.linewidth": 7,
+                "compare.plot.style": 2,
+                "compare.plot.color": "#005555",
+                "compare.source": "close"
             },
             time_frames: [
                 { text: "1y", resolution: "W" },
@@ -67,6 +74,7 @@
                 { text: "2d", resolution: "5" },
                 { text: "1d", resolution: "5" }
             ],
+            study_count_limit: 6,
             charts_storage_url: 'http://saveload.tradingview.com',
             charts_storage_api_version: "1.1",
             client_id: 'tradingview.com',
