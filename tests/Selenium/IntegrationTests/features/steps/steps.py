@@ -6,6 +6,8 @@ from behave import *
 
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.expected_conditions import staleness_of
 
 use_step_matcher("parse")
 
@@ -62,6 +64,8 @@ def step_impl(context, page):
         done in 2-3-4 steps: the first one move to page that available with path and then click on links
     :return: none
     """
+    old_page = context.browser.find_element_by_tag_name('html')
+
     if page == 'Main':
         context.browser.get(context.host)
     else:
@@ -70,10 +74,7 @@ def step_impl(context, page):
     # After Deploy it takes an additional time to load the fist page and cache data. That is why need some time to
     #   prevent unexpected fail set to True in before_all hook
     # context.first_time_execution
-    if context.first_time_execution:
-        print("pause 10 sec\n")
-        time.sleep(10)
-        context.first_time_execution = False
+    WebDriverWait(context.browser, 10).until(staleness_of(old_page))
 
     if len(context.browser.find_elements(By.CSS_SELECTOR, "button.btn.btn-buy")) == 1:
         context.browser.find_element(By.CSS_SELECTOR, "button.btn.btn-buy").click()
