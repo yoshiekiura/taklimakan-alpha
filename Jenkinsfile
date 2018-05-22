@@ -504,26 +504,26 @@ DeployHost=$DEVELOP_HOST
 DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
-  DEPLOY_HOST=$PRODUCTION_HOST
-  DEPLOY_PORT=$PRODUCTION_PORT
+  DeployHost=$PRODUCTION_HOST
+  DeployPort=$PRODUCTION_PORT
 elif [ "$BRANCH_NAME" == "develop" ]; then
-  DEPLOY_HOST=$DEVELOP_HOST
-  DEPLOY_PORT=$DEVELOP_PORT
+  DeployHost=$DEVELOP_HOST
+  DeployPort=$DEVELOP_PORT
 else
   #release branch
-  DEPLOY_HOST=$RELEASE_HOST
-  DEPLOY_PORT=$RELEASE_PORT
+  DeployHost=$RELEASE_HOST
+  DeployPort=$RELEASE_PORT
 fi
+
+export DEPLOY_HOST=$DeployHost
+export DEPLOY_PORT=$DeployPort
+export BRANCH_NAME=$BRANCH_NAME
 
 echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
-# run all features which have @smoke tag
-behave -c --tags @smoke --no-junit features/
-
-#if execution by @smoke tag is too long use one smoke test execution below
-#behave -c -i smoke_test.feature --no-junit features/
+behave -c --junit --junit-directory results features/
 
 OUTPUT="$(git log --pretty=format:\\\'%h\\\' -n 1)"
 echo $BUILD_NUMBER.$OUTPUT > success.last'''
