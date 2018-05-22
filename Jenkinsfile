@@ -530,7 +530,7 @@ behave -c --tags @smoke --no-junit features/
 #behave -c -i smoke_test.feature --no-junit features/'''
           sh '''#!/bin/bash
 
-OUTPUT="$(git log --pretty=format:\\\'%h\\\' -n 1)"
+OUTPUT="$(git log --pretty=format:%h -n 1)"
 echo $BUILD_NUMBER.$OUTPUT > success.last'''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
