@@ -260,7 +260,7 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 
         }
         steps {
-          lock(resource: 'DeployProcess', label: 'Deploy-Lock', quantity: 1) {
+          lock(resource: 'DeployProcess') {
             sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch'''
             sh '''echo "#!/bin/bash" > deploy
@@ -494,7 +494,7 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
 
         }
         steps {
-          lock(resource: 'SmokeTest', label: 'Smoke-Lock', quantity: 1) {
+          lock(resource: 'SmokeTest') {
             sh '''#!/bin/bash
 export PATH=$PATH:/usr/lib/chromium-browser/
 
@@ -523,6 +523,8 @@ export BRANCH_NAME=$BRANCH_NAME
 echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
+
+sleep 1
 
 # run all features which have @smoke tag
 # if it will be neceessary to have multiple smoke tests execute tests by @tag
