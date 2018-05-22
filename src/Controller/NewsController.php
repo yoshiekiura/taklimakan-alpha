@@ -171,4 +171,24 @@ class NewsController extends Controller
         return $response;
     }
 
+    /**
+     * @Route("/news/lab", name="news_lab")
+     */
+    public function lab(Request $request)
+    {
+        $newsRepo = $this->getDoctrine()->getRepository(News::class);
+        $news = $newsRepo->getNews([]);
+
+        $tags = [];
+        foreach ($news as $row)
+            $tags = array_merge($tags, $row['tags']);
+
+        $tags = array_unique($tags);
+        sort($tags);
+
+        foreach ($tags as $tag) echo "$tag, ";
+
+        die();
+    }
+
 }
