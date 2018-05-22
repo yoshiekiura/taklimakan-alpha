@@ -494,8 +494,7 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
 
         }
         steps {
-          lock(resource: 'SmokeTest') {
-            sh '''#!/bin/bash
+          sh '''#!/bin/bash
 export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
@@ -524,18 +523,15 @@ echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
-sleep 1
-
 # run all features which have @smoke tag
-# if it will be neceessary to have multiple smoke tests execute tests by @tag
 behave -c --tags @smoke --no-junit features/
 
-#behave -c -i smoke_test.feature --no-junit features/'''
-            sh '''#!/bin/bash
+#if execution by @smoke tag is too long use one smoke test execution below
+#behave -c -i smoke_test.feature --no-junit features/
 
-OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
+OUTPUT="$(git log --pretty=format:\\\'%h\\\' -n 1)
 echo $BUILD_NUMBER.$OUTPUT > success.last'''
-            sshagent(credentials: ['BlockChain'], ignoreMissing: true)
+          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
@@ -552,39 +548,9 @@ fi
 
 scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.last
 '''
-            sh 'rm -rf success.last'
           }
 
-        }
-        post {
-          failure {
-            lock('SmokeFail') {
-              sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-                sh '''#!/bin/bash
-echo "Branch Name: $BRANCH_NAME"
-if [ "$BRANCH_NAME" == "master" ]; then
-  DEPLOY_HOST=$PRODUCTION_HOST
-  DEPLOY_PORT=$PRODUCTION_PORT
-elif [ "$BRANCH_NAME" == "develop" ]; then
-  DEPLOY_HOST=$DEVELOP_HOST
-  DEPLOY_PORT=$DEVELOP_PORT
-else
-  #release branch
-  DEPLOY_HOST=$RELEASE_HOST
-  DEPLOY_PORT=$RELEASE_PORT
-fi
-
-ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash fail
-'''
-              }
-
-              archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
-              sh ' echo "Build FAILED! " '
-            }
-
-
-          }
-
+          sh 'rm -rf success.last'
         }
       }
       stage('Integration Tests (Selenium)') {
