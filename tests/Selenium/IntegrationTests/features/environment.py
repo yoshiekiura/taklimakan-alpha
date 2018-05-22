@@ -34,12 +34,14 @@ def before_all(context):
         # this is not Jenkins open regular Chrome browser
         context.browser = webdriver.Chrome()
         context.browser.maximize_window()
+        print("Use regular browser with UI\n")
     else:
         # this is Jenkins. Open headless browser
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size=1920x1080")
         context.browser = webdriver.Chrome(chrome_options=chrome_options)
+        print("Use headless browser\n")
 
     if os.environ.get('DEPLOY_HOST') is None:
         os.environ["DEPLOY_HOST"] = 'tkln-dev.usetech.ru'

@@ -71,7 +71,7 @@ def step_impl(context, page):
     #   prevent unexpected fail set to True in before_all hook
     # context.first_time_execution
     if context.first_time_execution:
-        print ("pause 10 sec")
+        print("pause 10 sec\n")
         time.sleep(10)
         context.first_time_execution = False
 
