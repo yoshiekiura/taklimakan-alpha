@@ -51,7 +51,6 @@ class SymbolRepository extends ServiceEntityRepository
                 if (($row['pair'] != "INDEX001") && ($fkey != "11")) {
                     if ($row['pair'] == "BTC-BTC") continue;
 
-
                     if ($fkey == "1") {
                         $this->symbols[] = new Symbol($row['pair']." - ".$fkey, $row['pair']." - ".$f, "GregsFakeExchange", "stock");
                     } else {
