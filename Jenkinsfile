@@ -527,7 +527,8 @@ cd tests/Selenium/IntegrationTests/
 # if it will be neceessary to have multiple smoke tests execute tests by @tag
 behave -c --tags @smoke --no-junit features/
 
-#behave -c -i smoke_test.feature --no-junit features/
+#behave -c -i smoke_test.feature --no-junit features/'''
+          sh '''#!/bin/bash
 
 OUTPUT="$(git log --pretty=format:\\\'%h\\\' -n 1)"
 echo $BUILD_NUMBER.$OUTPUT > success.last'''
