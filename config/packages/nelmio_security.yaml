@@ -61,6 +61,8 @@ nelmio_security:
                 - www.youtube.com
                 - platform.twitter.com
                 - syndication.twitter.com
+                - cdn.embedly.com
+
             script-src:
                 - self
                 - unsafe-inline
@@ -82,6 +84,7 @@ nelmio_security:
                 - cdnjs.cloudflare.com
                 - www.googletagmanager.com
                 - www.google-analytics.com
+                - cdn.embedly.com
                 
             #font-src:
             #    - self
