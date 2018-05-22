@@ -67,6 +67,8 @@ def step_impl(context, page):
     else:
         context.browser.get(context.host + page)
 
+    time.sleep(3)
+
     if len(context.browser.find_elements(By.CSS_SELECTOR, "button.btn.btn-buy")) == 1:
         context.browser.find_element(By.CSS_SELECTOR, "button.btn.btn-buy").click()
         time.sleep(1)
