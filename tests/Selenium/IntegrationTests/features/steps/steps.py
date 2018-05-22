@@ -12,6 +12,18 @@ use_step_matcher("parse")
 """
 NB!!! All assertions should be done only in @then steps
 Whenever it is possible provide readable error messages for assertions
+
+Then step MUST use the following template:
+
+try:
+  ...
+  assert (some condition), 'MANDATORY assert fail description'
+  assert (some condition), 'MANDATORY assert fail description'
+  assert (some condition), 'MANDATORY assert fail description'
+except AssertionError:
+  create_screenshot(context) # this function create and store screenshoot for future analysis
+  raise # (!!!) assertion exception MUST be rethrown and it will log message path as second parameter in assert  
+
 """
 
 
@@ -185,13 +197,11 @@ def step_impl(context, text):
     :return: none
     """
     try:
-        # requests.get(context.host) == requests.codes.ok, 'Taklimakan Page is not load successfully'
         assert requests.get(context.host).status_code == requests.codes.ok, text + ' page is not loaded successfully'
 
         assert text in context.browser.title, 'Expected Page Title is: \'' + text + '\' actual title is: \'' \
                                               + context.browser.title + '\''
     except AssertionError:
-        # print("Expected text " + text + " and " + context.browser.title + " do not match")
         create_screenshot(context)
         raise
 
@@ -204,7 +214,7 @@ def step_impl(context):
     :return: none
     """
     try:
-        assert (True != ('Exception' in context.browser.page_source))
+        assert (True != (('Exception' in context.browser.page_source) or ('exception' in context.browser.page_source)))
     except AssertionError:
         create_screenshot(context)
         raise
