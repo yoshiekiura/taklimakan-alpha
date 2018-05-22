@@ -553,6 +553,15 @@ scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.
 
           sh 'rm -rf success.last'
         }
+        post {
+          failure {
+            archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+            sh 'rm -rf success.last'
+            sh ' echo "Build FAILED! " '
+
+          }
+
+        }
       }
       stage('Integration Tests (Selenium)') {
         when {
