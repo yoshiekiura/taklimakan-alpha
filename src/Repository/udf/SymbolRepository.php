@@ -49,9 +49,16 @@ class SymbolRepository extends ServiceEntityRepository
         foreach ($pairRows as $row) {
             foreach ($formulas as $fkey => $f) {
                 if (($row['pair'] != "INDEX001") && ($fkey != "11")) {
-                    $this->symbols[] = new Symbol($row['pair']." - ".$fkey, $row['pair']." - ".$f, "GregsFakeExchange", "stock");
+                    if ($row['pair'] == "BTC-BTC") continue;
+
+
+                    if ($fkey == "1") {
+                        $this->symbols[] = new Symbol($row['pair']." - ".$fkey, $row['pair']." - ".$f, "GregsFakeExchange", "stock");
+                    } else {
+                        $this->symbols[] = new Symbol($row['pair']." - ".$fkey, $row['pair']." - ".$f, "GregsFakeExchange", "indicator");
+                    }
                 } else if (($row['pair'] == "INDEX001") && ($fkey == "11")) {
-                    $this->symbols[] = new Symbol($row['pair']." - ".$fkey, $row['pair']." - Price", "GregsFakeExchange", "stock");
+                    $this->symbols[] = new Symbol($row['pair']." - ".$fkey, $row['pair']." - Price", "GregsFakeExchange", "index");
                 }
             }
         }
@@ -63,7 +70,26 @@ class SymbolRepository extends ServiceEntityRepository
     */
     public function search($searchString, $type, $exchange, $maxRecords)
     {
-        return $this->symbols;
+        $result = [];
+        foreach ($this->symbols as $sym) {
+            $match = true;
+
+            if ($searchString !== "" && strpos(strtolower($sym->getName()), strtolower($searchString)) !== 0)
+                $match = false;
+            if ($type !== "" && strpos(strtolower($sym->getType()), strtolower($type)) === FALSE)
+                $match = false;
+
+            if ($match)
+                $result[] = $sym;
+
+            if (count($result) >= $maxRecords)
+                break;
+        }
+
+
+
+
+        return $result;
     }
 
     public function getSymbolInfo($name)

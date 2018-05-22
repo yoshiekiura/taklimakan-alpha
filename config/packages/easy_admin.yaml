@@ -61,6 +61,9 @@ easy_admin:
             # - '/js/datepicker.js'
             - '/js/froala.js'
             - '/js/image.min.js'
+            - 'https://cdn.embedly.com/widgets/platform.js'
+            - '/js/embedly.min.js'
+            - '/css/embedly.min.css'
 
     entities:
 
@@ -87,9 +90,9 @@ easy_admin:
                 - { type: 'group', label: 'Props', css_class: 'col-sm-4' }
                 #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
                 - active
-                # - date
+                - date
                 # - { property: 'date', css_class: 'datepicker', type: 'date' }
-                - { property: 'date', css_class: '', type: 'date' }
+                # - { property: 'date', css_class: '', type: 'date' }
                 - { type: 'divider' }
 
                 #- { property: 'image', template: '/easy-admin.image.html.twig', css_class: 'image-preview', attr: 'attr1' }                
