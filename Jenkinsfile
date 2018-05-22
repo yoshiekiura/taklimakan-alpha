@@ -260,7 +260,7 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 
         }
         steps {
-          lock(resource: 'DeployProcess') {
+          lock(resource: 'DeployProcess', label: 'Deploy-Lock', quantity: 1) {
             sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch'''
             sh '''echo "#!/bin/bash" > deploy
@@ -494,7 +494,8 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
 
         }
         steps {
-          sh '''#!/bin/bash
+          lock(resource: 'SmokeTest', label: 'Smoke-Lock', quantity: 1) {
+            sh '''#!/bin/bash
 export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
@@ -528,11 +529,11 @@ cd tests/Selenium/IntegrationTests/
 behave -c --tags @smoke --no-junit features/
 
 #behave -c -i smoke_test.feature --no-junit features/'''
-          sh '''#!/bin/bash
+            sh '''#!/bin/bash
 
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 echo $BUILD_NUMBER.$OUTPUT > success.last'''
-          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true)
             sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
@@ -549,9 +550,9 @@ fi
 
 scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.last
 '''
+            sh 'rm -rf success.last'
           }
 
-          sh 'rm -rf success.last'
         }
         post {
           failure {
