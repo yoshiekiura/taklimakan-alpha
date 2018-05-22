@@ -67,7 +67,12 @@ def step_impl(context, page):
     else:
         context.browser.get(context.host + page)
 
-    time.sleep(3)
+    # After Deploy it takes an additional time to load the fist page and cache data. That is why need some time to
+    #   prevent unexpected fail set to True in before_all hook
+    # context.first_time_execution
+    if context.first_time_execution:
+        time.sleep(10)
+        context.first_time_execution = False
 
     if len(context.browser.find_elements(By.CSS_SELECTOR, "button.btn.btn-buy")) == 1:
         context.browser.find_element(By.CSS_SELECTOR, "button.btn.btn-buy").click()

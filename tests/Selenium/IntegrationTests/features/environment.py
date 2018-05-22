@@ -47,6 +47,7 @@ def before_all(context):
 
     # store host in context to be able get it from any steps and use it to quick jump to the pages
     context.host = 'http://'+os.environ.get('DEPLOY_HOST')
+    context.first_time_execution = True
 
 
 def after_all(context):
