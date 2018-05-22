@@ -504,20 +504,16 @@ DeployHost=$DEVELOP_HOST
 DeployPort=$DEVELOP_PORT
 
 if [ "$BRANCH_NAME" == "master" ]; then
-  DeployHost=$PRODUCTION_HOST
-  DeployPort=$PRODUCTION_PORT
+  DEPLOY_HOST=$PRODUCTION_HOST
+  DEPLOY_PORT=$PRODUCTION_PORT
 elif [ "$BRANCH_NAME" == "develop" ]; then
-  DeployHost=$DEVELOP_HOST
-  DeployPort=$DEVELOP_PORT
+  DEPLOY_HOST=$DEVELOP_HOST
+  DEPLOY_PORT=$DEVELOP_PORT
 else
   #release branch
-  DeployHost=$RELEASE_HOST
-  DeployPort=$RELEASE_PORT
+  DEPLOY_HOST=$RELEASE_HOST
+  DEPLOY_PORT=$RELEASE_PORT
 fi
-
-export DEPLOY_HOST=$DeployHost
-export DEPLOY_PORT=$DeployPort
-export BRANCH_NAME=$BRANCH_NAME
 
 echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
@@ -529,7 +525,7 @@ behave -c --tags @smoke --no-junit features/
 #if execution by @smoke tag is too long use one smoke test execution below
 #behave -c -i smoke_test.feature --no-junit features/
 
-OUTPUT="$(git log --pretty=format:\\\'%h\\\' -n 1)
+OUTPUT="$(git log --pretty=format:\\\'%h\\\' -n 1)"
 echo $BUILD_NUMBER.$OUTPUT > success.last'''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
