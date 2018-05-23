@@ -1,9 +1,14 @@
 Feature: Education
   As a user I want to view courses and articles
 
-  Scenario: Open course from index page
+  Background:
+    Given Taklimakan Network /courses page is opened and start popup is skipped
+    Then I should see 'Taklimakan' page
 
-  Scenario: Open article from index page
+  @sanity
+  Scenario: Open course from index page
+    When I open Blockchain Course by Complexity Labs course from courses index page
+    Then I should see Blockchain Course by Complexity Labs course view page
 
   Scenario: Start course from view page
 

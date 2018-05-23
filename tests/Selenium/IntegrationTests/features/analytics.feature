@@ -18,13 +18,12 @@ Feature: Analytics
     Then I should see beta chart in the URL
     When I click on Sharpe ratio button
     Then I should see sharpe chart in the URL
-    
+
+  #Scenario: Zoom charts
 
   @sanity
-  Scenario: Check navigation to
-
-  Scenario: Zoom charts
-
   Scenario: Change currency pairs
-
-  Scenario: Read the legend for each chart
+    When I select ETH-USD pair for charts
+    Then I should see ETH-USD pair on analytics page
+    
+  #Scenario: Read the legend for each chart

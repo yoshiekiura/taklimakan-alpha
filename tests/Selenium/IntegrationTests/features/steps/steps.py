@@ -187,6 +187,31 @@ def step_impl(context):
     time.sleep(2)
 
 
+@when('I select {currencies} pair for charts')
+def step_impl(context, currencies):
+    """
+    This step is used submit registration, login and enter code forms
+    :param context: behave.runner.Context
+    :param currencies: string from step with currencies
+    :return: none
+    """
+    dropdown = context.browser.find_element(By.CSS_SELECTOR, 'button#dropdown_coins')
+    context.browser.execute_script("arguments[0].scrollIntoView();", dropdown)
+    dropdown.click()
+    context.browser.find_element(By.XPATH, "//*[@value='" + currencies + "']").click()
+
+
+@when('I open {course_name} course from courses index page')
+def step_impl(context, course_name):
+    """
+    This step is used submit registration, login and enter code forms
+    :param context: behave.runner.Context
+    :param course_name: string to indicate the course to open in By.LINK_TEXT
+    :return: none
+    """
+    context.browser.find_element(By.LINK_TEXT, course_name).click()
+
+
 """
 ###THEN###
 """
@@ -207,7 +232,6 @@ def step_impl(context, text):
         assert text in context.browser.title, 'Expected Page Title is: ' + text + ' actual title is: ' \
                                               + context.browser.title
     except AssertionError:
-        # print("Expected text " + text + " and " + context.browser.title + " do not match")
         create_screenshot(context)
         raise
 
@@ -290,17 +314,54 @@ def step_impl(context):
         raise
 
 
-@then('I should see active {chart} chart')
 @then('I should see {chart} chart in the URL')
 def step_impl(context, chart):
     """
-        This step should verify validation message has appeared
-        :param context: behave.runner.Context
-        :param chart: string of a page current URL for assertion
-        :return:
+    This step should verify validation message has appeared
+    :param context: behave.runner.Context
+    :param chart: string of a page current URL for assertion
+    :return none
     """
     try:
-        assert context.host+'/charts/all#'+chart == context.browser.current_url
-    except:
-        print(context.browser.current_url)
+        assert context.host+'/charts/all#'+chart == context.browser.current_url, 'URL does not macth with ' + context.browser.current_url
+    except AssertionError:
+        create_screenshot(context)
+        raise
+
+
+@then('I should see {pair} pair on analytics page')
+def step_impl(context, pair):
+    """
+    This step should verify validation message has appeared
+    :param context: behave.runner.Context
+    :param pair: a pair of cryptocurrencies to assert
+    :return none
+    """
+    try:
+        assert context.host+'/charts/all?pair=' + pair == context.browser.current_url, \
+            'URL does not macth with ' + context.browser.current_url
+        dropdown = context.browser.find_element(By.CSS_SELECTOR, 'button#dropdown_coins')
+        context.browser.execute_script("arguments[0].scrollIntoView();", dropdown)
+        assert dropdown.text == pair, 'Dropdown state does not match ' + pair
+    except AssertionError:
+        create_screenshot(context)
+        raise
+
+
+@then('I should see {course_name} course view page')
+def step_impl(context, course_name):
+    """
+    This step should verify validation message has appeared
+    :param context: behave.runner.Context
+    :param course_name: name of the course that is displayed in URL
+    :return none
+    """
+    try:
+        assert course_name in context.browser.find_element(By.CSS_SELECTOR, 'div.news-header').text, \
+            'Course name is not found in header'
+        course_name = course_name.lower()
+        course_name = course_name.replace(' ', '-')
+        assert course_name in context.browser.current_url, 'Course is not loaded in ' + context.browser.current_url
+    except AssertionError:
+        create_screenshot(context)
         raise
