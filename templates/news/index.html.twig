@@ -39,8 +39,8 @@
 
             <script nonce="{{ csp_nonce() }}">
 
-                var page = getParam("page") ? getParam("page") : 0;
-                var level = getParam("level") ? getParam("level") : 0;
+                var page = Number(getParam("page") ? getParam("page") : 0);
+                var level = Number(getParam("level") ? getParam("level") : 0);
                 var tag = getParam("tags");
 
                 document.addEventListener('DOMContentLoaded', function() {
