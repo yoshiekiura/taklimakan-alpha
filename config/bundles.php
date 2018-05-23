@@ -18,5 +18,4 @@ return [
     Debril\RssAtomBundle\DebrilRssAtomBundle::class => ['all' => true],
     Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle::class => ['all' => true],
     Nelmio\SecurityBundle\NelmioSecurityBundle::class => ['all' => true],
-    FOS\HttpCacheBundle\FOSHttpCacheBundle::class => ['all' => true],
 ];

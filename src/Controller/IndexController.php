@@ -17,16 +17,21 @@ use Psr\Log\LoggerInterface;
 
 use Symfony\Component\HttpFoundation\Cookie;
 
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+//use Symfony\Component\Form\Extension\Core\Type\TextType;
 //use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+//use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
+// NB! Have to dig into native caching oprions of Symfony and FOS HTTP Cache Bundle Later !
+
+// http://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/cache.html
+// use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+//     * @Cache(maxage="11", smaxage="99")
 
 class IndexController extends Controller
 {
     /**
     * @Route("/", name="home")
     */
-
 	public function index(LoggerInterface $logger, Request $request) {
 
         // Do we have to show Welcome Popup ?
@@ -35,30 +40,9 @@ class IndexController extends Controller
         $newsRepo = $this->getDoctrine()->getRepository(News::class);
         $likesRepo = $this->getDoctrine()->getRepository(Likes::class);
 
-        // $news = $newsRepo->findAll();
-
         // Top 3 News
-//        $news = $newsRepo->findBy([], ['id' => 'DESC'], 3);
         $news = $newsRepo->getNews(['limit' => 3]);
-//        $comments = $commentsRepo->findAllBy(['content_type' => 'news', 'content_id'] );
-//var_dump($news);
-//die();
-        // $likesRepo->like("news", 1, 66);
-        // $likesRepo->dislike("news", 1, 66);
-        // $likes = $likesRepo->getLikes("news", 1);
 
-/*
-        return $this->render('news/index.html.twig', [
-            'news' => $news,
-        ]);
-*/
-
-
-
-
-
-
-    //
 /*
     $tags = $request->query->get('tags') ? explode(',', $request->query->get('tags')) : [];
     if ($tags) $filter['tags'] = $tags;
@@ -101,8 +85,8 @@ class IndexController extends Controller
 
 // just setup a fresh $task object (remove the dummy data)
 //    $task = new Task();
-
-    $form = $this->createFormBuilder(/*$task*/)
+/*
+    // $form = $this->createFormBuilder($task)
         ->add('email', TextType::class)
 //        ->add('dueDate', DateType::class)
         ->add('subscribe', SubmitType::class, [ 'label' => 'Subscribe'])
@@ -126,16 +110,35 @@ class IndexController extends Controller
 
         return $this->redirectToRoute('task_success');
     }
+*/
 
 
-
-        return $this->render('home/home.html.twig', [
+        $response = $this->render('home/home.html.twig', [
             'menu' => 'home',
             'show_welcome' => $showWelcome,
             'news' => $news,
             'courses' => $courses,
-            'form' => $form->createView(),
+//            'form' => $form->createView(),
         ]);
+
+        // cache for 3600 seconds
+        //$response->setMaxAge(33);
+        //$response->setSharedMaxAge(66);
+
+        // (optional) set a custom Cache-Control directive
+        // $response->headers->addCacheControlDirective('must-revalidate', false);
+
+/*
+        $response->setCache(array(
+            //'etag'          => ,
+            //'last_modified' => $date,
+            'max_age'       => 10,
+            's_maxage'      => 10,
+            'public'        => true,
+            // 'private'    => true,
+        ));
+*/
+        return $response;
 
 	}
 
