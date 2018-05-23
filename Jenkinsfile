@@ -260,9 +260,10 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 
         }
         steps {
-          sh '''echo "display git branch info to make sure that branch is switch to Commit"
+          lock(resource: 'DeployProcess') {
+            sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch'''
-          sh '''echo "#!/bin/bash" > deploy
+            sh '''echo "#!/bin/bash" > deploy
 echo "#########################################################" >> deploy
 echo "# deploy" >> deploy
 echo "#" >> deploy
@@ -326,7 +327,7 @@ echo "" >> deploy
 echo "#Create symlinks" >> deploy
 echo "./createSL.bash \\$version_id" >> deploy
 '''
-          sh '''echo "#!/bin/bash" > createSL.bash
+            sh '''echo "#!/bin/bash" > createSL.bash
 echo "#########################################################" >> createSL.bash
 echo "# createSL.bash" >> createSL.bash
 echo "#" >> createSL.bash
@@ -450,8 +451,8 @@ echo "done" >> createSL.bash
 echo "" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
-          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            sh '''#!/bin/bash
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
@@ -477,6 +478,8 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
 ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
+            }
+
           }
 
         }
@@ -520,8 +523,44 @@ echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
-#behave -c --tags @smoke --no-junit features/
-behave -c -i smoke_test.feature --no-junit features/'''
+# run all features which have @smoke tag
+# if it will be neceessary to have multiple smoke tests execute tests by @tag
+behave -c --tags @smoke --no-junit features/
+
+#behave -c -i smoke_test.feature --no-junit features/'''
+          sh '''#!/bin/bash
+
+OUTPUT="$(git log --pretty=format:%h -n 1)"
+echo $BUILD_NUMBER.$OUTPUT > success.last'''
+          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+            sh '''#!/bin/bash
+echo "Branch Name: $BRANCH_NAME"
+if [ "$BRANCH_NAME" == "master" ]; then
+  DEPLOY_HOST=$PRODUCTION_HOST
+  DEPLOY_PORT=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  DEPLOY_HOST=$DEVELOP_HOST
+  DEPLOY_PORT=$DEVELOP_PORT
+else
+  #release branch
+  DEPLOY_HOST=$RELEASE_HOST
+  DEPLOY_PORT=$RELEASE_PORT
+fi
+
+scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.last
+'''
+          }
+
+          sh 'rm -rf success.last'
+        }
+        post {
+          failure {
+            archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+            sh 'rm -rf success.last'
+            sh ' echo "Build FAILED! " '
+
+          }
+
         }
       }
       stage('Integration Tests (Selenium)') {
@@ -586,7 +625,7 @@ behave -c --junit --junit-directory results features/'''
     }
     post {
       always {
-        publishHTML(allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
+        publishHTML(allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
 
       }
 

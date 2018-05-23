@@ -311,4 +311,10 @@ class User implements UserInterface, \Serializable
             $this->role,
             ) = unserialize($serialized, ['allowed_classes' => false]);
     }
+
+    public function __toString() 
+    {
+       return $this->email;
+    }
+
 }

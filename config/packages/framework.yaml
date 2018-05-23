@@ -31,4 +31,6 @@ framework:
     
     # translator: { fallbacks: ["%locale%"] }
 
-    translator: { fallbacks: [ "en" ] }
+    translator: 
+        # enabled: false    
+        { fallbacks: [ "en" ] }

@@ -12545,7 +12545,7 @@ webpackJsonp([12], [function(t, e, i) {
             defaults: {
                 styles: {
                     plot_0: {
-                        linestyle: 0,
+                        linestyle: 2,
                         linewidth: 1,
                         plottype: 0,
                         trackPrice: !1,
@@ -12581,7 +12581,7 @@ webpackJsonp([12], [function(t, e, i) {
                 defval: 9,
                 type: "integer",
                 min: 1,
-                max: 1e4
+                max: 1000
             }, {
                 id: "in_1",
                 name: "Source",
@@ -23924,7 +23924,7 @@ webpackJsonp([12], [function(t, e, i) {
             return function(e, i, o) {
                 return i && t(e.prototype, i), o && t(e, o), e
             }
-        }(), a = i(104), l = n(a), c = i(48), i(360), i(359), i(632), h = '\n\t<div class="tv-compare-tab">\n\t\t<input type="text" class="tv-control-input js-compare-tab-input" placeholder="' + $.t("Company Comparison") + '" autocomplete="off">\n\t</div>', u = '<div class="tv-compare-tab__predefines js-compare-tab-predefines"></div>', d = '\n\t<div class="tv-compare-tab__predefine-cell">\n\t\t<label for="{{symbolId}}">\n\t\t\t<span class="tv-control-checkbox">\n\t\t\t\t<input class="tv-control-checkbox__input js-predefine-checkbox" type="checkbox" id="{{symbolId}}">\n\t\t\t<span class="tv-control-checkbox__box tv-compare-tab__checkbox-box">' + i(235) + '</span>\n\t\t\t<span class="tv-control-checkbox__ripple js-ripple"></span>\n\t\t\t</span>\n\t\t\t<span class="tv-control-checkbox__label tv-compare-tab__checkbox-label">{{label}}</span>\n\t\t</label>\n\t</div>', e.CompareTab = function() {
+        }(), a = i(104), l = n(a), c = i(48), i(360), i(359), i(632), h = '\n\t<div class="tv-compare-tab">\n\t\t<input type="text" class="tv-control-input js-compare-tab-input" placeholder="' + $.t("Start typing here...") + '" autocomplete="off">\n\t</div>', u = '<div class="tv-compare-tab__predefines js-compare-tab-predefines"></div>', d = '\n\t<div class="tv-compare-tab__predefine-cell">\n\t\t<label for="{{symbolId}}">\n\t\t\t<span class="tv-control-checkbox">\n\t\t\t\t<input class="tv-control-checkbox__input js-predefine-checkbox" type="checkbox" id="{{symbolId}}">\n\t\t\t<span class="tv-control-checkbox__box tv-compare-tab__checkbox-box">' + i(235) + '</span>\n\t\t\t<span class="tv-control-checkbox__ripple js-ripple"></span>\n\t\t\t</span>\n\t\t\t<span class="tv-control-checkbox__label tv-compare-tab__checkbox-label">{{label}}</span>\n\t\t</label>\n\t</div>', e.CompareTab = function() {
             function e(t, i) {
                 r(this, e), this._chartWidgetCollection = t,
                     this._dialog = i, this._$popup = null, this._predefines = {}, this._symbolAlias = {}, this.init()
@@ -25234,7 +25234,7 @@ webpackJsonp([12], [function(t, e, i) {
         header_saveload_to_the_right: {},
         study_on_study: {},
         header_widget: {
-            subsets: ["header_widget_dom_node", "header_symbol_search", "header_resolutions", "header_chart_type", "header_settings", "header_indicators", "header_compare", "header_undo_redo", "header_fullscreen_button", "compare_symbol"]
+            subsets: ["header_widget_dom_node", "header_symbol_search", "header_resolutions", "compare_symbol", "header_chart_type", "header_settings", "header_indicators", "header_compare", "header_undo_redo", "header_fullscreen_button"]
         },
         compare_symbol: {
             subsets: ["header_compare"]
@@ -27538,13 +27538,15 @@ webpackJsonp([12], [function(t, e, i) {
             var r = this.createGroup("compare", {
                     single: !0
                 }),
-                s = $('<a class="button toggle-caption compare apply-common-tooltip">').append($(i(1201))).append($('<span class="caption">' + $.t("Compare") + "</span>")).appendTo(r);
+                // append($(i(1201)))
+                // append("<font size='2'>+</font>")
+                s = $('<a class="button toggle-caption compare apply-common-tooltip">').append("<img src='/trading_view/charting_library/static/images/plus-icon.png' height='100%'>").append($('<span class="caption">' + $.t("Compare") + "</span>")).appendTo(r);
             return this._compareButton = s, this._compareButton.on(o, function(t) {
                 var i, o;
                 t.preventDefault(), i = new n(e), o = i.show(), s.addClass("active"), o.on("destroy", function() {
                     s.removeClass("active")
                 })
-            }), this._compareButton.attr("title", $.t("Compare or Add Symbol")), r
+            }), this._compareButton.attr("title", $.t("Add Symbol or Indicator")), r
         }, o.prototype._createIndicatorsGroup = function(t, o) {
             var n, a = this.createGroup("indicators", {
                 single: !0,
@@ -27726,7 +27728,7 @@ webpackJsonp([12], [function(t, e, i) {
             return this._fullscreen.element().addClass("apply-common-tooltip").appendTo(t), t
         }, o.prototype._createLayout = function(t, i, o) {
             var n = [];
-            e.enabled("header_chart_type") && n.push(this._createBarsGroup(i)), e.enabled("header_settings") && e.enabled("show_chart_property_page") && n.push(this._createPropertiesGroup(o, t.chartWidgetCollection)), e.enabled("header_indicators") && n.push(this._createIndicatorsGroup(o)), e.enabled("header_compare") && n.push(this._createCompareGroup(i, t.chartWidgetCollection, o)), e.enabled("header_undo_redo") && !this._chartWidget.readOnly() && n.push(this._createUndoRedoGroup()),
+            e.enabled("header_compare") && n.push(this._createCompareGroup(i, t.chartWidgetCollection, o)), e.enabled("header_chart_type") && n.push(this._createBarsGroup(i)), e.enabled("header_settings") && e.enabled("show_chart_property_page") && n.push(this._createPropertiesGroup(o, t.chartWidgetCollection)), e.enabled("header_indicators") && n.push(this._createIndicatorsGroup(o)), e.enabled("header_undo_redo") && !this._chartWidget.readOnly() && n.push(this._createUndoRedoGroup()),
                 e.enabled("header_fullscreen_button") && n.push(this._createFullscreenGroup()), n.forEach(function(t) {
                     t.appendTo(this._$left)
                 }, this)
