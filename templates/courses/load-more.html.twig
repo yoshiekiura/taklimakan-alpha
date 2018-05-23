@@ -41,8 +41,6 @@
                 processData: false,
                 success:
                     function(data, textStatus, jQxhr) {
-                        // alert(JSON.stringify(data));
-                        // alert (page)
                         if (data.html) {
                             page++;
                             $('#more-courses').before(data.html);
