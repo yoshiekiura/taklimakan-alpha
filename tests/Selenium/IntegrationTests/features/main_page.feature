@@ -50,3 +50,12 @@ Feature: Main page
 #      | mytest@mail     |
 #      | not_an_email    |
 #      |                 |
+
+  @sanity
+  Scenario Outline: Check footer links to docs
+    When I click '<link>' on the main page
+    Then I should see PDF loaded
+    Examples:
+      | link                 |
+      | Privacy Policy       |
+      | Token Sale Agreement |

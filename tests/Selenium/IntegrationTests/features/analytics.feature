@@ -1,8 +1,9 @@
 Feature: Analytics
   As a user I want to view analytical charts
   Background:
-    Given Taklimakan Network /charts/all page is opened and start popup is skipped
+    Given Taklimakan Network Main page is opened and start popup is skipped
     Then I should see 'Taklimakan' page
+    When I click 'Analytics' button in top menu
 
   @sanity
   Scenario: Check navigation to charts

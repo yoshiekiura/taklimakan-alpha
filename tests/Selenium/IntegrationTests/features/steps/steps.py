@@ -78,10 +78,29 @@ def step_impl(context, page):
     WebDriverWait(context.browser, 10).until(staleness_of(old_page))
 
     if len(context.browser.find_elements(By.CSS_SELECTOR, "button.btn.btn-buy")) == 1:
-        context.browser.find_element(By.CSS_SELECTOR, "button.btn.btn-buy").click()
-        time.sleep(1)
+        if context.browser.find_element(By.CSS_SELECTOR, "button.btn.btn-buy").is_displayed():
+            context.browser.find_element(By.CSS_SELECTOR, "button.btn.btn-buy").click()
+            time.sleep(1)
+        else:
+            pass
     else:
         pass
+
+
+
+@given('The course {course_name} exists')
+def step_impl(context, course_name):
+    """
+    To verify the course for all tests is available on first page
+    :param context: behave.runner.Context
+    :param course_name: name of the course to search for
+    :return: none
+    """
+    try:
+        context.browser.find_element(By.LINK_TEXT, course_name), 'The course was not found'
+    except AssertionError:
+        create_screenshot(context)
+        raise
 
 
 """
@@ -135,7 +154,7 @@ def step_impl(context, email):
 @when('I click on {button} button')
 def step_impl(context, button):
     """
-    This step is used to click on submit buttons
+    This step is used to click on buttons. To be refactored soon.
     :param context: behave.runner.Context
     :param button: used to identify the button when CSS_SELECTOR differs
     :return: none
@@ -161,6 +180,8 @@ def step_impl(context, button):
     elif button == 'Sharpe ratio':
         button = "//A[@href='#sharpe'][text()='Sharpe Ratio']"
         context.browser.find_element(By.XPATH, button).click()
+    elif button == 'Start Course':
+        context.browser.find_element(By.CSS_SELECTOR, 'a.btn.btn-buy.btn-block').click()
     else:
         print('Selector for button is not defined')
 
@@ -211,7 +232,7 @@ def step_impl(context):
 @when('I select {currencies} pair for charts')
 def step_impl(context, currencies):
     """
-    This step is used submit registration, login and enter code forms
+    This step is used to select currencies pair on Analytics page for charts
     :param context: behave.runner.Context
     :param currencies: string from step with currencies
     :return: none
@@ -225,12 +246,85 @@ def step_impl(context, currencies):
 @when('I open {course_name} course from courses index page')
 def step_impl(context, course_name):
     """
-    This step is used submit registration, login and enter code forms
+    This step is used to open the exact course by its name
     :param context: behave.runner.Context
     :param course_name: string to indicate the course to open in By.LINK_TEXT
     :return: none
     """
     context.browser.find_element(By.LINK_TEXT, course_name).click()
+
+
+@when('I click Share in {network_name} button')
+def step_impl(context, network_name):
+    """
+    This step is used to share the content in networks
+    :param context: behave.runner.Context
+    :param network_name: twitter, facebook, telegram, whatsapp, linkedin, slack
+    :return: none
+    """
+    context.browser.find_element(By.XPATH, "//SPAN[@class='at-label'][text()='" + network_name + "']").click()
+
+
+@when('I login in Twitter with test account')
+def step_impl(context):
+    """
+    This step is used to login in twitter with pre-created account for tests
+    :param context: behave.runner.Context
+    :return: none
+    """
+    twitter_username_field = context.browser.find_element(By.CSS_SELECTOR, 'div.row.user')
+    twitter_username_field.clear()
+    twitter_username_field.send_keys('usetest')
+#TODO: continue when twitter registration is fixed
+
+
+@when('I login with Disqus test account')
+def step_impl(context):
+    """
+    This step is used to login in Disqus with pre-created account for tests
+    :param context: behave.runner.Context
+    :return: none
+    """
+    time.sleep(4) #to let the disqus load
+
+    #switch to disqus iframe
+    iframe = context.browser.find_element(By.XPATH, "//iframe[@title='Disqus']")
+    context.browser.switch_to.frame(iframe)
+
+    context.browser.find_element(By.CSS_SELECTOR, 'span.dropdown-toggle-wrapper').click()
+    context.browser.find_element(By.LINK_TEXT, 'Disqus').click()
+    context.browser.switch_to.window(context.browser.window_handles[-1])
+    username_field = context.browser.find_element(By.NAME, 'username')
+    username_field.clear()
+    username_field.send_keys('usetest@yopmail.com')
+    password_field = context.browser.find_element(By.NAME, 'password')
+    password_field.clear()
+    password_field.send_keys('freestyle11')
+    context.browser.find_element(By.CSS_SELECTOR, 'button#auth-form-button').click()
+    time.sleep(4) #let the disqus log you in
+    context.browser.switch_to.window(context.browser.window_handles[0])
+    context.browser.switch_to.default_content()
+
+
+@when("I post a Disqus comment '{comment_text}'")
+def step_impl(context, comment_text):
+    """
+    This step is used to post a comment with disqus
+    :param context: behave.runner.Context
+    :param comment_text: text to insert in comment field
+    :return: none
+    """
+    # switch to disqus iframe
+    iframe = context.browser.find_element(By.XPATH, "//iframe[@title='Disqus']")
+    context.browser.switch_to.frame(iframe)
+
+    text_field = context.browser.find_element(By.CSS_SELECTOR, 'div.textarea')
+    text_field.clear()
+    text_field.send_keys(comment_text)
+
+    context.browser.find_element(By.CSS_SELECTOR, 'button.btn.post-action__button').click()
+    time.sleep(3)
+    context.browser.switch_to.default_content()
 
 
 """
@@ -306,7 +400,7 @@ def step_impl(context):
 @then('I should see You have been subscribed message')
 def step_impl(context):
     """
-    This step is used to verify that subscription is succeed
+    This step is used to
     :param context: behave.runner.Context
     :return: none
     """
@@ -337,7 +431,7 @@ def step_impl(context):
 @then('I should see {chart} chart in the URL')
 def step_impl(context, chart):
     """
-    This step should verify validation message has appeared
+    This step should verify the chart name is in URL
     :param context: behave.runner.Context
     :param chart: string of a page current URL for assertion
     :return none
@@ -352,7 +446,7 @@ def step_impl(context, chart):
 @then('I should see {pair} pair on analytics page')
 def step_impl(context, pair):
     """
-    This step should verify validation message has appeared
+    This step should verify the pair of currencies for charts on Analytics page
     :param context: behave.runner.Context
     :param pair: a pair of cryptocurrencies to assert
     :return none
@@ -371,7 +465,7 @@ def step_impl(context, pair):
 @then('I should see {course_name} course view page')
 def step_impl(context, course_name):
     """
-    This step should verify validation message has appeared
+    This step should verify the course name
     :param context: behave.runner.Context
     :param course_name: name of the course that is displayed in URL
     :return none
@@ -382,6 +476,77 @@ def step_impl(context, course_name):
         course_name = course_name.lower()
         course_name = course_name.replace(' ', '-')
         assert course_name in context.browser.current_url, 'Course is not loaded in ' + context.browser.current_url
+    except AssertionError:
+        create_screenshot(context)
+        raise
+
+
+@then('I should see {page_name} page of {course_name} course')
+def step_impl(context, page_name, course_name):
+    """
+    This step should verify the lecture's name and course name on the lecture's page
+    :param context: behave.runner.Context
+    :param course_name: name of the course that is displayed in title
+    :param page_name: name of page
+    :return none
+    """
+    try:
+        assert page_name in context.browser.title, page_name + ' was not found in ' + context.browser.title
+        assert course_name in context.browser.find_element(By.CSS_SELECTOR, 'div.news-header').text, \
+            'Course name is not found in header'
+    except AssertionError:
+        create_screenshot(context)
+        raise
+
+
+@then('I should see social network {network_name} popup')
+def step_impl(context, network_name):
+    """
+    This step should verify the social network popup has actually appeared
+    :param context: behave.runner.Context
+    :param network_name: twitter, facebook, linkedin, slack, telegram, whatsapp
+    :return none
+    """
+    network_name = network_name.lower()
+    try:
+        context.browser.switch_to.window(context.browser.window_handles[-1])
+        assert network_name in context.browser.current_url, 'Social network ' + network_name + \
+                                                            'wasnt found in ' + context.browser.current_url
+    except AssertionError:
+        create_screenshot(context)
+        raise
+
+
+@then('I should see PDF loaded')
+def step_impl(context):
+    """
+    This step should verify the pdf with the docs is loaded
+    :param context: behave.runner.Context
+    :return none
+    """
+    try:
+        context.browser.switch_to.window(context.browser.window_handles[-1])
+        assert (True != (('not be found' in context.browser.page_source))), 'Errors in loading PDF'
+    except AssertionError:
+        create_screenshot(context)
+        raise
+
+
+@then("I should see my Disqus comment '{comment_text}' published")
+def step_impl(context, comment_text):
+    """
+    This step should verify the comment is published via disqus
+    :param context: behave.runner.Context
+    :param comment_text: text to verify
+    :return none
+    """
+
+    # switch to disqus iframe
+    iframe = context.browser.find_element(By.XPATH, "//iframe[@title='Disqus']")
+    context.browser.switch_to.frame(iframe)
+
+    try:
+        assert comment_text in context.browser.find_element(By.CSS_SELECTOR, 'div.post-message').text, comment_text+ ' was not found'
     except AssertionError:
         create_screenshot(context)
         raise
