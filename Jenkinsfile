@@ -88,7 +88,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
             git_commit_files.trim().split().each {
               println "${it}"
-              if (!${it}.contains("Jenkinsfile") && !${it}.contains("tests/")) {
+              if (!it.contains("Jenkinsfile") && !it.contains("tests/")) {
                 deploy_is_needed = 1
                 exit 0
               }
