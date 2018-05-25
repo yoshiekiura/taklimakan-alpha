@@ -80,7 +80,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
             println "${git_commit_id}"
 
             git_commit_files = sh (
-              script: 'git show --pretty="" --name-only ${git_commit_id}',
+              script: 'git show --pretty="" --name-only $git_commit_id',
               returnStdout: true
             ).trim().split().each {
               println "${it}"
