@@ -289,6 +289,32 @@ def step_impl(context, material_name):
     context.browser.find_element(By.PARTIAL_LINK_TEXT, material_name).click()
 
 
+@when('I open first news link on news index page')
+def step_impl(context):
+    """
+    This step is used to open the first news link on news index page
+    :param context: behave.runner.Context
+    :return: none
+    """
+    #store link text for verification
+    global news_link
+    news_link = context.browser.find_element(By.CSS_SELECTOR, 'div.news-body a').text
+    news_link = news_link.replace('...','')
+    context.browser.find_element(By.CSS_SELECTOR, 'div.news-body a').click()
+
+
+@when('I select {tag_name} tag from tags list')
+def step_impl(context, tag_name):
+    """
+    This step is used to filter by tag
+    :param context: behave.runner.Context
+    :param tag_name: the name of tag for filtering
+    :return: none
+    """
+    context.browser.find_element(By.CSS_SELECTOR, 'div.dropdown').click()
+    context.browser.find_element(By.LINK_TEXT, tag_name).click()
+
+
 """
 ###THEN###
 """
@@ -504,6 +530,36 @@ def step_impl(context):
     try:
         assert context.browser.find_element(By.XPATH, "//A[@href='mailto:info@taklimakan.io '][text()='Write to us']"), \
             'Mailto link was not found'
+    except AssertionError:
+        create_screenshot(context)
+        raise
+
+
+@then('I should see first news view page')
+def step_impl(context):
+    """
+    This step is used to verify the first news view page is opened
+    :param context: behave.runner.Context
+    :return: none
+    """
+    try:
+        assert news_link in context.browser.find_element(By.CSS_SELECTOR, 'div.news-header').text, \
+            news_link + ' was not found in ' + context.browser.find_element(By.CSS_SELECTOR, 'div.news-header').text
+    except AssertionError:
+        create_screenshot(context)
+        raise
+
+
+@then('I should see {tag_name} tag in the URL')
+def step_impl(context, tag_name):
+    """
+    This step is used to verify tag filter was applied at least in URL
+    :param context: behave.runner.Context
+    :param tag_name: the tag to be checked in URL
+    :return: none
+    """
+    try:
+        assert tag_name in context.browser.current_url, tag_name+ ' was not found in ' +context.browser.current_url
     except AssertionError:
         create_screenshot(context)
         raise
