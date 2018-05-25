@@ -70,7 +70,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 '''
           archiveArtifacts '*.zip'
           script {
-            deploy_is_needed = 1
+            deploy_is_needed = 0
 
             git_commit_id = sh (
               script: 'git log --pretty=format:\'%h\' -n 1',
@@ -86,14 +86,16 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
             git_commit_files.trim().split().each {
               if (!it.contains("tests/")) {
-                println("Deploy is necessary")
                 deploy_is_needed = 1
-                return
               }
             }
 
-            println("Deploy is not necessary")
-            deploy_is_needed = 0
+            if (deploy_is_needed == 1) {
+              println("Deploy is necessary")
+            }
+            else {
+              println("Deploy is not necessary")
+            }
           }
 
         }
