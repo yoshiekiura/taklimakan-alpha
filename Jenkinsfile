@@ -78,16 +78,16 @@ $tmp ="$(git show --pretty="" --name-only $commit_id)"
 echo $temp
 `git show --pretty="" --name-only $commit_id`
 
-for commit_file_name in `git show --pretty="" --name-only $commit_id`; do
-  echo $commit_file_name
+#for commit_file_name in `git show --pretty="" --name-only $commit_id`; do
+#  echo $commit_file_name
+#
+#  if [[ ! $commit_file_name = *"tests"* ]] && [[ ! $commit_file_name = "Jenkinsfile" ]]; then
+#    export DEPLOY="1"
+#    exit 0
+#  fi
+#done
 
-  if [[ ! $commit_file_name = *"tests"* ]] && [[ ! $commit_file_name = "Jenkinsfile" ]]; then
-    export $DEPLOY="1"
-    exit 0
-  fi
-done
-
-export $DEPLOY="0"'''
+export DEPLOY="0"'''
         }
       }
       stage('Install Composer') {
