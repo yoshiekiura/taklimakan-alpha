@@ -69,6 +69,18 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
 '''
           archiveArtifacts '*.zip'
+          sh '''#!/bin/bash
+# verify that current commit update source code and code need to be DEPLOYed
+
+$comit_id="$(git log --pretty=format:\'%h\' -n 1)"
+for commit_file_name in `git show --pretty="" --name-only $comit_id`; do
+  if [[ ! $commit_file_name = *"tests/"* ]] && [[ ! $commit_file_name = *"Jenkinsfile"* ]]; then
+    export $DEPLOY = 1
+    exit 0
+  fi
+done
+
+export $DEPLOY = 0'''
         }
       }
       stage('Install Composer') {
@@ -252,10 +264,14 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
       }
       stage('Deploy') {
         when {
-          anyOf {
-            branch 'master'
-            branch 'release/**'
-            branch 'develop'
+          allOf {
+            environment name: 'DEPLOY', value: '1'
+            anyOf {
+              branch 'master'
+              branch 'release/**'
+              branch 'develop'
+            }
+
           }
 
         }
@@ -624,6 +640,7 @@ behave -c --junit --junit-directory results features/'''
       PRODUCTION_HOST = '192.168.100.127'
       PRODUCTION_PORT = '8022'
       SSH_USER = 'tkln'
+      DEPLOY = '1'
     }
     post {
       always {
