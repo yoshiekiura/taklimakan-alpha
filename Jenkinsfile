@@ -82,10 +82,9 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
               returnStdout: true
             )
 
-            println "files modified by commit (${git_commit_files }): ${git_commit_files}"
+            println "files modified by commit (${git_commit_id}): ${git_commit_files}"
 
             git_commit_files.trim().split().each {
-              println "${it}"
               if (!it.contains("Jenkinsfile") && !it.contains("tests/")) {
                 println("Deploy is necessary")
                 deploy_is_needed = 1
@@ -95,6 +94,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
             println("Deploy is not necessary")
             deploy_is_needed = 0
+            println("${deploy_is_needed}")
           }
 
         }
@@ -295,6 +295,10 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 
         }
         steps {
+          script {
+            println("${deploy_is_needed}")
+          }
+
           sh 'echo "Deploy equals to: $DEPLOY"'
           lock(resource: 'DeployProcess') {
             sh '''echo "display git branch info to make sure that branch is switch to Commit"
