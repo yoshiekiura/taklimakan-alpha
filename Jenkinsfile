@@ -571,26 +571,8 @@ echo $BUILD_NUMBER.$OUTPUT > success.last'''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             script {
               println("${deploy_is_needed}")
-
-              if (System.getenv("$BRANCH_NAME") == "master") {
-                DEPLOY_HOST=$PRODUCTION_HOST
-                DEPLOY_PORT=$PRODUCTION_PORT
-              }
-              else {
-                if (System.getenv("$BRANCH_NAME") == "develop") {
-                  DEPLOY_HOST=$DEVELOP_HOST
-                  DEPLOY_PORT=$DEVELOP_PORT
-                }
-                else
-                {
-                  DEPLOY_HOST=$RELEASE_HOST
-                  DEPLOY_PORT=$RELEASE_PORT
-                }
-              }
-
-
-              println("${DEPLOY_HOST}")
-              println("${DEPLOY_PORT}")
+              println("${$BRANCH_NAME}")
+              println("${$PRODUCTION_HOST}")
             }
 
             sh '''#!/bin/bash
