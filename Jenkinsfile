@@ -77,13 +77,13 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
               returnStdout: true
             ).trim()
 
-            println ${git_commit_id}
+            println "${git_commit_id}"
 
             git_commit_files = sh (
               script: 'git show --pretty="" --name-only ${git_commit_id}',
               returnStdout: true
             ).trim().split().each {
-              println ${it}
+              println "${it}"
               if (!${it}.contains("Jenkinsfile") && !${it}.contains("tests/")) {
                 deploy_is_needed = 1
                 exit 0
