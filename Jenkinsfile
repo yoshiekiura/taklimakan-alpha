@@ -69,27 +69,30 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
 '''
           archiveArtifacts '*.zip'
-          sh '''#!/bin/bash
-# verify that current commit update source code and code need to be DEPLOYed
+          script {
+            deploy_is_needed = 1
 
-commit_id="$(git log --pretty=format:\'%h\' -n 1)"
-echo $commit_id
-temp="$(git show --pretty="" --name-only $commit_id)"
-echo $temp
-`git show --pretty="" --name-only $commit_id`
+            git_commit_id = sh (
+              script: 'git log --pretty=format:\'%h\' -n 1',
+              returnStdout: true
+            ).trim()
 
-#for commit_file_name in `git show --pretty="" --name-only $commit_id`; do
-#  echo $commit_file_name
-#
-#  if [[ ! $commit_file_name = *"tests"* ]] && [[ ! $commit_file_name = "Jenkinsfile" ]]; then
-#    export DEPLOY="1"
-#    exit 0
-#  fi
-#done
+            println ${git_commit_id}
 
-export DEPLOY="0"
+            git_commit_files = sh (
+              script: 'git show --pretty="" --name-only ${git_commit_id}',
+              returnStdout: true
+            ).trim().split().each {
+              println ${it}
+              if (!${it}.contains("Jenkinsfile") && !${it}.contains("tests/")) {
+                deploy_is_needed = 1
+                exit 0
+              }
+            }
 
-echo "Deploy is: $DEPLOY"'''
+            deploy_is_needed = 0
+          }
+
         }
       }
       stage('Install Composer') {
@@ -274,7 +277,10 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
       stage('Deploy') {
         when {
           allOf {
-            environment name: 'DEPLOY', value: '1'
+            expression {
+              deploy_is_needed != '0'
+            }
+
             anyOf {
               branch 'master'
               branch 'release/**'
