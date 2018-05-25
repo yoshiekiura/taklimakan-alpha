@@ -571,8 +571,11 @@ echo $BUILD_NUMBER.$OUTPUT > success.last'''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             script {
               println("${deploy_is_needed}")
-              println("${$BRANCH_NAME}")
-              println("${$PRODUCTION_HOST}")
+              println("${BRANCH_NAME}")
+              aaa = build.BRANCH_NAME
+              println("${aaa}")
+              println("${BRANCH_NAME}")
+              println("${PRODUCTION_HOST}")
             }
 
             sh '''#!/bin/bash
