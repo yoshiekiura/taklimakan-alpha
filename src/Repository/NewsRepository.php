@@ -44,7 +44,7 @@ class NewsRepository extends ServiceEntityRepository
 
         $sql =
             'SELECT *,
-            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "news" AND content_id = n.id) AS likes_count,
+            (SELECT COALESCE(SUM(status), 0) FROM likes WHERE content_type = "news" AND content_id = n.id) AS likes_count,
             (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = n.id) AS comments_count,
             n.id as id
             FROM news n';

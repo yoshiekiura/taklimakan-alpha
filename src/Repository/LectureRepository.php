@@ -48,9 +48,33 @@ class LectureRepository extends ServiceEntityRepository
         $query = $conn->prepare($sql);
 
         $query->execute();
-        $rows = $query->fetchAll();
+        $lectures = $query->fetchAll();
 
-        return $rows;
+        // Select likes info for returned lectures
+
+        $ids = "";
+        foreach ($lectures as $row)
+            $ids .= strval($row['id']) . ', ';
+        $ids = trim($ids, ', ');
+
+        $sql =
+            'SELECT content_id
+            FROM likes l
+            WHERE content_type = "lecture"
+            AND status = 1
+            AND content_id in (' . $ids . ')';
+//echo($sql);//die();
+        $query = $conn->prepare($sql);
+        $query->execute();
+        $likes = $query->fetchAll(\PDO::FETCH_COLUMN);
+//var_dump($likes);
+        foreach ($lectures as &$row) {
+            $row['type'] = 'lecture';
+            $row['like'] = in_array($row['id'], $likes) ? 1 : 0;
+            //var_dump($row['id']);
+        }
+//var_dump($lectures);
+        return $lectures;
     }
 
 }

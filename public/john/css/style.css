@@ -2293,3 +2293,7 @@ a.news-status {
 */
 
 .p-content img { display: block; width: auto; margin: 25px auto; }
+
+.news-favor img { margin-top: -91px; }
+
+.news-favor img:hover { cursor: pointer; }
