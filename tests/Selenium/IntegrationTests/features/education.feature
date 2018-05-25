@@ -19,28 +19,28 @@ Feature: Education
     Then I should see Introduction page of Blockchain Course by Complexity Labs course
 
   @sanity
-  Scenario: Share course in twitter
+  Scenario: Open material from course page
     When I open Blockchain Course by Complexity Labs course from courses index page
-    And I click Share in Twitter button
-    Then I should see social network Twitter popup
-    When I login in Twitter with test account
-  #TODO continue when twitter registration is fixed
+    And I click on Smart Contracts material
+    Then I should see Smart Contracts page of Blockchain Course by Complexity Labs course
 
   @sanity
-  Scenario: Comment course via Disqus
+  Scenario: Check write to us link
     When I open Blockchain Course by Complexity Labs course from courses index page
-    And I login with Disqus test account
-    And I post a Disqus comment 'Hello there'
-    Then I should see my Disqus comment 'Hello there' published
+    Then I check Write to us link
+
+#  Scenario: Share course in twitter
+#    When I open Blockchain Course by Complexity Labs course from courses index page
+#    And I click Share in Twitter button
+#    Then I should see social network Twitter popup
+#    When I login in Twitter with test account
+  #TODO continue when twitter registration is fixed
+
+  #Scenario: Comment course via Disqus - cannot be automated now because of captcha in Disqus
+  #Scenario: Comment material via Disqus - same
 
   #Scenario: Navigate through course materials
 
-  Scenario: Open material from course page
+  #Scenario: Share material continue when twitter registration works
 
-  Scenario: Check write to us link
-
-  Scenario: Share material
-
-  Scenario: Comment material via Disqus
-
-  Scenario: Navigate to next material
+  #Scenario: Navigate to next material - not implemented on tkln yet

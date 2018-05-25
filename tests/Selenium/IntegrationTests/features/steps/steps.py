@@ -278,53 +278,15 @@ def step_impl(context):
 #TODO: continue when twitter registration is fixed
 
 
-@when('I login with Disqus test account')
-def step_impl(context):
+@when('I click on {material_name} material')
+def step_impl(context, material_name):
     """
-    This step is used to login in Disqus with pre-created account for tests
+    This step is used to open a material from course page by its name
     :param context: behave.runner.Context
+    :param material_name: the name of material
     :return: none
     """
-    time.sleep(4) #to let the disqus load
-
-    #switch to disqus iframe
-    iframe = context.browser.find_element(By.XPATH, "//iframe[@title='Disqus']")
-    context.browser.switch_to.frame(iframe)
-
-    context.browser.find_element(By.CSS_SELECTOR, 'span.dropdown-toggle-wrapper').click()
-    context.browser.find_element(By.LINK_TEXT, 'Disqus').click()
-    context.browser.switch_to.window(context.browser.window_handles[-1])
-    username_field = context.browser.find_element(By.NAME, 'username')
-    username_field.clear()
-    username_field.send_keys('usetest@yopmail.com')
-    password_field = context.browser.find_element(By.NAME, 'password')
-    password_field.clear()
-    password_field.send_keys('freestyle11')
-    context.browser.find_element(By.CSS_SELECTOR, 'button#auth-form-button').click()
-    time.sleep(4) #let the disqus log you in
-    context.browser.switch_to.window(context.browser.window_handles[0])
-    context.browser.switch_to.default_content()
-
-
-@when("I post a Disqus comment '{comment_text}'")
-def step_impl(context, comment_text):
-    """
-    This step is used to post a comment with disqus
-    :param context: behave.runner.Context
-    :param comment_text: text to insert in comment field
-    :return: none
-    """
-    # switch to disqus iframe
-    iframe = context.browser.find_element(By.XPATH, "//iframe[@title='Disqus']")
-    context.browser.switch_to.frame(iframe)
-
-    text_field = context.browser.find_element(By.CSS_SELECTOR, 'div.textarea')
-    text_field.clear()
-    text_field.send_keys(comment_text)
-
-    context.browser.find_element(By.CSS_SELECTOR, 'button.btn.post-action__button').click()
-    time.sleep(3)
-    context.browser.switch_to.default_content()
+    context.browser.find_element(By.PARTIAL_LINK_TEXT, material_name).click()
 
 
 """
@@ -532,21 +494,16 @@ def step_impl(context):
         raise
 
 
-@then("I should see my Disqus comment '{comment_text}' published")
-def step_impl(context, comment_text):
+@then ('I check Write to us link')
+def step_impl(context):
     """
-    This step should verify the comment is published via disqus
+    This step is used to check the write to us link on page
     :param context: behave.runner.Context
-    :param comment_text: text to verify
-    :return none
+    :return: none
     """
-
-    # switch to disqus iframe
-    iframe = context.browser.find_element(By.XPATH, "//iframe[@title='Disqus']")
-    context.browser.switch_to.frame(iframe)
-
     try:
-        assert comment_text in context.browser.find_element(By.CSS_SELECTOR, 'div.post-message').text, comment_text+ ' was not found'
+        assert context.browser.find_element(By.XPATH, "//A[@href='mailto:info@taklimakan.io '][text()='Write to us']"), \
+            'Mailto link was not found'
     except AssertionError:
         create_screenshot(context)
         raise
