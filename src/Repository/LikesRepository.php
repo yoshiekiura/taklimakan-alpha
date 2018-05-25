@@ -40,7 +40,7 @@ class LikesRepository extends ServiceEntityRepository
     {
 
         $conn = $this->getEntityManager()->getConnection();
-        $query = $conn->prepare('INSERT IGNORE INTO likes (count, content_type, content_id, user_id) VALUES (1, ?, ?, ?)');
+        $query = $conn->prepare('INSERT IGNORE INTO likes (status, content_type, content_id, user_id) VALUES (1, ?, ?, ?)');
 
         $query->bindValue(1, $content_type);
         $query->bindValue(2, $content_id);
@@ -63,7 +63,7 @@ class LikesRepository extends ServiceEntityRepository
     {
 
         $conn = $this->getEntityManager()->getConnection();
-        $query = $conn->prepare('DELETE FROM likes WHERE count = 1 AND content_type = ? AND content_id = ? AND user_id = ? LIMIT 1');
+        $query = $conn->prepare('DELETE FROM likes WHERE status = 1 AND content_type = ? AND content_id = ? AND user_id = ? LIMIT 1');
 
         $query->bindValue(1, $content_type);
         $query->bindValue(2, $content_id);

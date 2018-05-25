@@ -2,14 +2,23 @@
                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                 <div class="news-item">
                     <div class="news-img">
+
                         {% if course.type == 'course' %}
                             <img src="/images/courses/{{course.image}}" alt="" class="scale">
                         {% else %}
                             <img src="/images/lectures/{{course.image}}" alt="" class="scale">
                         {% endif %}
+
+                        <div class="news-favor liker" data-type="{{course.type}}" data-id="{{course.id}}" data-like="{{course.like}}">
+                            {# <a class="news-favor" href=""><img src="/images/i/favor-o.svg" alt=""></a> #}
+                            <img src="/images/i/favor-o.svg" alt="">
+                        </div>
+
+                        {# <div class="news-favor"><img src="/images/i/favor-o.svg" alt=""></div> #}
+
                         {# NB! Hiding Heart and Category
-                        <a class="news-favor" href="#"><img src="/images/i/favor-o.svg" alt=""></a>
                         <a class="news-source" href="#"><span>Cryptocurrencies</span></a> #}
+
                     </div>
                     <div class="news-body">
                         <div class="row">

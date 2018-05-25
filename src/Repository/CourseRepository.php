@@ -66,30 +66,34 @@ class CourseRepository extends ServiceEntityRepository
 //            $params = [ 'tags' => implode(', ', $filterTags) ];
 
         $query->execute($params);
-        $rows = $query->fetchAll();
-/*
-        $tagsCollection = new ArrayCollection();
+        $courses = $query->fetchAll();
 
+        // Select likes info for returned courses
 
+        $ids = "";
+        foreach ($courses as $row)
+            $ids .= strval($row['id']) . ', ';
+        $ids = trim($ids, ', ');
 
         $sql =
-            'SELECT tag
-            FROM tags t
-            INNER JOIN news_tags nt on nt.tags_id = t.id
-            WHERE nt.news_id = :news_id';
+            'SELECT content_id
+            FROM likes l
+            WHERE content_type = "course"
+            AND status = 1
+            AND content_id in (' . $ids . ')';
 
-        foreach ($rows as &$row) {
+//echo($sql);//die();
 
-            $query = $conn->prepare($sql);
-            $query->execute([
-                'news_id' => $row['id'],
-            ]);
-            $tags = $query->fetchAll();
+        $query = $conn->prepare($sql);
+        $query->execute();
+        $likes = $query->fetchAll();
 
-            $row['tags'] = $tags;
-        } */
+        foreach ($courses as &$row) {
+            $row['type'] = 'course';
+            $row['like'] = in_array($row['id'], $likes) ? 1 : 0;
+        }
 
-        return $rows;
+        return $courses;
     }
 
 /*
