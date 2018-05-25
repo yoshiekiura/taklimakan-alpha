@@ -72,13 +72,16 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
           sh '''#!/bin/bash
 # verify that current commit update source code and code need to be DEPLOYed
 
-$comit_id="$(git log --pretty=format:\'%h\' -n 1)"
+$commit_id="$(git log --pretty=format:\'%h\' -n 1)"
+echo $commit_id
+$tmp ="$(git show --pretty="" --name-only $commit_id)"
+echo $temp
+`git show --pretty="" --name-only $commit_id`
 
-git show --pretty="" --name-only $comit_id
+for commit_file_name in `git show --pretty="" --name-only $commit_id`; do
+  echo $commit_file_name
 
-for commit_file_name in `git show --pretty="" --name-only $comit_id`; do
   if [[ ! $commit_file_name = *"tests"* ]] && [[ ! $commit_file_name = "Jenkinsfile" ]]; then
-    print $commit_file_name
     export $DEPLOY="1"
     exit 0
   fi
