@@ -84,6 +84,8 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
               returnStdout: true
             )
 
+            println "files modified by commit: ${git_commit_files}"
+
             git_commit_files.trim().split().each {
               println "${it}"
               if (!${it}.contains("Jenkinsfile") && !${it}.contains("tests/")) {
