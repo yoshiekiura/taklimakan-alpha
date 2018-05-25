@@ -85,7 +85,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
             println "files modified by commit (${git_commit_id}): ${git_commit_files}"
 
             git_commit_files.trim().split().each {
-              if (!it.contains("tests/")) {
+              if (!it.contains("Jenkinsfile") && !it.contains("tests/")) {
                 deploy_is_needed = 1
               }
             }
@@ -660,13 +660,13 @@ behave -c --junit --junit-directory results features/'''
       }
     }
     environment {
-      DEVELOP_HOST = '159.69.7.93'
-      DEVELOP_PORT = '22'
+      DEVELOP_HOST = '192.168.100.125'
+      DEVELOP_PORT = '8022'
       RELEASE_HOST = '192.168.100.126'
       RELEASE_PORT = '8022'
       PRODUCTION_HOST = '192.168.100.127'
       PRODUCTION_PORT = '8022'
-      SSH_USER = 'root'
+      SSH_USER = 'tkln'
     }
     post {
       always {
