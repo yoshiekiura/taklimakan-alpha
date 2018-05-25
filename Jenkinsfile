@@ -74,7 +74,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
 commit_id="$(git log --pretty=format:\'%h\' -n 1)"
 echo $commit_id
-tmp ="$(git show --pretty="" --name-only $commit_id)"
+temp="$(git show --pretty="" --name-only $commit_id)"
 echo $temp
 `git show --pretty="" --name-only $commit_id`
 
@@ -87,7 +87,9 @@ echo $temp
 #  fi
 #done
 
-export DEPLOY="0"'''
+export DEPLOY="0"
+
+echo "Deploy is: $DEPLOY"'''
         }
       }
       stage('Install Composer') {
