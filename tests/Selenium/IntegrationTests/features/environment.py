@@ -51,7 +51,7 @@ def before_all(context):
         context.host = 'http://' + os.environ.get('DEPLOY_HOST')
 
     print('Test executed on: ' + os.environ["DEPLOY_HOST"]+'\n')
-
+    context.first_time_execution: bool = True
 
 def after_all(context):
     """

@@ -72,6 +72,10 @@ def step_impl(context, page: str):
 
     # After Deploy it takes an additional time to load the fist page and cache data.
     # That is why need some time to prevent unexpected fail.
+    if context.first_time_execution:
+        time.sleep(10)
+        context.first_time_execution: bool = False
+
     WebDriverWait(context.browser, 10).until(staleness_of(old_page))
 
     if len(context.browser.find_elements(By.CSS_SELECTOR, "button.btn.btn-buy")) == 1:
