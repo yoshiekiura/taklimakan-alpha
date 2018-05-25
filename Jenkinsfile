@@ -73,14 +73,18 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 # verify that current commit update source code and code need to be DEPLOYed
 
 $comit_id="$(git log --pretty=format:\'%h\' -n 1)"
+
+git show --pretty="" --name-only $comit_id
+
 for commit_file_name in `git show --pretty="" --name-only $comit_id`; do
-  if [[ ! $commit_file_name = *"tests/"* ]] && [[ ! $commit_file_name = *"Jenkinsfile"* ]]; then
-    export $DEPLOY = 1
+  if [[ ! $commit_file_name = *"tests"* ]] && [[ ! $commit_file_name = "Jenkinsfile" ]]; then
+    print $commit_file_name
+    export $DEPLOY="1"
     exit 0
   fi
 done
 
-export $DEPLOY = 0'''
+export $DEPLOY="0"'''
         }
       }
       stage('Install Composer') {
