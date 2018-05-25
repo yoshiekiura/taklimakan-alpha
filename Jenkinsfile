@@ -72,9 +72,9 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
           sh '''#!/bin/bash
 # verify that current commit update source code and code need to be DEPLOYed
 
-$commit_id="$(git log --pretty=format:\'%h\' -n 1)"
+commit_id="$(git log --pretty=format:\'%h\' -n 1)"
 echo $commit_id
-$tmp ="$(git show --pretty="" --name-only $commit_id)"
+tmp ="$(git show --pretty="" --name-only $commit_id)"
 echo $temp
 `git show --pretty="" --name-only $commit_id`
 
@@ -283,6 +283,7 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 
         }
         steps {
+          sh 'echo "Deploy equals to: $DEPLOY"'
           lock(resource: 'DeployProcess') {
             sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch'''
