@@ -246,7 +246,6 @@ newIndexCandidates = [
 ]
 
 
-
 today = datetime.now()
 todayStr = today.strftime('%Y-%m-%d')
 startDateStr = dateSubDays(todayStr, 28)
