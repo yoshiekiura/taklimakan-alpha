@@ -522,10 +522,17 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
       }
       stage('Smoke Test') {
         when {
-          anyOf {
-            branch 'master'
-            branch 'release/**'
-            branch 'develop'
+          allOf {
+            expression {
+              return (deploy_is_needed != 0)
+            }
+
+            anyOf {
+              branch 'master'
+              branch 'release/**'
+              branch 'develop'
+            }
+
           }
 
         }
@@ -569,15 +576,6 @@ behave -c --tags @smoke --no-junit features/
 OUTPUT="$(git log --pretty=format:%h -n 1)"
 echo $BUILD_NUMBER.$OUTPUT > success.last'''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            script {
-              println("${deploy_is_needed}")
-              println("${BRANCH_NAME}")
-              aaa = build.BRANCH_NAME
-              println("${aaa}")
-              println("${BRANCH_NAME}")
-              println("${PRODUCTION_HOST}")
-            }
-
             sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
