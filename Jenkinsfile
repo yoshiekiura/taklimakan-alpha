@@ -282,7 +282,7 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
         when {
           allOf {
             expression {
-              deploy_is_needed != '0'
+              return (deploy_is_needed != 0)
             }
 
             anyOf {
@@ -299,7 +299,6 @@ echo "Symfony enviromnt variable file is correct. Proceed with deploy"
             println("${deploy_is_needed}")
           }
 
-          sh 'echo "Deploy equals to: $DEPLOY"'
           lock(resource: 'DeployProcess') {
             sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch'''
@@ -664,7 +663,6 @@ behave -c --junit --junit-directory results features/'''
       PRODUCTION_HOST = '192.168.100.127'
       PRODUCTION_PORT = '8022'
       SSH_USER = 'tkln'
-      DEPLOY = '1'
     }
     post {
       always {
