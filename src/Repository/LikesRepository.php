@@ -7,6 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 //use Doctrine\DBAL\DriverManager;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * @method Likes|null find($id, $lockMode = null, $lockVersion = null)
  * @method Likes|null findOneBy(array $criteria, array $orderBy = null)
@@ -34,6 +36,25 @@ class LikesRepository extends ServiceEntityRepository
         );
 
         return intval($likes);
+    }
+
+    public function getState($type, $id, $user)
+    {
+        if ($user === null)
+            return 0;
+
+        if ($user instanceof UserInterface)
+            $user = $user->getId();
+
+        $conn = $this->getEntityManager()->getConnection();
+        
+        $like = $conn->fetchColumn(
+            'SELECT status FROM likes WHERE content_type = ? AND content_id = ? AND user_id = ?',
+            [$type, $id, $user],
+            0
+        );
+
+        return intval($like);
     }
 
     public function like($content_type, $content_id, $user_id)

@@ -8,10 +8,10 @@
                     <div class="news-body leftside-box mb-30">
 
                         <div class="row bb-1">
-                            {# <div class="col-xl-6 col-lg-6 col-md-6 col-6"> #}
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-8">
                                 <h3>
-                                    <strong><a href="/lectures/{{lecture.id}}/{{lecture.title|translit}}">{{lecture.title}}</a><strong>
+                                    <strong><a href="/lectures/{{lecture.id}}/{{lecture.title|translit}}">{{lecture.title}}</a></strong>
                                 </h3>
 
                                 <h3 class="main-price">
@@ -19,9 +19,18 @@
                                 </h3>
                             </div>
 
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-4 text-right">
+                            <div class="liker news-favor {{ lecture.like == '1' ? 'liked' : '' }} favor-relative"
+                                data-type="{{lecture.type}}" data-id="{{lecture.id}}" data-like="{{lecture.like}}">
+                                <img src="/images/i/favor-o.svg" alt="" class="{{ lecture.like == '1' ? 'liked' : '' }}">
+                            </div>
+                            </div>
+
+
                             {# <div class="col-xl-6 col-lg-6 col-md-6 col-6 text-right">
                                 <a class="news-favor favor-relative" href="#"><img src="/images/i/favor-o.svg" alt=""></a>
                             </div> #}
+
                         </div>
 
                         <div class="row mb-10">
@@ -59,20 +68,21 @@
                         </div>
 #}
                     </div>
-{#
+
                     <div class="leftside-box text-center">
                         <span>Have any question?</span>
-                        <a href="#">write to us</a>
+                        <a href="mailto:info@taklimakan.io">Write to us</a>
                     </div>
 
                     <ul class="list-inline news-tags mb-40">
                         <li class="list-inline-item">Tags:</li>
-                        {% for tag in course.tags %}
+                        {% for tag in tags %}
                             <li class="list-inline-item"><a href="?tags={{tag}}">{{tag}}</a></li>
                         {% endfor %}
                     </ul>
-#}
+
                     {% include '/courses/sidebar.list.html.twig' %}
+                    {% include 'snippets/likes.html.twig' %}
 
 
             </div>

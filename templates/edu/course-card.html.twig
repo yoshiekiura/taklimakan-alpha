@@ -9,7 +9,7 @@
                             <img src="/images/lectures/{{course.image}}" alt="" class="scale">
                         {% endif %}
 
-                        <div class="news-favor liker" data-type="{{course.type}}" data-id="{{course.id}}" data-like="{{course.like}}">
+                        <div class="liker news-favor {{ course.like == '1' ? 'liked' : '' }}" data-type="{{course.type}}" data-id="{{course.id}}" data-like="{{course.like}}">
                             {# <a class="news-favor" href=""><img src="/images/i/favor-o.svg" alt=""></a> #}
                             <img src="/images/i/favor-o.svg" alt="">
                         </div>

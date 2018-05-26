@@ -13,29 +13,16 @@ use App\Entity\Lecture;
 use App\Entity\Course;
 // use App\Entity\Joiner;
 use App\Entity\Tags;
+use App\Entity\Likes;
 
 use App\Repository\LectureRepository;
 use App\Repository\CourseRepository;
 // use App\Repository\JoinerRepository;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 class EducationController extends Controller
 {
-/*
-    / **
-     * @Route("/{url}", name="remove_trailing_slash", requirements={"url" = ".*\/$"})
-     * /
-    public function removeTrailingSlash(Request $request)
-    {
-        $pathInfo = $request->getPathInfo();
-        $requestUri = $request->getRequestUri();
-
-        $url = str_replace($pathInfo, rtrim($pathInfo, ' /'), $requestUri);
-
-        // 308 (Permanent Redirect) is similar to 301 (Moved Permanently) except
-        // that it does not allow changing the request method (e.g. from POST to GET)
-        return $this->redirect($url, 308);
-    }
-*/
     /**
      * @Route("/edu", name="edu")
      * @Route("/edu/", name="edu_trail")
@@ -51,7 +38,7 @@ class EducationController extends Controller
      * @Route("/courses", name="courses")
      * @Route("/courses/", name="courses_trail")
      */
-    public function courses(Request $request)
+    public function courses(Request $request, UserInterface $user = null)
     {
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
@@ -71,19 +58,18 @@ class EducationController extends Controller
         $level = $request->query->get('level') ? intval($request->query->get('level')) : null;
         if ($level) $filter['level'] = $level;
 
+        if ($user)
+            $filter['user'] = $user->getId();
+
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
         $courses = $courseRepo->getCourses($filter);
-        foreach ($courses as &$course)
-            $course['type'] = 'course';
 
         $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
-        $filter['course'] = null;
+        $filter['course'] = null; // We interesten in standalone lectures aka Articles or Materials here
         $standaloneLectures = $lectureRepo->getLectures($filter);
 
-        foreach ($standaloneLectures as $lecture) {
-        //    $lecture['type'] = 'lecture';
+        foreach ($standaloneLectures as $lecture)
             $courses[] = $lecture;
-        }
 
         // Sort by date and trim by limit
         usort($courses, "self::twoDates");
@@ -116,28 +102,31 @@ class EducationController extends Controller
      * @Route("/courses/{id}/", name="courses_id_trail", requirements={"id"="\d+"})
      * @Route("/courses/{id}/{translit}", name="courses_id_translit", requirements={"id"="\d+"})
      */
-    public function show($id, $translit = '', Request $request)
+    public function show($id, $translit = '', Request $request, UserInterface $user = null)
     {
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
         $course = $courseRepo->findOneBy([ 'id' => $id ]);
+        $course->type = 'course';
 
         if (!$course)
             throw $this->createNotFoundException('Sorry, this course does not exist!');
 
         $tags = array_map('trim', explode(',', $course->getTags()));
+/*
+        // NB! Is it better to use some sort of Helper Service here? Think about
+        if ($user) {
+            $type = 'course';
+            $user_id = $user->getId();
+            $likesRepo = $this->getDoctrine()->getRepository(Likes::class);
+            $like = $likesRepo->findOneBy(['content_type' => $type, 'content_id' => $id, 'user_id' => $user_id]);
+        }
+        $course->like = isset($like) && $like ? 1 : 0;
+*/
+        $course->like = $this->getDoctrine()->getRepository(Likes::class)->getState('course', $id, $user);
 
-        // NB! Get Course' lectures via Joiner - rewrite it into Repository method later
-
-//        $joinerRepo = $this->getDoctrine()->getRepository(Joiner::class);
-//        $joiners = $joinerRepo->findBy([ 'fromType' => 'course', 'toType' => 'lecture', 'fromId' => $id ]);
-
-        //$tags = array_map('trim', explode(',', $course->getTags()));
-//var_dump(count($joiners)); die();
-        // $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
-//        $lectures = $lectureRepo->findBy([ 'id' => $joiners ]);
         $lectures = $course->getActiveLectures();
 
         return $this->render('courses/show.html.twig', [
@@ -177,7 +166,7 @@ class EducationController extends Controller
      * @Route("/lectures/{id}/", name="lectures_id_trail", requirements={"id"="\d+"})
      * @Route("/lectures/{id}/{translit}", name="lectures_id_translit", requirements={"id"="\d+"})
      */
-    public function showLecture($id, $translit = '', Request $request)
+    public function showLecture($id, $translit = '', Request $request, UserInterface $user = null)
     {
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
@@ -185,10 +174,15 @@ class EducationController extends Controller
         $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
         $lecture = $lectureRepo->findOneBy([ 'id' => $id ]);
 
+        // FIXME! Rethink later - it looks like we have to remove TYPE from Lectures like we did it in Courses
+        $lecture->setType('lecture');
+
         if (!$lecture)
             throw $this->createNotFoundException('Sorry, this lecture does not exist!');
 
         $tags = array_map('trim', explode(',', $lecture->getTags()));
+
+        $lecture->like = $this->getDoctrine()->getRepository(Likes::class)->getState('lecture', $id, $user);
 
         // If there course and other lectures, get them all. Otherwise it's just a standalone lecture
         if ($lecture->getCourse()) {
@@ -200,14 +194,6 @@ class EducationController extends Controller
             $course = null;
             $lectures = null;
         }
-
-//        $joinerRepo = $this->getDoctrine()->getRepository(Joiner::class);
-//        $joiners = $joinerRepo->findBy([ 'fromType' => 'course', 'toType' => 'lecture', 'fromId' => $id ]);
-        //$tags = array_map('trim', explode(',', $course->getTags()));
-//var_dump(count($joiners)); die();
-//        $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
-//        $lectures = $lectureRepo->findBy([ 'id' => $joiners ]);
-//var_dump(count($lectures)); die();
 
         return $this->render('lectures/show.html.twig', [
             'menu' => 'edu',
@@ -224,7 +210,7 @@ class EducationController extends Controller
     /**
      * @Route("/courses/more", name="courses_more")
      */
-    public function more(Request $request)
+    public function more(Request $request, UserInterface $user = null)
     {
         if (!$request->isXMLHttpRequest())
             throw new BadRequestHttpException("[ERR] Only AJAX requests are allowed!");
@@ -241,22 +227,21 @@ class EducationController extends Controller
         $filter['tags'] = []; // $tags;
         $filter['level'] = $level;
 
+        if ($user)
+            $filter['user'] = $user->getId();
+
         // We'll limit the list later, when combine courses and standalone lectures
         // $filter['limit'] = 0;
 
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
         $courses = $courseRepo->getCourses($filter);
-        foreach ($courses as &$course)
-            $course['type'] = 'course';
 
         $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
         $filter['course'] = null;
         $standaloneLectures = $lectureRepo->getLectures($filter);
 
-        foreach ($standaloneLectures as $lecture) {
-        //    $lecture['type'] = 'lecture';
+        foreach ($standaloneLectures as $lecture)
             $courses[] = $lecture;
-        }
 
         // Sort by date And trim the list for default limit
         usort($courses, "self::twoDates");
