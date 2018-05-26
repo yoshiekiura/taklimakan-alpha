@@ -26,6 +26,7 @@ class CourseRepository extends ServiceEntityRepository
         $filterLimit = isset($filter['limit']) ? intval($filter['limit']) : null;
         $filterLevel = isset($filter['level']) ? intval($filter['level']) : null;
         $filterPage = isset($filter['page']) ? intval($filter['page']) : null;
+        $filterUser = isset($filter['user']) ? intval($filter['user']) : null;
 
         // Get Courses by Filter including Tags and count of Likes & Comments
 
@@ -33,8 +34,7 @@ class CourseRepository extends ServiceEntityRepository
         // (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "news" AND content_id = n.id) AS comments_count,
         //    c.id as id
         $sql =
-            'SELECT *
-            FROM courses c';
+            'SELECT * FROM courses c';
 /*
         if (count($filterTags)) {
             $sql .=
@@ -69,28 +69,30 @@ class CourseRepository extends ServiceEntityRepository
         $courses = $query->fetchAll();
 
         // Select likes info for returned courses
+        if ($filterUser) {
 
-        $ids = "";
-        foreach ($courses as $row)
-            $ids .= strval($row['id']) . ', ';
-        $ids = trim($ids, ', ');
+            $ids = "";
+            foreach ($courses as $row)
+                $ids .= strval($row['id']) . ', ';
+            $ids = trim($ids, ', ');
 
-        $sql =
-            'SELECT content_id
-            FROM likes l
-            WHERE content_type = "course"
-            AND status = 1
-            AND content_id in (' . $ids . ')';
+            $sql =
+                'SELECT content_id
+                FROM likes l
+                WHERE content_type = "course"
+                AND user_id = ' . $filterUser
+                . ' AND status = 1
+                AND content_id in (' . $ids . ')';
 
-//echo($sql);//die();
+            $query = $conn->prepare($sql);
+            $query->execute();
+            $likes = $query->fetchAll();
 
-        $query = $conn->prepare($sql);
-        $query->execute();
-        $likes = $query->fetchAll();
+        }
 
         foreach ($courses as &$row) {
             $row['type'] = 'course';
-            $row['like'] = in_array($row['id'], $likes) ? 1 : 0;
+            $row['like'] = $filterUser ? (in_array($row['id'], $likes) ? 1 : 0) : 0;
         }
 
         return $courses;

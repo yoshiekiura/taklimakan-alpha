@@ -2295,5 +2295,19 @@ a.news-status {
 .p-content img { display: block; width: auto; margin: 25px auto; }
 
 .news-favor img { margin-top: -91px; }
-
+.news-favor.liked img { margin-top: -80px; }
 .news-favor img:hover { cursor: pointer; }
+
+.favor-relative img { margin-top: 0px; }
+.favor-relative.liked img { margin-top: 0px; }
+.favor-relative img:hover { cursor: pointer; }
+
+.liked { width: 44px; height: 44px; }
+
+img .liked { /*visibility: visible*/ opacity: 1;  } 
+
+/*
+.news-favor[data-like="0"] { width: 20px; height: 20px; }
+.news-favor[data-like="1"] { width: 30px; height: 30px; }  
+[data-like="0"] { width: 20px; height: 20px; }
+[data-like="1"] { width: 30px; height: 30px; }             */
