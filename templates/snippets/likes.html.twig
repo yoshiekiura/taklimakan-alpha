@@ -29,8 +29,7 @@
                 success:
                     function(data, textStatus, jQxhr) {
                         if (data.code == 200) {
-                            // NB! Set heart to RED or TRANSPARENT depending on status
-                            //alert('Success! ' + data.status + ' | ' + data.type + ' | ');
+                            // NB! Set heart to RED or TRANSPARENT depending on status                            
                             el.data('like', data.status);
                             if (data.status) {
                                 el.addClass('liked');

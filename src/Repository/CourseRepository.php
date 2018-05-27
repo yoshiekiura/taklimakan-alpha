@@ -86,7 +86,7 @@ class CourseRepository extends ServiceEntityRepository
 
             $query = $conn->prepare($sql);
             $query->execute();
-            $likes = $query->fetchAll();
+            $likes = $query->fetchAll(\PDO::FETCH_COLUMN);
 
         }
 
