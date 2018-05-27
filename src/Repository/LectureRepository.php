@@ -25,7 +25,7 @@ class LectureRepository extends ServiceEntityRepository
         $filterLevel = isset($filter['level']) ? intval($filter['level']) : null;
         $filterPage = isset($filter['page']) ? intval($filter['page']) : null;
         $filterCourse = isset($filter['course']) ? intval($filter['course']) : null;
-        $filterUser = isset($filter['user']) ? intval($filter['user']) : null;        
+        $filterUser = isset($filter['user']) ? intval($filter['user']) : null;
 
         $sql = 'SELECT * FROM lectures l WHERE active = true';
 
@@ -75,11 +75,9 @@ class LectureRepository extends ServiceEntityRepository
 
         foreach ($lectures as &$row) {
             $row['type'] = 'lecture';
-            // $row['like'] = in_array($row['id'], $likes) ? 1 : 0;
             $row['like'] = $filterUser ? (in_array($row['id'], $likes) ? 1 : 0) : 0;
-            //var_dump($row['id']);
         }
-//var_dump($lectures);
+
         return $lectures;
     }
 
