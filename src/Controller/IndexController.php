@@ -21,6 +21,8 @@ use Symfony\Component\HttpFoundation\Cookie;
 //use Symfony\Component\Form\Extension\Core\Type\DateType;
 //use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 // NB! Have to dig into native caching oprions of Symfony and FOS HTTP Cache Bundle Later !
 
 // http://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/cache.html
@@ -32,7 +34,8 @@ class IndexController extends Controller
     /**
     * @Route("/", name="home")
     */
-	public function index(LoggerInterface $logger, Request $request) {
+	public function index(LoggerInterface $logger, Request $request, UserInterface $user = null)
+    {
 
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
@@ -59,11 +62,14 @@ class IndexController extends Controller
 
     // NB! We have to show total of 3 courses and lectures
 
+    if ($user)
+        $filter['user'] = $user->getId();
+
     $filter['limit'] = 3;
     $courseRepo = $this->getDoctrine()->getRepository(Course::class);
     $courses = $courseRepo->getCourses($filter);
-    foreach ($courses as &$course)
-        $course['type'] = 'course';
+    // foreach ($courses as &$course)
+    //     $course['type'] = 'course';
 
     // Show only FULL courses on the Home page
 
