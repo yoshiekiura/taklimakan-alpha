@@ -3,16 +3,23 @@
                 <div class="news-item">
                     <div class="news-img">
 
+
                         {% if course.type == 'course' %}
                             <img src="/images/courses/{{course.image}}" alt="" class="scale">
                         {% else %}
                             <img src="/images/lectures/{{course.image}}" alt="" class="scale">
                         {% endif %}
 
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <div class="liker news-favor {{ course.like == '1' ? 'liked' : '' }}" data-type="{{course.type}}" data-id="{{course.id}}" data-like="{{course.like}}">
                             {# <a class="news-favor" href=""><img src="/images/i/favor-o.svg" alt=""></a> #}
                             <img src="/images/i/favor-o.svg" alt="">
                         </div>
+                    {% else %}
+                    <div class="news-favor" ata-type="{{course.type}}" data-id="{{course.id}}" data-toggle="modal" data-target="#register">
+                        <img src="/images/i/favor-o.svg" alt="">
+                    </div>
+                    {% endif %}
 
                         {# <div class="news-favor"><img src="/images/i/favor-o.svg" alt=""></div> #}
 
