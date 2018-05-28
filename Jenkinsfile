@@ -76,7 +76,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
           stage('Is deploy necessary?') {
             steps {
               script {
-                deploy_is_needed = 1
+                deploy_is_needed = 0
 
                 git_commit_id = sh (
                   script: 'git log --pretty=format:\'%h\' -n 1',
@@ -85,6 +85,11 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
                 git_commit_files = sh (
                   script: "git show --pretty=\"\" --name-only ${git_commit_id}",
+                  returnStdout: true
+                )
+
+                git_commit_files = sh (
+                  script: "git diff --name-only HEAD^ HEAD",
                   returnStdout: true
                 )
 
@@ -658,7 +663,7 @@ echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
-behave -c --junit --junit-directory results features/'''
+behave -c --junit --junit-directory results features/ | exit 0'''
           junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 10, allowEmptyResults: true)
         }
         post {
