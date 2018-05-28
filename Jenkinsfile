@@ -101,10 +101,16 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
                   }
                 }
 
-                if (deploy_is_needed == 1) {
+                git_branch = sh(script: "git branch", returnStdout: true)
+
+                if ((deploy_is_needed == 1) &&
+                ((git_branch == "master") ||
+                (git_branch == "master") ||
+                (git_branch.contains("release")) )) {
                   println("Deploy is necessary")
                 }
                 else {
+                  deploy_is_needed = 0
                   println("Deploy is not necessary")
                 }
               }
