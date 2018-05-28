@@ -101,16 +101,6 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
                   }
                 }
 
-                if(manager.logContains("Started by timer")){
-                  echo "This build was triggered by a timer."
-                }
-                else
-                {
-                  echo "This build was triggered by a user."
-                  deploy_is_needed = 1
-                }
-
-
                 if (deploy_is_needed == 1) {
                   println("Deploy is necessary")
                 }
