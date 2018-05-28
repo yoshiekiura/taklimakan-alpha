@@ -14,39 +14,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 //use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\HttpFoundation\Cookie;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class ChartsController extends Controller
 {
 
-/*
-    / **
-     * @Route("/charts", name="charts")
-     * /
-    public function index()
-    {
-
-//        $ChartsRepo = $this->getDoctrine()->getRepository(Charts::class);
-//        $Charts = $ChartsRepo->findAll();
-//var_dump($Charts);
-//die();
-        // $greeting = $generator->getRandomGreeting();
-        // $logger->info("Saying $greeting to $name!");
-
-        //        $logger->info("Saying hello to $name!");
-        //		return new Response("Hello $name!");
-
-        return $this->render('charts/index.html.twig', [
-            //'controller_name' => 'ChartsController',
-            'menu' => 'charts',
-            'charts' => $charts,
-        ]);
-    }
-*/
-    /* @ Route("api/charts/{type}", name="api_charts")
-    public function getData($type, Request $request) */
+    // FIXME! It seems that @Cache Annotations do not work well within entire chain Symfony -> Apache -> Nginx
 
     /**
      * @Route("api/charts/all", name="api_charts")
+     * @Cache(expires="tomorrow", public=true)     
      */
     public function getData(Request $request)
     {
@@ -260,6 +237,33 @@ class ChartsController extends Controller
 //die();
 
     }
+
+    /*
+        / **
+         * @Route("/charts", name="charts")
+         * /
+        public function index()
+        {
+
+    //        $ChartsRepo = $this->getDoctrine()->getRepository(Charts::class);
+    //        $Charts = $ChartsRepo->findAll();
+    //var_dump($Charts);
+    //die();
+            // $greeting = $generator->getRandomGreeting();
+            // $logger->info("Saying $greeting to $name!");
+
+            //        $logger->info("Saying hello to $name!");
+            //		return new Response("Hello $name!");
+
+            return $this->render('charts/index.html.twig', [
+                //'controller_name' => 'ChartsController',
+                'menu' => 'charts',
+                'charts' => $charts,
+            ]);
+        }
+    */
+        /* @ Route("api/charts/{type}", name="api_charts")
+        public function getData($type, Request $request) */
 
 
 }

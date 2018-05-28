@@ -13,6 +13,9 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
 
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 class SecurityController extends Controller
 {
     /**
@@ -112,9 +115,17 @@ class SecurityController extends Controller
         $event = new InteractiveLoginEvent($request, $token);
         $this->get('event_dispatcher')->dispatch('security.interactive_login', $event);
 
+        // FIXME! Implement general AUTH listener later
+        // See https://symfony.com/doc/current/components/security/authentication.html
+
+        $response = new JsonResponse(['success' => true]);
+        $response->headers->setCookie(new Cookie('X-Symfony-Auth', 'true'));
+/*
         return $this->json([
             'success' => true,
-        ]);
+        ]); */
+
+        return $response;
     }
 
     /**
@@ -152,9 +163,17 @@ class SecurityController extends Controller
         $event = new InteractiveLoginEvent($request, $token);
         $this->get('event_dispatcher')->dispatch('security.interactive_login', $event);
 
+        // FIXME! Implement general AUTH listener later
+        // See https://symfony.com/doc/current/components/security/authentication.html
+
+        $response = new JsonResponse(['success' => true]);
+        $response->headers->setCookie(new Cookie('X-Symfony-Auth', 'true'));
+/*
         return $this->json([
             'success' => true,
-        ]);
+        ]); */
+
+        return $response;
     }
 
     /**
@@ -326,8 +345,16 @@ class SecurityController extends Controller
         $event = new InteractiveLoginEvent($request, $token);
         $this->get('event_dispatcher')->dispatch('security.interactive_login', $event);
 
+        // FIXME! Implement general AUTH listener later
+        // See https://symfony.com/doc/current/components/security/authentication.html
+
+        $response = new JsonResponse(['success' => true]);
+        $response->headers->setCookie(new Cookie('X-Symfony-Auth', 'true'));
+/*
         return $this->json([
             'success' => true,
-        ]);
+        ]); */
+
+        return $response;
     }
 }
