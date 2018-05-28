@@ -8,10 +8,10 @@ use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\LikesRepository")
- * @ORM\Table(name="likes", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"}, uniqueConstraints={@UniqueConstraint(name="unique_like", columns={"content_type", "content_id", "user_id"})})
+ * @ORM\Entity(repositoryClass="App\Repository\RatingRepository")
+ * @ORM\Table(name="ratings", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"}, uniqueConstraints={@UniqueConstraint(name="unique_like", columns={"content_type", "content_id", "user_id"})})
  */
-class Likes
+class Rating
 {
 
     public function __construct() {
@@ -69,16 +69,16 @@ class Likes
 
 
     /**
-     * @ORM\Column(type="boolean", nullable=true, options={"unsigned": true})
+     * @ORM\Column(type="integer", nullable=true, options={"unsigned": true})
      */
-    private $status;
-    public function getStatus()
+    private $rating;
+    public function getRating()
     {
-        return $this->status;
+        return $this->rating;
     }
-    public function setStatus($status)
+    public function setRating($rating)
     {
-        $this->status = $status;
+        $this->rating = $rating;
     }
 
 
@@ -94,6 +94,5 @@ class Likes
     {
         $this->date = $date;
     }
-
 
 }

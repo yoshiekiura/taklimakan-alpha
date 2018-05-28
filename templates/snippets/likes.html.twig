@@ -1,0 +1,55 @@
+{# { % if use_likes is defined % } #}
+
+    <!-- AJAX Likes module -->
+
+    <script nonce="{{ csp_nonce() }}">
+
+        document.addEventListener('DOMContentLoaded', function() {
+            $('.liker').on('click', like);
+        });
+
+        function like() {
+
+            var el = $(this);
+            var type = el.data('type');
+            var id = el.data('id');
+            var status = el.data('like');
+            var newStatus = Number(status) == 1 ? 0 : 1; // Revert current state
+
+            //alert('like ' + id + ' | ' +  type + ' | was=' + status + ' | new=' + newStatus);
+
+            $.ajax({
+                url: '/ajax/like',
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify({ 'type': type, 'id': id, 'status': newStatus }),
+                processData: false,
+                context: this, // NB!
+                success:
+                    function(data, textStatus, jQxhr) {
+                        if (data.code == 200) {
+                            // NB! Set heart to RED or TRANSPARENT depending on status                            
+                            el.data('like', data.status);
+                            if (data.status) {
+                                el.addClass('liked');
+                                el.children().addClass('liked');
+                            } else {
+                                el.removeClass('liked');
+                                el.children().removeClass('liked');
+                            }
+                        } else {
+                            console.log('[ERR] Some error while set like for element | ' + data.error);
+                        }
+
+                    },
+                error:
+                    function(jqXhr, textStatus, errorThrown) {
+                        console.log('[ERR] AJAX error!');
+                    }
+            });
+        }
+
+    </script>
+
+{# { % endif % } #}

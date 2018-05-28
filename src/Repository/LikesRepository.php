@@ -7,6 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 //use Doctrine\DBAL\DriverManager;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * @method Likes|null find($id, $lockMode = null, $lockVersion = null)
  * @method Likes|null findOneBy(array $criteria, array $orderBy = null)
@@ -36,11 +38,30 @@ class LikesRepository extends ServiceEntityRepository
         return intval($likes);
     }
 
+    public function getState($type, $id, $user)
+    {
+        if ($user === null)
+            return 0;
+
+        if ($user instanceof UserInterface)
+            $user = $user->getId();
+
+        $conn = $this->getEntityManager()->getConnection();
+        
+        $like = $conn->fetchColumn(
+            'SELECT status FROM likes WHERE content_type = ? AND content_id = ? AND user_id = ?',
+            [$type, $id, $user],
+            0
+        );
+
+        return intval($like);
+    }
+
     public function like($content_type, $content_id, $user_id)
     {
 
         $conn = $this->getEntityManager()->getConnection();
-        $query = $conn->prepare('INSERT IGNORE INTO likes (count, content_type, content_id, user_id) VALUES (1, ?, ?, ?)');
+        $query = $conn->prepare('INSERT IGNORE INTO likes (status, content_type, content_id, user_id) VALUES (1, ?, ?, ?)');
 
         $query->bindValue(1, $content_type);
         $query->bindValue(2, $content_id);
@@ -63,7 +84,7 @@ class LikesRepository extends ServiceEntityRepository
     {
 
         $conn = $this->getEntityManager()->getConnection();
-        $query = $conn->prepare('DELETE FROM likes WHERE count = 1 AND content_type = ? AND content_id = ? AND user_id = ? LIMIT 1');
+        $query = $conn->prepare('DELETE FROM likes WHERE status = 1 AND content_type = ? AND content_id = ? AND user_id = ? LIMIT 1');
 
         $query->bindValue(1, $content_type);
         $query->bindValue(2, $content_id);

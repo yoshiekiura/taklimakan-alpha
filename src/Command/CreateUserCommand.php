@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\User;
+
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,7 +15,7 @@ class CreateUserCommand extends ContainerAwareCommand
     public function configure()
     {
         $this
-            ->setName('app:user:create')
+            ->setName('user:create')
         ;
     }
 

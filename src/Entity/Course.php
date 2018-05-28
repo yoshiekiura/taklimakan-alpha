@@ -206,6 +206,23 @@ class Course
     }
 */
 
+    // Special link to video on Youtube
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+
+    private $video;
+
+    public function getVideo()
+    {
+        return $this->video;
+    }
+    public function setVideo($video)
+    {
+        $this->video = $video;
+    }
 
     // Date of Creation or Update ?
 
