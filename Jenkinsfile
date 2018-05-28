@@ -364,7 +364,9 @@ echo "# copy .env to DEPLOY/<version> which is necessary for symphony" >> deploy
 echo "cp .env DEPLOY/\\$version_id/.env" >> deploy
 echo "cd DEPLOY/\\$version_id" >> deploy
 echo "composer install" >> deploy
+echo "echo \\"Start PHP migrate\\"" >> deploy
 echo "php bin/console doctrine:migrations:migrate" >> deploy
+echo "echo \\"End PHP migrate\\"" >> deploy
 echo "" >> deploy
 echo "# return to /var/www/ folder" >> deploy
 echo "cd /var/www/" >> deploy
