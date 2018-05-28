@@ -76,7 +76,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
           stage('Is deploy necessary?') {
             steps {
               script {
-                deploy_is_needed = 0
+                deploy_is_needed = 1
 
                 git_commit_id = sh (
                   script: 'git log --pretty=format:\'%h\' -n 1',
@@ -100,6 +100,16 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
                     deploy_is_needed = 1
                   }
                 }
+
+                if(manager.logContains("Started by timer")){
+                  echo "This build was triggered by a timer."
+                }
+                else
+                {
+                  echo "This build was triggered by a user."
+                  deploy_is_needed = 1
+                }
+
 
                 if (deploy_is_needed == 1) {
                   println("Deploy is necessary")
