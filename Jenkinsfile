@@ -76,7 +76,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
           stage('Is deploy necessary?') {
             steps {
               script {
-                deploy_is_needed = 1
+                deploy_is_needed = 0
 
                 git_commit_id = sh (
                   script: 'git log --pretty=format:\'%h\' -n 1',
