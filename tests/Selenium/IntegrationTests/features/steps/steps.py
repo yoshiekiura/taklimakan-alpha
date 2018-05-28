@@ -308,7 +308,7 @@ def step_impl(context):
 
 
 @when('I select {tag_name} tag from tags list')
-def step_impl(context, tag_name):
+def step_impl(context, tag_name: str):
     """
     This step is used to filter by tag
     :param context: behave.runner.Context
@@ -317,6 +317,20 @@ def step_impl(context, tag_name):
     """
     context.browser.find_element(By.CSS_SELECTOR, 'div.dropdown').click()
     context.browser.find_element(By.LINK_TEXT, tag_name).click()
+
+
+@when('I click Load more button')
+def step_impl(context):
+    """
+    This step is used to click Load more button on any index page
+    :param context: behave.runner.Context\
+    :return: none
+    """
+    #count and store how much items are on page before clicking load more
+    global items_num
+    items_num = len(context.browser.find_elements(By.CSS_SELECTOR, 'div.news-item'))
+    context.browser.find_element(By.CSS_SELECTOR, 'p.btn.btn-success').click()
+    time.sleep(2)
 
 
 """
@@ -558,7 +572,7 @@ def step_impl(context):
 
 
 @then('I should see {tag_name} tag in the URL')
-def step_impl(context, tag_name):
+def step_impl(context, tag_name: str):
     """
     This step is used to verify tag filter was applied at least in URL
     :param context: behave.runner.Context
@@ -567,6 +581,22 @@ def step_impl(context, tag_name):
     """
     try:
         assert tag_name in context.browser.current_url, tag_name+ ' was not found in ' +context.browser.current_url
+    except AssertionError:
+        create_screenshot(context)
+        raise
+
+
+@then('I should see more content loaded')
+def step_impl(context):
+    """
+    This step is used to verify content is loaded after clicking Load more button on index page
+    :param context: behave.runner.Context
+    :return: none
+    """
+    try:
+        #count current number of items of page
+        current_items_num = len(context.browser.find_elements(By.CSS_SELECTOR, 'div.news-item'))
+        assert current_items_num > items_num, str(current_items_num) + ' is not bigger than ' + str(items_num)
     except AssertionError:
         create_screenshot(context)
         raise
