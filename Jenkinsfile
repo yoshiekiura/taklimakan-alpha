@@ -663,7 +663,7 @@ echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
-behave -c --junit --junit-directory results features/ | exit 0'''
+behave -c --junit --junit-directory results features/'''
           junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 10, allowEmptyResults: true)
         }
         post {
