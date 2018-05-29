@@ -117,6 +117,38 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
             }
           }
+          stage('Add additional Groovy Variables') {
+            steps {
+              script {
+                if(env.BRANCH_NAME == "master") {
+                  DEPLOY_HOST=env.PRODUCTION_HOST
+                  DEPLOY_PORT=env.PRODUCTION_PORT
+                }
+                else {
+                  if(env.BRANCH_NAME == "develop") {
+                    DEPLOY_HOST=env.DEVELOP_HOST
+                    DEPLOY_PORT=env.DEVELOP_PORT
+                  }
+                  else
+                  {
+                    DEPLOY_HOST=env.RELEASE_HOST
+                    DEPLOY_PORT=env.RELEASE_PORT
+                  }
+                }
+
+                SSH_USER = env.SSH_USER
+                git_commit_id = sh (
+                  script: "git log --pretty=format:'%h' -n 1",
+                  returnStdout: true
+                )
+
+                DEPLOY_VERSION = env.BUILD_NUMBER+"."+ git_commit_id
+
+                echo ("Deploy version ${DEPLOY_VERSION}")
+              }
+
+            }
+          }
         }
       }
       stage('Install Composer') {
@@ -544,28 +576,10 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
               script {
-                if(env.BRANCH_NAME == "master") {
-                  DEPLOY_HOST=env.PRODUCTION_HOST
-                  DEPLOY_PORT=env.PRODUCTION_PORT
-                }
-                else {
-                  if(env.BRANCH_NAME == "develop") {
-                    DEPLOY_HOST=env.DEVELOP_HOST
-                    DEPLOY_PORT=env.DEVELOP_PORT
-                  }
-                  else
-                  {
-                    DEPLOY_HOST=env.RELEASE_HOST
-                    DEPLOY_PORT=env.RELEASE_PORT
-                  }
-                }
-
-                SSH_USER = env.SSH_USER
-
                 echo(".. ${DEPLOY_HOST} : ${DEPLOY_PORT} : ${SSH_USER} ..")
 
                 migration_files = sh (
-                  script: "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} ls -d DEPLOY/",
+                  script: "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} ls -d /var/www/DEPLOY/${DEPLOY_VERSION}/src/Migrations/",
                   returnStdout: true
                 )
 
