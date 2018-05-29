@@ -678,6 +678,7 @@ behave -c --junit --junit-directory results features/'''
           always {
             junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 10, allowEmptyResults: true)
             archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+            echo '"Integration Stage complete"'
 
           }
 
