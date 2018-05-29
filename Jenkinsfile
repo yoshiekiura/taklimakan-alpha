@@ -379,7 +379,7 @@ echo "composer install" >> deploy
 #Probably it will be necessary to perform PHP migration
 echo "echo \\"Verify PHP migrate\\"" >> deploy
 #generate migration
-echo "php bin/console doctrine:migrations:diff"
+echo "php bin/console doctrine:migrations:diff" >> deploy
 #echo "php bin/console doctrine:migrations:migrate" >> deploy
 echo "echo \\"End PHP migrate\\"" >> deploy
 
@@ -543,6 +543,35 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
 ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
+              script {
+                if(env.BRANCH_NAME == "master") {
+                  DEPLOY_HOST=env.PRODUCTION_HOST
+                  DEPLOY_PORT=env.PRODUCTION_PORT
+                }
+                else {
+                  if(env.BRANCH_NAME == "develop") {
+                    DEPLOY_HOST=env.DEVELOP_HOST
+                    DEPLOY_PORT=env.DEVELOP_PORT
+                  }
+                  else
+                  {
+                    DEPLOY_HOST=env.RELEASE_HOST
+                    DEPLOY_PORT=env.RELEASE_PORT
+                  }
+                }
+
+                SSH_USER = env.SSH_USER
+
+                echo(".. ${DEPLOY_HOST} : ${DEPLOY_PORT} : ${SSH_USER} ..")
+
+                migration_files = sh (
+                  script: "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} ls -d DEPLOY/",
+                  returnStdout: true
+                )
+
+                echo("migration files: ${migration_files}")
+              }
+
               sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
