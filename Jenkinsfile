@@ -601,17 +601,9 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
                 )
 
                 echo("migration files: ${migration_files}")
-                /*
-                Uncomment this migration code in future
-                if (migration_files.contains(".php")) {
-                  def commitId = input(
-                    id: 'userInput', message: 'Some migrations are necessary. Please Perform them and then press Continue.',
-                    ok: 'Continue')
-                  }
-                  */
-                }
+              }
 
-                sh '''#!/bin/bash
+              sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
@@ -628,30 +620,30 @@ fi
 echo "Create Symlinks to Deployed version: $DEPLOY_HOST:$DEPLOY_PORT"
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash $BUILD_NUMBER.$OUTPUT'''
-              }
-
             }
 
           }
+
         }
-        stage('Smoke Test') {
-          when {
-            allOf {
-              expression {
-                return (deploy_is_needed != 0)
-              }
+      }
+      stage('Smoke Test') {
+        when {
+          allOf {
+            expression {
+              return (deploy_is_needed != 0)
+            }
 
-              anyOf {
-                branch 'master'
-                branch 'release/**'
-                branch 'develop'
-              }
-
+            anyOf {
+              branch 'master'
+              branch 'release/**'
+              branch 'develop'
             }
 
           }
-          steps {
-            sh '''#!/bin/bash
+
+        }
+        steps {
+          sh '''#!/bin/bash
 export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
@@ -685,12 +677,12 @@ cd tests/Selenium/IntegrationTests/
 behave -c --tags @smoke --no-junit features/
 
 #behave -c -i smoke_test.feature --no-junit features/'''
-            sh '''#!/bin/bash
+          sh '''#!/bin/bash
 
 OUTPUT="$(git log --pretty=format:%h -n 1)"
 echo $BUILD_NUMBER.$OUTPUT > success.last'''
-            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-              sh '''#!/bin/bash
+          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+            sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
@@ -706,39 +698,39 @@ fi
 
 scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.last
 '''
-            }
-
-            sh 'rm -rf success.last'
           }
-          post {
-            failure {
-              archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
-              sh 'rm -rf success.last'
-              sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-                script {
-                  echo("Roll-back to previous success build")
-                  sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} /var/www/createSL.bash fail"
-                }
 
+          sh 'rm -rf success.last'
+        }
+        post {
+          failure {
+            archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+            sh 'rm -rf success.last'
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              script {
+                echo("Roll-back to previous success build")
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} /var/www/createSL.bash fail"
               }
 
-              sh ' echo "Build FAILED! " '
-
             }
 
+            sh ' echo "Build FAILED! " '
+
           }
+
         }
-        stage('Integration Tests (Selenium)') {
-          when {
-            anyOf {
-              branch 'master'
-              branch 'release/**'
-              branch 'develop'
-            }
-
+      }
+      stage('Integration Tests (Selenium)') {
+        when {
+          anyOf {
+            branch 'master'
+            branch 'release/**'
+            branch 'develop'
           }
-          steps {
-            sh '''#!/bin/bash
+
+        }
+        steps {
+          sh '''#!/bin/bash
 export PATH=$PATH:/usr/lib/chromium-browser/
 
 # it is necessary to set DEPLOY_HOST 
@@ -770,32 +762,25 @@ cd tests/Selenium/IntegrationTests/
 behave -c --junit --junit-directory results features/
 
 exit 0'''
-          }
-          post {
-            always {
-              junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 10, allowEmptyResults: true)
-              archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
-              echo '"Integration Stage complete"'
-
-            }
-
-          }
+          junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 10, allowEmptyResults: true)
+          archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
         }
-      }
-      environment {
-        DEVELOP_HOST = '192.168.100.125'
-        DEVELOP_PORT = '8022'
-        RELEASE_HOST = '192.168.100.126'
-        RELEASE_PORT = '8022'
-        PRODUCTION_HOST = '192.168.100.127'
-        PRODUCTION_PORT = '8022'
-        SSH_USER = 'tkln'
-      }
-      post {
-        always {
-          publishHTML(allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
-
-        }
-
       }
     }
+    environment {
+      DEVELOP_HOST = '192.168.100.125'
+      DEVELOP_PORT = '8022'
+      RELEASE_HOST = '192.168.100.126'
+      RELEASE_PORT = '8022'
+      PRODUCTION_HOST = '192.168.100.127'
+      PRODUCTION_PORT = '8022'
+      SSH_USER = 'tkln'
+    }
+    post {
+      always {
+        publishHTML(allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
+
+      }
+
+    }
+  }
