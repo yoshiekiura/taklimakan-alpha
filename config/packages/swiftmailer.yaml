@@ -1,8 +1,21 @@
 swiftmailer:
-    transport: smtp
-    username: tkln-dev
-    password: Haf52714
-    host: mail.usetech.ru
-    port: 587
 
+    url: '%env(MAILER_URL)%'
+    spool: { type: 'memory' }
 
+    #encryption: tls
+    #auth_mode: login
+
+    #mailer_port: 587
+    #mailer_encryption: tls
+
+#    transport: smtp
+#    host: '%env(MAILER_HOST)%'
+#    port: '%env(MAILER_PORT)%'
+#    username: '%env(MAILER_USERNAME)%'
+#    password: '%env(MAILER_PASSWORD)%'    
+
+#    stream-options:
+#        ssl:
+#            allow_self_signed : true
+#            verify_peer: false
