@@ -579,7 +579,7 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
                 echo(".. ${DEPLOY_HOST} : ${DEPLOY_PORT} : ${SSH_USER} ..")
 
                 migration_files = sh (
-                  script: "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} ls -d /var/www/DEPLOY/${DEPLOY_VERSION}/src/Migrations/",
+                  script: "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} ls -d /var/www/DEPLOY/${DEPLOY_VERSION}/src/Migrations/*",
                   returnStdout: true
                 )
 
@@ -689,6 +689,14 @@ scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.
           failure {
             archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
             sh 'rm -rf success.last'
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              script {
+                echo("Roll-back to previous success build")
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} /var/www/createSL.bash fail"
+              }
+
+            }
+
             sh ' echo "Build FAILED! " '
 
           }
