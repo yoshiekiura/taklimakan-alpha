@@ -377,11 +377,11 @@ echo "cd DEPLOY/\\$version_id" >> deploy
 echo "composer install" >> deploy
 
 #Probably it will be necessary to perform PHP migration
-#echo "echo \\"Start PHP migrate\\"" >> deploy
+echo "echo \\"Verify PHP migrate\\"" >> deploy
 #generate migration
 echo "php bin/console doctrine:migrations:diff"
 #echo "php bin/console doctrine:migrations:migrate" >> deploy
-#echo "echo \\"End PHP migrate\\"" >> deploy
+echo "echo \\"End PHP migrate\\"" >> deploy
 
 #echo "" >> deploy
 #echo "# return to /var/www/ folder" >> deploy
