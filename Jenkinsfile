@@ -110,7 +110,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
                   println("Deploy is necessary")
                 }
                 else {
-                  deploy_is_needed = 1
+                  deploy_is_needed = 0
                   println("Deploy is not necessary")
                 }
               }
