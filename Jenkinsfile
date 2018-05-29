@@ -105,12 +105,12 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
 
                 if ((deploy_is_needed == 1) &&
                 ((git_branch == "master") ||
-                (git_branch == "master") ||
+                (git_branch == "develop") ||
                 (git_branch.contains("release")) )) {
                   println("Deploy is necessary")
                 }
                 else {
-                  deploy_is_needed = 0
+                  deploy_is_needed = 1
                   println("Deploy is not necessary")
                 }
               }
