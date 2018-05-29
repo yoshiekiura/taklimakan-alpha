@@ -749,7 +749,9 @@ echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
 
 cd tests/Selenium/IntegrationTests/
 
-behave -c --junit --junit-directory results features/'''
+behave -c --junit --junit-directory results features/
+
+exit 0'''
           }
           post {
             always {
