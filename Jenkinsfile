@@ -110,7 +110,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
                   println("Deploy is necessary")
                 }
                 else {
-                  deploy_is_needed = 0
+                  deploy_is_needed = 1
                   println("Deploy is not necessary")
                 }
               }
@@ -378,15 +378,17 @@ echo "composer install" >> deploy
 
 #Probably it will be necessary to perform PHP migration
 #echo "echo \\"Start PHP migrate\\"" >> deploy
+#generate migration
+echo "php bin/console doctrine:migrations:diff"
 #echo "php bin/console doctrine:migrations:migrate" >> deploy
 #echo "echo \\"End PHP migrate\\"" >> deploy
 
-echo "" >> deploy
-echo "# return to /var/www/ folder" >> deploy
-echo "cd /var/www/" >> deploy
-echo "" >> deploy
-echo "#Create symlinks" >> deploy
-echo "./createSL.bash \\$version_id" >> deploy
+#echo "" >> deploy
+#echo "# return to /var/www/ folder" >> deploy
+#echo "cd /var/www/" >> deploy
+#echo "" >> deploy
+#echo "#Create symlinks" >> deploy
+#echo "./createSL.bash \\$version_id" >> deploy
 '''
             sh '''echo "#!/bin/bash" > createSL.bash
 echo "#########################################################" >> createSL.bash
@@ -541,6 +543,23 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
 ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
+              sh '''#!/bin/bash
+echo "Branch Name: $BRANCH_NAME"
+if [ "$BRANCH_NAME" == "master" ]; then
+  DEPLOY_HOST=$PRODUCTION_HOST
+  DEPLOY_PORT=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  DEPLOY_HOST=$DEVELOP_HOST
+  DEPLOY_PORT=$DEVELOP_PORT
+else
+  #release branch
+  DEPLOY_HOST=$RELEASE_HOST
+  DEPLOY_PORT=$RELEASE_PORT
+fi
+
+echo "Create Symlinks to Deployed version: $DEPLOY_HOST:$DEPLOY_PORT"
+OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
+ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash $BUILD_NUMBER.$OUTPUT'''
             }
 
           }
