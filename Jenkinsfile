@@ -552,6 +552,9 @@ echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
             sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
               sh '''#!/bin/bash
+
+exit 0
+
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
   DEPLOY_HOST=$PRODUCTION_HOST
@@ -578,19 +581,34 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
 OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
 ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
               script {
-                echo(".. ${DEPLOY_HOST} : ${DEPLOY_PORT} : ${SSH_USER} ..")
+                echo("Deploy Host: ${DEPLOY_HOST}:${DEPLOY_PORT}")
 
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} mkdir -p /var/www/DEPLOY"
+                sh "scp -P ${DEPLOY_PORT} taklimakan-alpha.zip ${SSH_USER}@${DEPLOY_HOST}:/var/www/DEPLOY/taklimakan-alpha.zip"
+                sh "scp -P ${DEPLOY_PORT} deploy ${SSH_USER}@${DEPLOY_HOST}:/var/www/deploy"
+                sh "scp -P ${DEPLOY_PORT} createSL.bash ${SSH_USER}@${DEPLOY_HOST}:/var/www/createSL.bash"
+
+                echo("Run deploy script")
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} chmod -f 777 /var/www/deploy"
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} chmod -f 777 /var/www/createSL.bash"
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} /var/www/deploy taklimakan-alpha ${DEPLOY_VERSION}"
+              }
+
+              script {
                 migration_files = sh (
                   script: "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} ls -d /var/www/DEPLOY/${DEPLOY_VERSION}/src/Migrations/*",
                   returnStdout: true
                 )
 
                 echo("migration files: ${migration_files}")
+                /*
+                Uncomment this migration code in future
                 if (migration_files.contains(".php")) {
                   def commitId = input(
                     id: 'userInput', message: 'Some migrations are necessary. Please Perform them and then press Continue.',
                     ok: 'Continue')
                   }
+                  */
                 }
 
                 sh '''#!/bin/bash
