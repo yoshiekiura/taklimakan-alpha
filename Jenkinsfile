@@ -551,35 +551,6 @@ echo "" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
             sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-              sh '''#!/bin/bash
-
-exit 0
-
-echo "Branch Name: $BRANCH_NAME"
-if [ "$BRANCH_NAME" == "master" ]; then
-  DEPLOY_HOST=$PRODUCTION_HOST
-  DEPLOY_PORT=$PRODUCTION_PORT
-elif [ "$BRANCH_NAME" == "develop" ]; then
-  DEPLOY_HOST=$DEVELOP_HOST
-  DEPLOY_PORT=$DEVELOP_PORT
-else
-  #release branch
-  DEPLOY_HOST=$RELEASE_HOST
-  DEPLOY_PORT=$RELEASE_PORT
-fi
-echo "Deploy Host: $DEPLOY_HOST:$DEPLOY_PORT"
-
-echo "Upload file to host"
-ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT mkdir -p /var/www/DEPLOY
-scp -P $DEPLOY_PORT taklimakan-alpha.zip $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/taklimakan-alpha.zip
-scp -P $DEPLOY_PORT deploy $SSH_USER@$DEPLOY_HOST:/var/www/deploy
-scp -P $DEPLOY_PORT createSL.bash $SSH_USER@$DEPLOY_HOST:/var/www/createSL.bash
-
-echo "Run deploy script"
-ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
-ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
-OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
               script {
                 echo("Deploy Host: ${DEPLOY_HOST}:${DEPLOY_PORT}")
 
@@ -603,23 +574,10 @@ ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUI
                 echo("migration files: ${migration_files}")
               }
 
-              sh '''#!/bin/bash
-echo "Branch Name: $BRANCH_NAME"
-if [ "$BRANCH_NAME" == "master" ]; then
-  DEPLOY_HOST=$PRODUCTION_HOST
-  DEPLOY_PORT=$PRODUCTION_PORT
-elif [ "$BRANCH_NAME" == "develop" ]; then
-  DEPLOY_HOST=$DEVELOP_HOST
-  DEPLOY_PORT=$DEVELOP_PORT
-else
-  #release branch
-  DEPLOY_HOST=$RELEASE_HOST
-  DEPLOY_PORT=$RELEASE_PORT
-fi
+              script {
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} /var/www/createSL.bash ${DEPLOY_VERSION}"
+              }
 
-echo "Create Symlinks to Deployed version: $DEPLOY_HOST:$DEPLOY_PORT"
-OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh $SSH_USER@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/createSL.bash $BUILD_NUMBER.$OUTPUT'''
             }
 
           }
@@ -682,22 +640,10 @@ behave -c --tags @smoke --no-junit features/
 OUTPUT="$(git log --pretty=format:%h -n 1)"
 echo $BUILD_NUMBER.$OUTPUT > success.last'''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            sh '''#!/bin/bash
-echo "Branch Name: $BRANCH_NAME"
-if [ "$BRANCH_NAME" == "master" ]; then
-  DEPLOY_HOST=$PRODUCTION_HOST
-  DEPLOY_PORT=$PRODUCTION_PORT
-elif [ "$BRANCH_NAME" == "develop" ]; then
-  DEPLOY_HOST=$DEVELOP_HOST
-  DEPLOY_PORT=$DEVELOP_PORT
-else
-  #release branch
-  DEPLOY_HOST=$RELEASE_HOST
-  DEPLOY_PORT=$RELEASE_PORT
-fi
+            script {
+              sh "scp -P ${DEPLOY_PORT} success.last ${SSH_USER}@${DEPLOY_HOST}:/var/www/DEPLOY/success.last"
+            }
 
-scp -P $DEPLOY_PORT success.last $SSH_USER@$DEPLOY_HOST:/var/www/DEPLOY/success.last
-'''
           }
 
           sh 'rm -rf success.last'
