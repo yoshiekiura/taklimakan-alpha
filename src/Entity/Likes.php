@@ -4,26 +4,18 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Doctrine\ORM\Mapping\Index;
+use Doctrine\ORM\Mapping\UniqueConstraint;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LikesRepository")
- * @ORM\Table(name="likes", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"})
+ * @ORM\Table(name="likes", options={"charset"="utf8mb4", "collate"="utf8mb4_unicode_ci"}, uniqueConstraints={@UniqueConstraint(name="unique_like", columns={"content_type", "content_id", "user_id"})})
  */
 class Likes
 {
 
-    // Init Tags
-
     public function __construct() {
-        // $this->date = new \DateTime();
-        // $this->comments = new ArrayCollection();
     }
-
-    // Complex Keys
-    // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/composite-primary-keys.html
-    // * * @ORM\Id @ORM\Column(type="string") * /
-    // private $name;
-    // * * @ORM\Id @ORM\Column(type="integer") * /
-    // private $year;
 
     /**
      * @ORM\Id()
@@ -36,32 +28,72 @@ class Likes
     }
 
     /**
-     * @ORM\Column(type="string", length=32, nullable=false)
-     */
-    private $content_type;
-
-    /**
      * @ORM\Column(type="integer", nullable=false, options={"unsigned": true})
      */
     private $user_id;
+    public function getUserId()
+    {
+        return $this->user_id;
+    }
+    public function setUserId($user_id)
+    {
+        $this->user_id = $user_id;
+    }
+
+
+    /**
+     * @ORM\Column(type="string", length=32, nullable=true)
+     */
+    private $content_type;
+    public function getType()
+    {
+        return $this->content_type;
+    }
+    public function setType($type)
+    {
+        $this->content_type = $type;
+    }
 
     /**
      * @ORM\Column(type="integer", nullable=false, options={"unsigned": true})
      */
     private $content_id;
+    public function getContentId()
+    {
+        return $this->content_id;
+    }
+    public function setContentId($content_id)
+    {
+        $this->content_id = $content_id;
+    }
+
 
     /**
-     * @ORM\Column(type="smallint", nullable=false, options={"unsigned": true, "default": 0})
+     * @ORM\Column(type="boolean", nullable=true, options={"unsigned": true})
      */
-    private $count;
+    private $status;
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
 
-    // Not so good : options={"default"="CURRENT_TIMESTAMP"}
-    // Does not work : options={"default": 0}
-    // See https://stackoverflow.com/questions/7698625/doctrine-2-1-datetime-column-default-value
 
     /**
-     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"}, nullable=true)
      */
     private $date;
+    public function getDate()
+    {
+        return $this->date;
+    }
+    public function setDate($date)
+    {
+        $this->date = $date;
+    }
+
 
 }

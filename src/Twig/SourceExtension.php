@@ -29,7 +29,11 @@ class SourceExtension extends AbstractExtension
             case 'bitcoin.com':
                 $source = 'Bitcoin'; break;
             case 'dailyhodl.com':
-                $source = 'The Daily HODL'; break;                                
+                $source = 'The Daily HODL'; break;
+            case '8btc.com':
+                $source = '8btc'; break;
+            case 'bitcoinmagazine.com':
+                $source = 'Bitcoin Magazine'; break;                                                                
             default:
                 $source = ucfirst($domain);
         }

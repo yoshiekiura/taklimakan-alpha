@@ -5,9 +5,12 @@
 
         {% include 'john-header.html.twig' %}
 
+        <title>{% block title %}Taklimakan{% endblock %}</title>
+        
         <meta name="description" content="{% block description %}Taklimakan | Your Compass in the Cryptocurrency World{% endblock %}">
         <meta name="keywords" content="{% block keywords %}taklimakan, trading, cryptocurrency{% endblock %}">
-        <title>{% block title %}Taklimakan{% endblock %}</title>
+
+        {% block meta %}{% endblock %}
 
     </head>
 
@@ -18,6 +21,11 @@
         {% include 'john-footer.html.twig' %}
 
         {% block javascripts %}{% endblock %}
+
+        <!-- Go to www.addthis.com/dashboard to customize your tools -->
+        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5af1da250114ff78"></script>
+
+        <script id="dsq-count-scr" src="//taklimakan.disqus.com/count.js" async></script>
 
     </body>
 

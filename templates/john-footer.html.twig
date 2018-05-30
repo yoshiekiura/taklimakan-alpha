@@ -70,11 +70,19 @@
     <script src="/john/js/bootstrap.min.js"></script>
     <script src="/john/js/owl.carousel.min.js"></script>
 
+    <!-- Froala and Embedly -->
+
+    <script src="https://cdn.embedly.com/widgets/platform.js"></script>
+    <script src="/js/embedly.min.js"></script> 
+
+{#
+    <script src="/js/image-scale.min.js"></script>
+#}
     {% if app.environment != 'dev' %}
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116479802-1"></script>
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
@@ -85,7 +93,7 @@
 
     <!-- FIXME! We have to have conditional include here -->
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     $('.owl-carousel').owlCarousel({
     loop:true,
     margin:10,
@@ -122,7 +130,7 @@
 
 {% if show_charts is defined %}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
 
     let names = {{allowed|json_encode|raw}}
 
@@ -183,7 +191,7 @@
 {% if show_welcome is defined and show_welcome == true %}
 
 <!-- Welcome Popup -->
-<script>
+<script nonce="{{ csp_nonce() }}">
 
     function setCookie(key, value) {
         var expires = new Date();
@@ -204,17 +212,22 @@
         $('#exampleModal').modal('hide');
     }
 
+    document.addEventListener('DOMContentLoaded', function() {
+        $('.modal-footer').on('click', hidePopup);
+    });
+
 </script>
 
 {% endif %}
 
-{#
-
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
 <script type="text/javascript" src="/js/security.js"></script>
+
+{#
 
 <!-- https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php -->
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 
 
 // Find all YouTube videos
@@ -225,7 +238,7 @@ var $allVideos = $("iframe[src^='//www.youtube.com']"),
 
 // Figure out and save aspect ratio for each video
 $allVideos.each(function() {
-//alert("YT!");
+
   $(this)
     .data('aspectRatio', this.height / this.width)
 
@@ -237,7 +250,7 @@ $allVideos.each(function() {
 
 // When the window is resized
 $(window).resize(function() {
-//alert("YT!");
+
   var newWidth = $fluidEl.width();
 
   // Resize all videos according to their own aspect ratio
@@ -256,3 +269,89 @@ $(window).resize(function() {
 </script>
 
 #}
+
+<!-- Resize Images -->
+
+<script nonce="{{ csp_nonce() }}">
+
+    // This start scaling right after DOM is loaded - and we'll await actual image downloads inside the code of scaleImages
+
+    $(function() { scaleImages() });
+
+    // Smart scaling and cropping on the fly. Do not tracking page resize yet!
+
+    function scaleImages() {
+
+        // Wait till images fully loaded
+        var deferreds = [];
+        $('.scale').each(function() {
+            if (!this.complete) {
+                var deferred = $.Deferred();
+                $(this).one('load', deferred.resolve);
+                deferreds.push(deferred);
+            }
+        });
+
+        $.when.apply($, deferreds).done(function() {
+
+            $('.scale').each(function(i, item) {
+
+                var nw = $(item).prop("naturalWidth");
+                var nh = $(item).prop("naturalHeight");
+                var w = $(item).prop("width");
+                var h = $(item).prop("height");
+
+                //if (!nw || !nh) { alert "NO";
+                //    return; }
+
+                // alert (nw + ' | ' + nh);
+
+                var wanted = h; // Scale image by container height
+
+                var imageRatio = nw / nh;
+                var divRatio = w / h;
+                var factor = nw / w; // Suppose that image width is more than container
+
+                var neww = 0;
+                var newh = 0;
+                var newTopMargin = 0;
+                var newLeftMargin = 0;
+
+                // alert( ' | ' + nw + ' | ' + nh + ' | ' + w + ' | ' + h + ' | imageRatio = ' + imageRatio + ' | divRatio = ' + divRatio );
+
+                // Image is BIGGER than container
+                if (factor >= 1) {
+
+                    if (divRatio > imageRatio) {
+                        neww = w;
+                        newh = nh / factor;
+                        newTopMargin = wanted - newh;
+                    } else {
+                        newh = wanted;
+                        neww = nw / (nh / wanted);
+                        newLeftMargin = w - neww;
+                    }
+
+                // Container is BIGGER than image
+                } else {
+
+                    if (divRatio > imageRatio) {
+                        neww = w;
+                        newh = h / factor;
+                        newTopMargin = - (newh - wanted);
+                    } else {
+                        newh = wanted;
+                        neww = nw / (nh / wanted);
+                        newLeftMargin = w - neww;
+                    }
+
+                }
+
+                $(item).css({'width': neww, 'height': newh, 'margin-top': newTopMargin, 'margin-left': newLeftMargin });
+                $(item).removeClass('scale'); // Do not scale when new block of news will be loaded
+
+            });
+        });
+    }
+
+</script>

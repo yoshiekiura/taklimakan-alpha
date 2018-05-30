@@ -64,6 +64,8 @@
                                 <img src="/images/lectures/{{lecture.image}}" alt="">
                             </div>
                             {% endif %}
+
+
                             <div class="news-body news-body-include">
                                 <div class="p-content">
 
@@ -75,11 +77,21 @@
                                     {% if lecture.source is not empty %}
                                         <li class="list-inline-item"><strong>Source:</strong> <a href="{{lecture.source}}">{{lecture.source}}</a></li>
                                     {% endif %}
+
+
 {# FIXME Hide Shares and Likes while they are not working properly
                                     <li class="list-inline-item"><a href="#"><img src="images/i/like.svg" alt=""> 10 likes</a></li>
                                     <li class="list-inline-item"><a href="#"><img src="images/i/share.svg" alt=""> Share</a></li>
 #}
                                 </ul>
+
+                                    <div class="addthis-buttons">
+                                       {% include 'lectures/buttons.html.twig' %}
+                                    </div>
+
+
+                                        {% include 'snippets/comments.html.twig' %}
+
 
                             </div>
                         </div>

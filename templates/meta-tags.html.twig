@@ -1,0 +1,37 @@
+    {#
+        Must-Have Social Meta Tags for Twitter, Google+, Facebook and More
+        https://moz.com/blog/meta-data-templates-123
+        2: The Standard Template
+    #}
+
+    {% if meta is defined %}
+
+        <!-- Schema.org markup for Google+ -->
+        <meta itemprop="name" content="{{meta.title|truncate(80)}}">
+        <meta itemprop="description" content="{{meta.description|truncate(160)}}">
+        <meta itemprop="image" content="{{meta.image}}">
+
+        <!-- Twitter Card data -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@taklimakan_net">
+        <meta name="twitter:title" content="{{meta.title|truncate(80)}}">
+        <meta name="twitter:description" content="{{meta.description|truncate(160)}}">
+        <meta name="twitter:creator" content="@taklimakan_net">
+        <!-- Twitter summary card with large image must be at least 280x150px -->
+        <meta name="twitter:image:src" content="{{meta.image}}">
+
+        <!-- Open Graph data -->
+        <meta property="og:title" content="{{meta.title|truncate(80)}}" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="{{meta.url}}" />
+        <meta property="og:image" content="{{meta.image}}" />
+        <meta property="og:description" content="{{meta.description|truncate(160)}}" />
+        <meta property="og:site_name" content="Taklimakan" />
+        <meta property="article:published_time" content="{{meta.date}}" />
+        <meta property="article:modified_time" content="{{meta.date}}" />
+        <meta property="article:section" content="News" />
+        <meta property="article:tag" content="{{meta.tags|join(', ')|truncate(160)}}" />
+
+        {# <meta property="fb:admins" content="Facebook numberic ID" /> #}
+
+    {% endif %}

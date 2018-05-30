@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta http-equiv="content-type" content="text/html" charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="msapplication-tap-highlight" content="no" />
+<meta name="ad.size" content="width=300, height=250">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="/john/css/style.css">
+{#<link rel="stylesheet" href="/john/css/bootstrap.min.css">
+<link rel="stylesheet" href="/john/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/john/css/owl.carousel.min.css">
+<link rel="stylesheet" href="/john/css/owl.theme.default.min.css"> #}
+
+<!-- AnyCharts CSS -->
+
+<link rel="stylesheet" href="https://cdn.anychart.com/releases/8.2.0/css/anychart-ui.min.css" />
+<link rel="stylesheet" href="https://cdn.anychart.com/releases/8.2.0/fonts/css/anychart-font.min.css" />
+
+<!-- Custom CSS -->
+{#
+<link href="/css/takastyles.css" rel="stylesheet" type="text/css" />
+
+html { height: 100%; }
+body { min-height: 100%; }
+        .container { height: 100%; }
+        body { height: 100%; }
+#}
+
+<style nonce="{{ csp_nonce() }}">
+    html, body { /*height: 100vh;*/ height: 100%; margin: 0;  }
+    body { overflow:hidden; height: 100%; padding: 0px 15px; }
+    .container { position: relative; height: 100%; }
+    #filler { /*position: absolute;*/ height: 100%; }
+    #index-chart { width: 100%; height: 85%; /*position: absolute;*/ }
+    #index-range-selector { text-align: right; padding: 0px 20px 0px 0px; margin-top: -50px; }
+    #ac_layer_y, #ac_layer_10, #ac_layer_12 { display: none } /* Hide annoing range selector below graph */
+    @media screen and (max-width: 575px) {
+        #index-range-selector { text-align: right; padding: 0px 10px 0px 0px; margin-top: -20px; }
+    }
+    #more { position: absolute; width: 300px; height: 30px; font-weight: bold; font-size: 1.2em; color: #444; left: 0; right: 0;  margin:auto; margin-top: -18px; }
+    #more a { text-decoration: none; color: #564fd9 }
+    #more a:hover { color: # }
+    #crypto-index-card { margin-top: -10px; padding-left: 10px; }
+</style>
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div id="crypto-index-card" class="news-header"><h2><a name="crypto-index">[ TN Crypto 100 ]</a></h2></div>
+    <!-- <div id="summary">
+        <p><strong>TN Crypto 100 Index</strong>, it is composed of the 100 of the largest cryptocurrencies by market capitalization. By creating an index with 100 components we aim to represent the movement of the broader market and at the same time create a benchmark, ie a reference point, that we could measure investment performance, volatility, etc. against.</br></br>
+    </div> -->
+
+    <div id="index-chart"><div id="index-range-selector"></div></div>
+
+    <div id="more">&#9656; See more on <a href="https://taklimakan.network/charts/all" target="_blank">Taklimakan Network</a> &#9666;</div>
+
+</div>
+
+
+    <script nonce="{{ csp_nonce() }}">
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        anychart.licenseKey('lar.fm-99e7e246-4b5d8f8b');
+
+        //anychart.onDocumentReady(function () {
+
+        var data11 = {{ data|json_encode|raw }};
+        var dataTable11 = anychart.data.table();
+        dataTable11.addData(data11);
+        var chart11 = anychart.stock();
+
+        var credits11 = chart11.credits();
+        credits11.enabled(false);
+
+        var plot11 = chart11.plot(0);
+        plot11.line()
+        .data(dataTable11.mapAs({'value': 1}))
+        .name('TN Crypto 100')
+        .stroke('3 #564fd9')
+        ;
+
+        chart11.container('index-chart');
+        chart11.draw();
+
+        var rangeSelector11 = anychart.ui.rangeSelector();
+
+        var ranges = [
+            { 'type' : 'unit', 'unit' : 'day', 'count' : 7, 'text' : 'Week' },
+            { 'type' : 'unit', 'unit' : 'month', 'count' : 1, 'text' : 'Month' },
+            { 'type' : 'unit', 'unit' : 'month', 'count' : 3, 'text' : 'Quarter' },
+            { 'type' : 'unit', 'unit' : 'year', 'count' : 1, 'text' : 'Year' },
+            { 'type': 'max', 'text': 'All' },
+        ];
+
+        rangeSelector11.ranges(ranges);
+        rangeSelector11.target(chart11);
+        rangeSelector11.render(document.getElementById("index-range-selector"));
+
+    }); // jQuery or DOMContentLoaded
+
+    </script>
+
+    <!-- AnyChart JS -->
+
+    <script src="https://cdn.anychart.com/releases/8.2.0/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.2.0/js/anychart-ui.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.2.0/js/anychart-exports.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.2.0/js/anychart-stock.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.2.0/themes/light_glamour.min.js"></script>
+
+{#    <script src="/john/js/jquery-3.2.1.min.js"></script>
+    <script src="/john/js/popper.min.js"></script>
+    <script src="/john/js/bootstrap.min.js"></script>
+    <script src="/john/js/owl.carousel.min.js"></script>
+#}
+
+    {% if app.environment != 'dev' %}
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116479802-1"></script>
+        <script nonce="{{ csp_nonce() }}">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-116479802-1');
+        </script>
+
+    {% endif %}
+
+</body>
+
+</html>

@@ -30,7 +30,7 @@ class AnalyticsRepository extends ServiceEntityRepository
 
         $sql =
             'SELECT *,
-            (SELECT COALESCE(SUM(count), 0) FROM likes WHERE content_type = "analytics" AND content_id = analytics.id) AS likes,
+            (SELECT COALESCE(SUM(status), 0) FROM likes WHERE content_type = "analytics" AND content_id = analytics.id) AS likes,
             (SELECT COALESCE(SUM(id), 0) FROM comments WHERE content_type = "analytics" AND content_id = analytics.id) AS comments
             FROM analytics';
 

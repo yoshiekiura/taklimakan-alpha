@@ -4,9 +4,9 @@
 
 {% block body %}
 
-{% if show_welcome is defined and show_welcome == true %}
-    {% include 'welcome.modal.html.twig' %}
-{% endif %}
+    {% if show_welcome is defined and show_welcome == true %}
+        {% include 'welcome.modal.html.twig' %}
+    {% endif %}
 
     {% include 'john-top-menu.html.twig' %}
 
@@ -14,29 +14,94 @@
 
     {% include 'news/filters.html.twig' %}
 
-
     <div class="container">
         <div class="news-box">
 
-    <div class="tab-content" id="pills-tabContent">
-    <!-- Cards -->
-    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="tab-content" id="pills-tabContent">
+            <!-- Cards -->
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+            {% include 'news/more.html.twig' %}
+
+            </div></div>
+
+            <!-- Placeholder for future News -->
+
+            <div class="row" id="more-news"></div>
+
+            <!-- More Button with AJAX -->
+
+            <div class="row">
+                <div class="col-xl-6 offset-xl-3">
+                    <p class="btn btn-success btn-block btn-load"><img src="images/i/refresh.svg" alt="" class="refresh"> Load more...</p>
+                </div>
+            </div>
+
+            <script nonce="{{ csp_nonce() }}">
+
+                var page = Number(getParam("page") ? getParam("page") : 0);
+                var level = Number(getParam("level") ? getParam("level") : 0);
+                var tag = getParam("tags");
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    $('.btn-load').on('click', loadMore);
+                });
+
+                // Get parameter from URL
+
+                function getParam (k) {
+                    var p = {};
+                    location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,k,v){p[k]=v})
+                    return k ? p[k] : p;
+                }
+
+                function loadMore() {
+
+                    $.ajax({
+                        url: '/news/more',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify({ 'page': Number(page + 1), 'tags': [], 'level': Number(level) }),
+                        processData: false,
+                        success:
+                            function(data, textStatus, jQxhr) {
+                                // alert(JSON.stringify(data));
+                                if (data.html) {
+                                    page++;
+                                    // $('#more').data('page', page).html(data.html);
+                                    $('#more-news').before(data.html);
+                                    scaleImages();
+                                    //$(window).on("load", scaleImages);
+                                }
+                            },
+                        error:
+                            function(jqXhr, textStatus, errorThrown) {
+                                console.log('[ERR ] Cant get Data with AJAX!');
+                            }
+                    });
+                }
+
+                {# /*
+                        $.ajax({
+                            type: "POST",
+                            dataType: 'json',
+                            url: '/news/more',
+                            async: false //you won't need that if nothing in your following code is dependend of the result
+                        })
+                        .done(function(response){
+                            template = response;
+                            $('#more').html(template.html); //Change the html of the div with the id = "your_div"
+                        })
+                        .fail(function(jqXHR, textStatus, errorThrown){
+                            alert('Error : ' + errorThrown);
+                        });
+                */ #}
+
+            </script>
 
 
-
-    <div class="row">
-    {% for el in news %}
-            {% include 'news/news-box.html.twig' %}
-    {% endfor %}
+        </div>
     </div>
-
-    </div></div>
-
-
-    {% include 'news/pagination.html.twig' %}
-        
-    </div></div>
-
-
 
 {% endblock %}

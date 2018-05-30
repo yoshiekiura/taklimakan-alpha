@@ -1,0 +1,247 @@
+<!-- Форма регистрации -->
+{% set registration_form = getRegistrationForm() %}
+<div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="register" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        {{ form_start(registration_form, {attr: {action: path('app_security_register'), id: 'registration-form', novalidate: 'novalidate'}}) }}
+        <div class="modal-content bg-white">
+            <div class="modal-header">
+                <h5 class="modal-title reg-title">User Registration</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ form_label(registration_form.first_name) }}
+                            {{ form_widget(registration_form.first_name, {attr: {class: 'form-control', placeholder: registration_form.first_name.vars.label}}) }}
+                            <small class="form-text text-muted valid-error" style="display: none;"></small>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ form_label(registration_form.last_name) }}
+                            {{ form_widget(registration_form.last_name, {attr: {class: 'form-control', placeholder: registration_form.last_name.vars.label}}) }}
+                            <small class="form-text text-muted valid-error" style="display: none;"></small>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            {{ form_label(registration_form.email) }}
+                            {{ form_widget(registration_form.email, {attr: {class: 'form-control', placeholder: registration_form.email.vars.label}}) }}
+                            <small class="form-text text-muted valid-error" style="display: none;"></small>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="{{ registration_form.erc20_token.vars.id }}">
+                                ERC-20 Wallet (optional)
+                                <a href="/lectures/34/how-to-use-metamask" target="_blank">Learn how to get</a>
+                            </label>
+                            {{ form_widget(registration_form.erc20_token, {attr: {class: 'form-control', placeholder: registration_form.erc20_token.vars.label}}) }}
+                            <small class="form-text text-muted valid-error" style="display: none;"></small>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            {{ form_label(registration_form.password.first) }}
+                            {{ form_widget(registration_form.password.first, {attr: {class: 'form-control', placeholder: registration_form.password.first.vars.label}}) }}
+                            <small class="form-text text-muted" id="passwordHelp">Latin, number and special characters only. Minimum 8 characters, must contain numbers and letters.</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            {{ form_label(registration_form.password.second) }}
+                            {{ form_widget(registration_form.password.second, {attr: {class: 'form-control', placeholder: registration_form.password.second.vars.label}}) }}
+                            <small class="form-text text-muted valid-error" style="display: none;"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" class="btn btn-buy btn-block" value="Registration" />
+            </div>
+        </div>
+        {{ form_end(registration_form) }}
+    </div>
+</div>
+<!-- /.Форма регистрации -->
+
+<!-- Верификация Email -->
+<div class="modal fade" id="email-ver" tabindex="-1" role="dialog" aria-labelledby="email-ver" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="confirmation-code-form" action="{{ path('app_security_confirmcode') }}" method="post">
+            <div class="modal-content bg-white">
+                <div class="modal-header">
+                    <h5 class="modal-title reg-title">Email Verification</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <p>We sent you the code by email. Enter it in the field below and complete the registration</p>
+                        </div>
+                        <div class="col-lg-6 offset-lg-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="registrationCode" placeholder="342511">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-buy btn-block" value="Complete the registration" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.Верификация Email -->
+
+<!-- Форм входа -->
+<div class="modal fade" id="LogIn" tabindex="-1" role="dialog" aria-labelledby="LogIn" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form method="post" action="{{ path('login') }}" id="login_form">
+            <div class="modal-content bg-white">
+                <div class="modal-header">
+                    <h5 class="modal-title reg-title">User Log In</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="login_email">Email address</label>
+                                <input type="email" class="form-control" id="login_email" aria-describedby="emailHelp" value="" name="_username" placeholder="Enter email">
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="login_password">Password</label>
+                                <input type="password" class="form-control" id="login_password" name="_password" placeholder="Password" value="">
+                                <small class="form-text text-muted valid-error" style="display: none;"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <a href="#" class="forgot" data-toggle="modal" data-target="#forgotPass" data-dismiss="modal" aria-label="Close">Forgot password?</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-buy btn-block" value="Log In" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.Форма входа -->
+
+<!-- Восстановление пароля. Email -->
+<div class="modal fade" id="forgotPass" tabindex="-1" role="dialog" aria-labelledby="forgotPass" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="forgot_password_form" action="{{ path('app_security_forgotpassword') }}" method="post">
+            <div class="modal-content bg-white">
+                <div class="modal-header">
+                    <h5 class="modal-title reg-title" id="exampleModalLabel">Forgot password?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Fill in the form below to recover your forgotten password</p>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="forgot_password_email">Enter your email</label>
+                                <input type="email" class="form-control" id="forgot_password_email" value="" placeholder="Enter email">
+                                <small class="form-text text-muted valid-error" style="display: none;"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-buy btn-block" value="Send code" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.Восстановление пароля. Email -->
+
+<!-- Восстановление пароля. Верификация Email -->
+<div class="modal fade" id="recover-pass" tabindex="-1" role="dialog" aria-labelledby="recover-pass" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form action="{{ path('app_security_confirmrestorecode') }}" method="post" id="confirmRstoreCodeForm" novalidate>
+            <div class="modal-content bg-white">
+                <div class="modal-header">
+                    <h5 class="modal-title reg-title" id="exampleModalLabel">Email Verification</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <p>Please enter 6-digit code we have sent to your e-mail</p>
+                        </div>
+                        <div class="col-lg-6 offset-lg-3">
+                            <div class="form-group">
+                                <label for="recover_code">Enter code:</label>
+                                <input type="text" class="form-control" id="recover_code" placeholder="342511">
+                                <small id="emailHelp" class="form-text text-muted valid-error" style="display: none"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-buy btn-block" value="Change password" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.Восстановление пароля. Верификация Email -->
+
+<!-- Восстановление пароля. Смена пароля -->
+<div class="modal fade" id="change-pass" tabindex="-1" role="dialog" aria-labelledby="change-pass" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="changePasswordForm" action="{{ path('app_security_changepassword') }}" method="post">
+            <div class="modal-content bg-white">
+                <div class="modal-header">
+                    <h5 class="modal-title reg-title" id="exampleModalLabel">Change password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="change-pass-1">Enter your new password</label>
+                                <input type="password" class="form-control" id="change-pass-1" placeholder="Password" value="">
+                                <small id="changePasswordHelp" class="form-text text-muted">Latin, number and special characters only. Minimum 8 characters, must contain numbers and letters.</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="change-pass-2">Confirm your password</label>
+                                <input type="password" class="form-control" id="change-pass-2" placeholder="Repeat password" value="">
+                                <small id="emailHelp" class="form-text text-muted valid-error" style="display: none"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-buy btn-block" value="Submit" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.Восстановление пароля. Смена пароля -->

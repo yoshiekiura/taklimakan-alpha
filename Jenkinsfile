@@ -35,42 +35,183 @@ pipeline {
 
         }
       }
-      stage('Test') {
+      stage('Preconditions') {
+        parallel {
+          stage('Archive') {
+            steps {
+              sh '''#!/bin/bash
+if [ -d taklimakan-alpha ]; then
+  # remove previous deploy data
+  rm -rf taklimakan-alpha
+fi
+mkdir taklimakan-alpha
+for D in *; do
+  if [ $D != "taklimakan-alpha" ] &&
+     [ $D != ".git" ] &&
+     [ $D != "Jenkinsfile" ] &&
+     [ $D != "CodeAnalysis" ] &&
+     [ $D != "deploy" ] &&
+     [ $D != "phpUnitRes" ] &&
+     [ $D != "tests" ] &&
+     [ $D != "createSL.bash" ] &&
+     [[ $D != *"pylint"* ]]; then
+    # copy to taklimakan-alpha
+    if [ -d "${D}" ]; then
+      cp -R $D taklimakan-alpha/
+    else
+      cp $D taklimakan-alpha/
+    fi
+  fi
+done
+#zip deploy file
+zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
+'''
+              archiveArtifacts '*.zip'
+            }
+          }
+          stage('Is deploy necessary?') {
+            steps {
+              script {
+                deploy_is_needed = 0
+
+                git_commit_id = sh (
+                  script: 'git log --pretty=format:\'%h\' -n 1',
+                  returnStdout: true
+                ).trim()
+
+                git_commit_files = sh (
+                  script: "git diff --name-only HEAD^ HEAD",
+                  returnStdout: true
+                )
+
+                println "files modified by commit (${git_commit_id}): ${git_commit_files}"
+
+                git_commit_files.trim().split().each {
+                  if (!it.contains("tests/") && !it.contains("Jenkinsfile")) {
+                    deploy_is_needed = 1
+                  }
+                }
+
+                if ((deploy_is_needed == 1) &&
+                ((env.BRANCH_NAME == "master") ||
+                (env.BRANCH_NAME == "develop") ||
+                (env.BRANCH_NAME.contains("release")) )) {
+                  println("Deploy is necessary")
+                }
+                else {
+                  deploy_is_needed = 0
+                  println("Deploy is not necessary")
+                }
+              }
+
+            }
+          }
+          stage('Add additional Groovy Variables') {
+            steps {
+              script {
+                if(env.BRANCH_NAME == "master") {
+                  DEPLOY_HOST=env.PRODUCTION_HOST
+                  DEPLOY_PORT=env.PRODUCTION_PORT
+                }
+                else {
+                  if(env.BRANCH_NAME == "develop") {
+                    DEPLOY_HOST=env.DEVELOP_HOST
+                    DEPLOY_PORT=env.DEVELOP_PORT
+                  }
+                  else
+                  {
+                    DEPLOY_HOST=env.RELEASE_HOST
+                    DEPLOY_PORT=env.RELEASE_PORT
+                  }
+                }
+
+                SSH_USER = env.SSH_USER
+                git_commit_id = sh (
+                  script: "git log --pretty=format:'%h' -n 1",
+                  returnStdout: true
+                )
+
+                DEPLOY_VERSION = env.BUILD_NUMBER+"."+ git_commit_id
+
+                echo ("Deploy version ${DEPLOY_VERSION}")
+              }
+
+            }
+          }
+        }
+      }
+      stage('Install Composer') {
+        when {
+          not {
+            branch 'master'
+          }
+
+        }
         steps {
-          sh 'echo "execute Unit tests"'
+          sh '''#!/bin/bash
+echo "create dummy symfony environment file"
+echo "" > ".env"'''
+          sh '''#!/bin/bash
+echo "install composer"
+composer install'''
+          sh '''#!/bin/bash
+echo "create catalog for Code Analysis results"
+mkdir -p results/CALogs'''
+        }
+      }
+      stage('Unit Tests') {
+        when {
+          not {
+            branch 'master'
+          }
+
+        }
+        steps {
+          sh '''#!/bin/bash
+mkdir -p results/phpUnitRes
+./vendor/bin/simple-phpunit --log-junit results/phpUnitRes/junit.xml --coverage-html=results/phpUnitRes/'''
+          junit 'results/phpUnitRes/*.xml'
         }
       }
       stage('Static Analysis') {
-        parallel {
-          stage('Static Analysis') {
-            steps {
-              echo 'Static Analysis'
-            }
+        when {
+          not {
+            branch 'master'
           }
-          stage('Analitics') {
+
+        }
+        parallel {
+          stage('Python Lint') {
             steps {
               sh '''#!/bin/bash
-
 if [ ! -f pylint.cfg ]
 then
   # generate pylint configuration file if not exist
   pylint --generate-rcfile > pylint.cfg
 fi
-
 for entry in `ls services/analytics/*.py`; do
     echo $entry
     name=$(basename $entry)
     pylint --rcfile=pylint.cfg --msg-template="{path}:{line}: [{msg_id}, {obj}] {msg} ({symbol})" $entry > pylint_$name.log
 done
-
-
-
 #return 0 to be able to continue execution of jenkins steps
 exit 0
-
 '''
               warnings(consoleParsers: [[parserName: 'PyLint']], parserConfigurations: [[parserName: 'PyLint', pattern: 'pylint*.log']])
               archiveArtifacts 'pylint_*.log'
+            }
+          }
+          stage('Copy paste detection') {
+            steps {
+              sh '''mkdir -p results/CALogs
+./vendor/bin/phpcpd --log-pmd results/CALogs/pmd-cpd.xml --exclude=vendor,tests,var,src/Migrations ./src ./templates ./public ./services || exit 0'''
+              dry(canRunOnFailed: true, pattern: 'results/CALogs/pmd-cpd.xml')
+            }
+          }
+          stage('Mess Detection') {
+            steps {
+              sh './vendor/bin/phpmd src,templates,public,services xml cleancode,codesize,controversial,design,unusedcode,naming --reportfile results/CALogs/pmd.xml --exclude src/Migrations --ignore-violations-on-exit'
+              pmd(canRunOnFailed: true, pattern: 'results/CALogs/pmd.xml')
             }
           }
         }
@@ -87,13 +228,11 @@ exit 0
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 # take symfony enviroment file to make sure that
-#   deploy process not crash server 
+#   deploy process not crash server
 #   (it could be if symfony environment variables are missed)
-
 if [ "$BRANCH_NAME" != "master" ]; then
  echo "get Symfony enviroment file from Develop"
  scp -P $DEVELOP_PORT tkln@$DEVELOP_HOST:/var/www/.env develop.env
-
  if [ ! -f develop.env ]; then
     echo "Symfony environment file not exist"
     rm -rf *.env
@@ -105,12 +244,10 @@ fi'''
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 # take symfony enviroment file to make sure that
-#   deploy process not crash server 
+#   deploy process not crash server
 #   (it could be if symfony environment variables are missed)
-
 echo "get Symfony enviroment file from Release"
 scp -P $RELEASE_PORT tkln@$RELEASE_HOST:/var/www/.env release.env
-
 if [ ! -f release.env ]; then
   echo "Symfony environment file not exist"
   rm -rf *.env
@@ -122,13 +259,11 @@ fi
           sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
             sh '''#!/bin/bash
 # take symfony enviroment file to make sure that
-#   deploy process not crash server 
+#   deploy process not crash server
 #   (it could be if symfony environment variables are missed)
-
 if [ "$BRANCH_NAME" == "master" ]; then
   echo "get Symfony enviroment file from Release"
   scp -P $PRODUCTION_PORT tkln@$PRODUCTION_HOST:/var/www/.env master.env
-
   if [ ! -f master.env ]; then
     echo "Symfony environment file not exist"
     rm -rf *.env
@@ -141,20 +276,19 @@ fi
           sh '''#!/bin/bash
 echo "Branch Name: $BRANCH_NAME"
 if [ "$BRANCH_NAME" == "master" ]; then
-  # Verify that .env file of realease branch contain the 
+  # Verify that .env file of realease branch contain the
   #   same Symfony environment variables as in develop branch
   FROM="release.env"
   TO="master.env"
 else
   if [ "$BRANCH_NAME" != "develop" ]; then
-    # Verify that .env file of realease branch contain the 
+    # Verify that .env file of realease branch contain the
     #   same symfony environment variables as in develop branch
     echo "Verify that Symfony enviroment variables are exist both in release and develop branch"
     FROM="develop.env"
     TO="release.env"
   fi
 fi
-
 while IFS= read -r line
 do
   if [[ $line != "#"* ]] && [[ $line == *"="* ]]; then
@@ -166,25 +300,32 @@ do
     fi
   fi
 done <"$FROM"
-
 echo "Symfony enviromnt variable file is correct. Proceed with deploy"
 '''
           sh 'rm -rf *.env'
         }
       }
-      stage('Archive & Deploy') {
+      stage('Deploy') {
         when {
-          anyOf {
-            branch 'master'
-            branch 'release/**'
-            branch 'develop'
+          allOf {
+            expression {
+              return (deploy_is_needed != 0)
+            }
+
+            anyOf {
+              branch 'master'
+              branch 'release/**'
+              branch 'develop'
+            }
+
           }
 
         }
         steps {
-          sh '''echo "display git branch info to make sure that branch is switch to Commit"
+          lock(resource: 'DeployProcess') {
+            sh '''echo "display git branch info to make sure that branch is switch to Commit"
 git branch'''
-          sh '''echo "#!/bin/bash" > deploy
+            sh '''echo "#!/bin/bash" > deploy
 echo "#########################################################" >> deploy
 echo "# deploy" >> deploy
 echo "#" >> deploy
@@ -241,14 +382,22 @@ echo "# copy .env to DEPLOY/<version> which is necessary for symphony" >> deploy
 echo "cp .env DEPLOY/\\$version_id/.env" >> deploy
 echo "cd DEPLOY/\\$version_id" >> deploy
 echo "composer install" >> deploy
-echo "" >> deploy
-echo "# return to /var/www/ folder" >> deploy
-echo "cd /var/www/" >> deploy
-echo "" >> deploy
-echo "#Create symlinks" >> deploy
-echo "./createSL.bash \\$version_id" >> deploy
+#Probably it will be necessary to perform PHP migration
+echo "echo \\"Verify PHP migrate\\"" >> deploy
+# create folder for migration results
+echo "mkdir -p src/Migrations" >> deploy
+#generate migration
+echo "php bin/console doctrine:migrations:diff" >> deploy
+#echo "php bin/console doctrine:migrations:migrate" >> deploy
+echo "echo \\"End PHP migrate\\"" >> deploy
+#echo "" >> deploy
+#echo "# return to /var/www/ folder" >> deploy
+#echo "cd /var/www/" >> deploy
+#echo "" >> deploy
+#echo "#Create symlinks" >> deploy
+#echo "./createSL.bash \\$version_id" >> deploy
 '''
-          sh '''echo "#!/bin/bash" > createSL.bash
+            sh '''echo "#!/bin/bash" > createSL.bash
 echo "#########################################################" >> createSL.bash
 echo "# createSL.bash" >> createSL.bash
 echo "#" >> createSL.bash
@@ -271,10 +420,14 @@ echo "#     in DEPLOY folder and in this case it means that" >> createSL.bash
 echo "#     version will be rolled back to previous version" >> createSL.bash
 echo "#     current version will be zipped and could be used" >> createSL.bash
 echo "#     in future" >> createSL.bash
+echo "#   fail - if fail is mention instead of version Id" >> createSL.bash
+echo "#     then the last successful deployed version will be taken" >> createSL.bash
+echo "#     form DEPLOY/success.last file" >> createSL.bash
 echo "#" >> createSL.bash
 echo "# Examples:" >> createSL.bash
-echo "#   createSL.bash 1d3f74d.23" >> createSL.bash
-echo "#   createSL.bash 15" >> createSL.bash
+echo "#   1. createSL.bash" >> createSL.bash
+echo "#   2. createSL.bash fail" >> createSL.bash
+echo "#   3. createSL.bash 23.1d3f74d" >> createSL.bash
 echo "#" >> createSL.bash
 echo "#########################################################" >> createSL.bash
 echo "" >> createSL.bash
@@ -284,7 +437,15 @@ echo "  echo \\"Deploy is not success. Deploy version is not set\\"" >> createSL
 echo "  exit 1;" >> createSL.bash
 echo "fi" >> createSL.bash
 echo "" >> createSL.bash
-echo "versionId=\\$1" >> createSL.bash
+echo "if [ \\$1 == \\"fail\\" ]; then" >> createSL.bash
+echo "  if [ ! -f DEPLOY/success.last ]; then" >> createSL.bash
+echo "    echo \\"There are no successful deployed before\\"" >> createSL.bash
+echo "    exit 1" >> createSL.bash
+echo "  fi" >> createSL.bash
+echo "  versionId=\\`cat /var/www/DEPLOY/success.last\\`" >> createSL.bash
+echo "else" >> createSL.bash
+echo "  versionId=\\$1" >> createSL.bash
+echo "fi" >> createSL.bash
 echo "" >> createSL.bash
 echo "if [ ! -d DEPLOY/\\$versionId ]; then" >> createSL.bash
 echo "  if [ ! -f DEPLOY/\\$versionId.zip ]; then" >> createSL.bash
@@ -324,11 +485,12 @@ echo "if [ ! -d public ]; then" >> createSL.bash
 echo "  mkdir public" >> createSL.bash
 echo "  mkdir public/images" >> createSL.bash
 echo "fi" >> createSL.bash
+echo "dir DEPLOY/\\$versionId" >> createSL.bash
 echo "" >> createSL.bash
-echo "for public_entry in \\`ls -d DEPLOY/\\$versionId/public/*\\`; do" >> createSL.bash
+echo "for public_entry in \\`ls -a DEPLOY/\\$versionId/public\\`; do" >> createSL.bash
 echo "  shortname=\\$(basename \\$public_entry)" >> createSL.bash
 echo "  #create symbolic links inside public for all items except images" >> createSL.bash
-echo "  if [ \\"\\$shortname\\" != \\"images\\" ]; then" >> createSL.bash
+echo "  if [ \\"\\$shortname\\" != \\"images\\" ] && [ \\"\\$shortname\\" != \\".\\" ] && [ \\"\\$shortname\\" != \\"..\\" ]; then" >> createSL.bash
 echo "    # create new symbolic link" >> createSL.bash
 echo "    cd public" >> createSL.bash
 echo "    # remove existing file/folder/symlink" >> createSL.bash
@@ -337,11 +499,15 @@ echo "      # remove file or folder" >> createSL.bash
 echo "      rm -rf \\$shortname" >> createSL.bash
 echo "    fi" >> createSL.bash
 echo "" >> createSL.bash
-echo "    ln -sfn ../\\$public_entry \\$shortname" >> createSL.bash
+echo "    ln -sfn ../DEPLOY/\\$versionId/public/\\$public_entry \\$shortname" >> createSL.bash
+echo "    echo \\"Creating symbolic link from \\$public_entry to .. \\$shortname ... done\\"" >> createSL.bash
 echo "    cd .." >> createSL.bash
 echo "  fi" >> createSL.bash
 echo "done" >> createSL.bash
 echo "" >> createSL.bash
+echo "find /var/www/DEPLOY/\\$versionId/var/cache -type d -exec chmod 777 {} \\;" >> createSL.bash
+echo "mkdir -p /var/www/DEPLOY/\\$versionId/var/log" >> createSL.bash
+echo "find /var/www/DEPLOY/\\$versionId/var/log -type d -exec chmod 777 {} \\;" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
@@ -357,65 +523,151 @@ echo "done" >> createSL.bash
 echo "" >> createSL.bash
 echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
 '''
-          sh '''#!/bin/bash
-if [ -d taklimakan-alpha ]; then
-  # remove previous deploy data
-  rm -rf taklimakan-alpha
-fi
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              script {
+                echo("Deploy Host: ${DEPLOY_HOST}:${DEPLOY_PORT}")
 
-mkdir taklimakan-alpha
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} mkdir -p /var/www/DEPLOY"
+                sh "scp -P ${DEPLOY_PORT} taklimakan-alpha.zip ${SSH_USER}@${DEPLOY_HOST}:/var/www/DEPLOY/taklimakan-alpha.zip"
+                sh "scp -P ${DEPLOY_PORT} deploy ${SSH_USER}@${DEPLOY_HOST}:/var/www/deploy"
+                sh "scp -P ${DEPLOY_PORT} createSL.bash ${SSH_USER}@${DEPLOY_HOST}:/var/www/createSL.bash"
 
-for D in *; do
-  if [ $D != "taklimakan-alpha" ] && 
-     [ $D != ".git" ] && 
-     [ $D != "Jenkinsfile" ] && 
-     [ $D != "CodeAnalysis" ] && 
-     [ $D != "deploy" ] &&
-     [ $D != "createSL.bash" ] &&
-     [[ $D != *"pylint"* ]]; then
-    # copy to taklimakan-alpha
-    if [ -d "${D}" ]; then
-      cp -R $D taklimakan-alpha/
-    else
-      cp $D taklimakan-alpha/
-    fi
-  fi
-done
+                echo("Run deploy script")
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} chmod -f 777 /var/www/deploy"
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} chmod -f 777 /var/www/createSL.bash"
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} /var/www/deploy taklimakan-alpha ${DEPLOY_VERSION}"
+              }
 
-#zip deploy file
-zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
+              script {
+                migration_files = sh (
+                  script: "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} ls -d /var/www/DEPLOY/${DEPLOY_VERSION}/src/Migrations/*",
+                  returnStdout: true
+                )
 
-'''
-          archiveArtifacts '*.zip'
-          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
-            sh '''#!/bin/bash
-echo "Branch Name: $BRANCH_NAME"
-if [ "$BRANCH_NAME" == "master" ]; then
-  DEPLOY_HOST=$PRODUCTION_HOST
-  DEPLOY_PORT=$PRODUCTION_PORT
-elif [ "$BRANCH_NAME" == "develop" ]; then
-  DEPLOY_HOST=$DEVELOP_HOST
-  DEPLOY_PORT=$DEVELOP_PORT
-else
-  #release branch
-  DEPLOY_HOST=$RELEASE_HOST
-  DEPLOY_PORT=$RELEASE_PORT
-fi
-echo "Deploy Host: $DEPLOY_HOST:$DEPLOY_PORT"
+                echo("migration files: ${migration_files}")
+              }
 
-echo "Upload file to host"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT mkdir -p /var/www/DEPLOY
-scp -P $DEPLOY_PORT taklimakan-alpha.zip tkln@$DEPLOY_HOST:/var/www/DEPLOY/taklimakan-alpha.zip
-scp -P $DEPLOY_PORT deploy tkln@$DEPLOY_HOST:/var/www/deploy
-scp -P $DEPLOY_PORT createSL.bash tkln@$DEPLOY_HOST:/var/www/createSL.bash
+              script {
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} /var/www/createSL.bash ${DEPLOY_VERSION}"
+              }
 
-echo "Run deploy script"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/deploy
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT chmod -f 777 /var/www/createSL.bash
-OUTPUT="$(git log --pretty=format:\'%h\' -n 1)"
-ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NUMBER.$OUTPUT'''
+            }
+
           }
 
+        }
+      }
+      stage('Smoke Test') {
+        when {
+          allOf {
+            expression {
+              return (deploy_is_needed != 0)
+            }
+
+            anyOf {
+              branch 'master'
+              branch 'release/**'
+              branch 'develop'
+            }
+
+          }
+
+        }
+        steps {
+          sh '''#!/bin/bash
+export PATH=$PATH:/usr/lib/chromium-browser/
+# it is necessary to set DEPLOY_HOST
+#  to be able to execute Smoky Test on correct web-server
+echo $BRANCH_NAME
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
+if [ "$BRANCH_NAME" == "master" ]; then
+  DeployHost=$PRODUCTION_HOST
+  DeployPort=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  DeployHost=$DEVELOP_HOST
+  DeployPort=$DEVELOP_PORT
+else
+  #release branch
+  DeployHost=$RELEASE_HOST
+  DeployPort=$RELEASE_PORT
+fi
+export DEPLOY_HOST=$DeployHost
+export DEPLOY_PORT=$DeployPort
+export BRANCH_NAME=$BRANCH_NAME
+echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
+cd tests/Selenium/IntegrationTests/
+# run all features which have @smoke tag
+# if it will be neceessary to have multiple smoke tests execute tests by @tag
+behave -c --tags @smoke --no-junit features/
+#behave -c -i smoke_test.feature --no-junit features/'''
+          sh '''#!/bin/bash
+OUTPUT="$(git log --pretty=format:%h -n 1)"
+echo $BUILD_NUMBER.$OUTPUT > success.last'''
+          sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+            script {
+              sh "scp -P ${DEPLOY_PORT} success.last ${SSH_USER}@${DEPLOY_HOST}:/var/www/DEPLOY/success.last"
+            }
+
+          }
+
+          sh 'rm -rf success.last'
+        }
+        post {
+          failure {
+            archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
+            sh 'rm -rf success.last'
+            sshagent(credentials: ['BlockChain'], ignoreMissing: true) {
+              script {
+                echo("Roll-back to previous success build")
+                sh "ssh ${SSH_USER}@${DEPLOY_HOST} -p ${DEPLOY_PORT} /var/www/createSL.bash fail"
+              }
+
+            }
+
+            sh ' echo "Build FAILED! " '
+
+          }
+
+        }
+      }
+      stage('Integration Tests (Selenium)') {
+        when {
+          anyOf {
+            branch 'master'
+            branch 'release/**'
+            branch 'develop'
+          }
+
+        }
+        steps {
+          sh '''#!/bin/bash
+export PATH=$PATH:/usr/lib/chromium-browser/
+# it is necessary to set DEPLOY_HOST
+#  to be able to execute Smoky Test on correct web-server
+echo $BRANCH_NAME
+DeployHost=$DEVELOP_HOST
+DeployPort=$DEVELOP_PORT
+if [ "$BRANCH_NAME" == "master" ]; then
+  DeployHost=$PRODUCTION_HOST
+  DeployPort=$PRODUCTION_PORT
+elif [ "$BRANCH_NAME" == "develop" ]; then
+  DeployHost=$DEVELOP_HOST
+  DeployPort=$DEVELOP_PORT
+else
+  #release branch
+  DeployHost=$RELEASE_HOST
+  DeployPort=$RELEASE_PORT
+fi
+export DEPLOY_HOST=$DeployHost
+export DEPLOY_PORT=$DeployPort
+export BRANCH_NAME=$BRANCH_NAME
+echo "Host Used for testing purposes: $DEPLOY_HOST Branch name: $BRANCH_NAME"
+cd tests/Selenium/IntegrationTests/
+behave -c --junit --junit-directory results features/
+exit 0'''
+          junit(testResults: 'tests/Selenium/IntegrationTests/results/*.xml', healthScaleFactor: 10, allowEmptyResults: true)
+          archiveArtifacts(artifacts: 'tests/Selenium/IntegrationTests/Screenshots/*.png', allowEmptyArchive: true)
         }
       }
     }
@@ -426,5 +678,13 @@ ssh tkln@$DEPLOY_HOST -p $DEPLOY_PORT /var/www/deploy taklimakan-alpha $BUILD_NU
       RELEASE_PORT = '8022'
       PRODUCTION_HOST = '192.168.100.127'
       PRODUCTION_PORT = '8022'
+      SSH_USER = 'tkln'
+    }
+    post {
+      always {
+        publishHTML(allowMissing: true, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'results/phpUnitRes', reportFiles: 'index.html', reportName: 'PHP Unit tests Report', reportTitles: '')
+
+      }
+
     }
   }

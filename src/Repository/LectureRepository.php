@@ -25,6 +25,7 @@ class LectureRepository extends ServiceEntityRepository
         $filterLevel = isset($filter['level']) ? intval($filter['level']) : null;
         $filterPage = isset($filter['page']) ? intval($filter['page']) : null;
         $filterCourse = isset($filter['course']) ? intval($filter['course']) : null;
+        $filterUser = isset($filter['user']) ? intval($filter['user']) : null;
 
         $sql = 'SELECT * FROM lectures l WHERE active = true';
 
@@ -48,9 +49,36 @@ class LectureRepository extends ServiceEntityRepository
         $query = $conn->prepare($sql);
 
         $query->execute();
-        $rows = $query->fetchAll();
+        $lectures = $query->fetchAll();
 
-        return $rows;
+        // Select likes info for returned lectures
+        if ($filterUser) {
+
+            $ids = "";
+            foreach ($lectures as $row)
+                $ids .= strval($row['id']) . ', ';
+            $ids = trim($ids, ', ');
+
+            $sql =
+                'SELECT content_id
+                FROM likes l
+                WHERE content_type = "lecture"
+                AND user_id = ' . $filterUser
+                . ' AND status = 1
+                AND content_id in (' . $ids . ')';
+
+            $query = $conn->prepare($sql);
+            $query->execute();
+            $likes = $query->fetchAll(\PDO::FETCH_COLUMN);
+
+        }
+
+        foreach ($lectures as &$row) {
+            $row['type'] = 'lecture';
+            $row['like'] = $filterUser ? (in_array($row['id'], $likes) ? 1 : 0) : 0;
+        }
+
+        return $lectures;
     }
 
 }

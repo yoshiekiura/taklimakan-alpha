@@ -1,6 +1,6 @@
 framework:
     secret: '%env(APP_SECRET)%'
-    #default_locale: en
+    default_locale: en
     #csrf_protection: true
     #http_method_override: true
 
@@ -17,7 +17,7 @@ framework:
     cache:
         # Put the unique name of your app here: the prefix seed
         # is used to compute stable namespaces for cache keys.
-        #prefix_seed: your_vendor_name/app_name
+        prefix_seed: usetech/taklimakan
 
         # The app cache caches to the filesystem by default.
         # Other options include:
@@ -31,4 +31,6 @@ framework:
     
     # translator: { fallbacks: ["%locale%"] }
 
-    translator: { fallbacks: [ "en" ] }
+    translator: 
+        # enabled: false    
+        { fallbacks: [ "en" ] }

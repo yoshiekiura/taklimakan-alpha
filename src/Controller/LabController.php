@@ -18,7 +18,9 @@ class LabController extends Controller
 
     /**
      * @Route("/lab", name="lab")
+     * @Route("/labs", name="labs")
      * @Route("/lab/", name="lab_trail")
+     * @Route("/labs/", name="labs_trail")
      */
     public function index(Request $request)
     {
@@ -71,7 +73,7 @@ class LabController extends Controller
 
         $params = json_decode($content, true);
         $pair = $params['pair'];
-        $type = $params['type'] > 0 ? $params['type'] : 1;
+        $type = $params['type'] > 0 ? intval($params['type']) : 1;
 
         $conn = $this->getDoctrine()->getConnection();
 
@@ -85,6 +87,10 @@ class LabController extends Controller
 
         if (!in_array($pair, $allowed))
             $pair = "BTC-USD";
+
+        // Special case for type #11
+        if ($type == 11)
+            $pair = "INDEX001";
 
         $sql = 'SELECT dt, value FROM numerical_analytics WHERE type_id = "' . $type . '" AND pair = "' . $pair . '"';
         $query = $this->getDoctrine()->getConnection()->prepare($sql);

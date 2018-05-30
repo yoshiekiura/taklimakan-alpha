@@ -3,7 +3,8 @@
     <div class="col-xl-3">
         <div class="entries">
             <span>show</span>
-            <select class="form-control" id="exampleFormControlSelect1" onchange="window.location.href='/courses?page=1&limit=' + this.value + '&level={{filter.level}}' + '&tags={{filter.tags}}'">
+            {# <select class="form-control" id="exampleFormControlSelect1" onchange="window.location.href='/courses?page=1&limit=' + this.value + '&level={{filter.level}}' + '&tags={{filter.tags}}'"> #}
+            <select class="form-control" id="exampleFormControlSelect1">
               <option{% if paginator.limit == 6 %} selected{% endif %}>6</option>
               <option{% if paginator.limit == 12 %} selected{% endif %}>12</option>
               <option{% if paginator.limit == 18 %} selected{% endif %}>18</option>

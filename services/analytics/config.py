@@ -27,7 +27,6 @@ pairs = [("RLC", "USD"),
 #pairs = [("NEU", "USD")]
 
 
-
 pairs = [
 ("BTC", "USD"),
 ("ETH", "USD"),

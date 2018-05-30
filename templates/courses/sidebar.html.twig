@@ -11,6 +11,10 @@
                                 </h3>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-6 text-right">
+                                <div class="liker news-favor {{ course.like == '1' ? 'liked' : '' }} favor-relative"
+                                    data-type="{{course.type}}" data-id="{{course.id}}" data-like="{{course.like}}">
+                                    <img src="/images/i/favor-o.svg" alt="" class="{{ course.like == '1' ? 'liked' : '' }}">
+                                </div>
                                 {# NB! Hiding Like Heart <a class="news-favor favor-relative" href="#"><img src="/images/i/favor-o.svg" alt=""></a> #}
                             </div>
                         </div>

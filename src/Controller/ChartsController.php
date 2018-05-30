@@ -14,39 +14,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 //use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\HttpFoundation\Cookie;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class ChartsController extends Controller
 {
 
-/*
-    / **
-     * @Route("/charts", name="charts")
-     * /
-    public function index()
-    {
-
-//        $ChartsRepo = $this->getDoctrine()->getRepository(Charts::class);
-//        $Charts = $ChartsRepo->findAll();
-//var_dump($Charts);
-//die();
-        // $greeting = $generator->getRandomGreeting();
-        // $logger->info("Saying $greeting to $name!");
-
-        //        $logger->info("Saying hello to $name!");
-        //		return new Response("Hello $name!");
-
-        return $this->render('charts/index.html.twig', [
-            //'controller_name' => 'ChartsController',
-            'menu' => 'charts',
-            'charts' => $charts,
-        ]);
-    }
-*/
-    /* @ Route("api/charts/{type}", name="api_charts")
-    public function getData($type, Request $request) */
+    // FIXME! It seems that @Cache Annotations do not work well within entire chain Symfony -> Apache -> Nginx
 
     /**
      * @Route("api/charts/all", name="api_charts")
+     * @Cache(expires="tomorrow", public=true)     
      */
     public function getData(Request $request)
     {
@@ -111,6 +88,26 @@ class ChartsController extends Controller
      */
     public function showChart($type = null, Request $request)
     {
+
+        // Show iframe content for TN Crypto 100 Index
+        if ("100" == strval($type)) {
+
+            $conn = $this->getDoctrine()->getConnection();
+
+            $sql = 'SELECT * FROM numerical_analytics WHERE type_id = "11" AND pair = "INDEX001"';
+            $query = $this->getDoctrine()->getConnection()->prepare($sql);
+            $query->execute();
+            $rows = $query->fetchAll();
+            $crypto_index = [];
+            foreach ($rows as $row)
+                $data[] = [ substr($row['dt'], 0, 10), floatval($row['value']) ];
+
+            return $this->render('charts/100.html.twig', [
+                'data' => $data,
+            ]);
+
+        }
+
         // Do we have to show Welcome Popup ?
         $showWelcome = $request->cookies->get('show-welcome') == 'false' ? false : true;
 
@@ -224,7 +221,7 @@ class ChartsController extends Controller
         return $this->render('charts/all.html.twig', [
             'menu' => 'charts',
             'params' => $params,
-            'show_welcome' => $showWelcome,            
+            'show_welcome' => $showWelcome,
             'allowed' => $allowed,
             'pair' => $pair,
             'data' => $data,
@@ -240,6 +237,33 @@ class ChartsController extends Controller
 //die();
 
     }
+
+    /*
+        / **
+         * @Route("/charts", name="charts")
+         * /
+        public function index()
+        {
+
+    //        $ChartsRepo = $this->getDoctrine()->getRepository(Charts::class);
+    //        $Charts = $ChartsRepo->findAll();
+    //var_dump($Charts);
+    //die();
+            // $greeting = $generator->getRandomGreeting();
+            // $logger->info("Saying $greeting to $name!");
+
+            //        $logger->info("Saying hello to $name!");
+            //		return new Response("Hello $name!");
+
+            return $this->render('charts/index.html.twig', [
+                //'controller_name' => 'ChartsController',
+                'menu' => 'charts',
+                'charts' => $charts,
+            ]);
+        }
+    */
+        /* @ Route("api/charts/{type}", name="api_charts")
+        public function getData($type, Request $request) */
 
 
 }

@@ -55,7 +55,15 @@
                                 <img src="/images/courses/{{course.image}}" alt="">
                             </div>
                             {% endif %}
+
+                                    <div class="addthis-buttons">
+                                        {% include 'courses/buttons.html.twig' %}
+                                    </div>
+
+
+
                             <div class="news-body news-body-include">
+
                                 <div class="p-content">
 
                                     {% if course.text|length > 42 %}
@@ -71,13 +79,16 @@
                                     <li class="list-inline-item"><a href="#"><img src="images/i/share.svg" alt=""> Share</a></li>
                                 </ul>
 #}
+
+                                {% include 'snippets/comments.html.twig' %}
+
                             </div>
                         </div>
                     </div>
                     <!-- End of Course Body -->
 
                     {% include '/courses/sidebar.html.twig' %}
-
+                    {% include 'snippets/likes.html.twig' %}
 
                 </div>
             </div>

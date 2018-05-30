@@ -13,6 +13,9 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
 
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 class SecurityController extends Controller
 {
     /**
@@ -34,7 +37,7 @@ class SecurityController extends Controller
                 }
 
                 $message = (new \Swift_Message('Hello Email'))
-                    ->setFrom('noreply@taklimakan.network')
+                    ->setFrom($this->getParameter('sender_email'))
                     ->setTo($email)
                     ->setBody(
                         $this->renderView(
@@ -56,7 +59,12 @@ class SecurityController extends Controller
                     'success' => true,
                     // 'code' => $code,
                 ]);
+
+                // FIXME! If there exception during sending, we'll get success JSON with BIG HAIRY HTML body of an ERROR right after, like
+                // Warning: stream_socket_enable_crypto(): Peer certificate CN=`outlook.com' did not match expected CN=`mail.usetech.ru'
+
             }
+
             return $this->json([
                 'success' => false,
                 'exists_email' => true,
@@ -112,9 +120,17 @@ class SecurityController extends Controller
         $event = new InteractiveLoginEvent($request, $token);
         $this->get('event_dispatcher')->dispatch('security.interactive_login', $event);
 
+        // FIXME! Implement general AUTH listener later
+        // See https://symfony.com/doc/current/components/security/authentication.html
+
+        $response = new JsonResponse(['success' => true]);
+        $response->headers->setCookie(new Cookie('X-Symfony-Auth', 'true'));
+/*
         return $this->json([
             'success' => true,
-        ]);
+        ]); */
+
+        return $response;
     }
 
     /**
@@ -152,9 +168,17 @@ class SecurityController extends Controller
         $event = new InteractiveLoginEvent($request, $token);
         $this->get('event_dispatcher')->dispatch('security.interactive_login', $event);
 
+        // FIXME! Implement general AUTH listener later
+        // See https://symfony.com/doc/current/components/security/authentication.html
+
+        $response = new JsonResponse(['success' => true]);
+        $response->headers->setCookie(new Cookie('X-Symfony-Auth', 'true'));
+/*
         return $this->json([
             'success' => true,
-        ]);
+        ]); */
+
+        return $response;
     }
 
     /**
@@ -187,7 +211,7 @@ class SecurityController extends Controller
         }
 
         $message = (new \Swift_Message('Hello Email'))
-            ->setFrom('noreply@taklimakan.network')
+            ->setFrom($this->getParameter('sender_email'))
             ->setTo($email)
             ->setBody(
                 $this->renderView(
@@ -209,6 +233,7 @@ class SecurityController extends Controller
 
         return $this->json([
             'success' => true,
+            // 'code' => $code,
         ]);
     }
 
@@ -325,8 +350,16 @@ class SecurityController extends Controller
         $event = new InteractiveLoginEvent($request, $token);
         $this->get('event_dispatcher')->dispatch('security.interactive_login', $event);
 
+        // FIXME! Implement general AUTH listener later
+        // See https://symfony.com/doc/current/components/security/authentication.html
+
+        $response = new JsonResponse(['success' => true]);
+        $response->headers->setCookie(new Cookie('X-Symfony-Auth', 'true'));
+/*
         return $this->json([
             'success' => true,
-        ]);
+        ]); */
+
+        return $response;
     }
 }

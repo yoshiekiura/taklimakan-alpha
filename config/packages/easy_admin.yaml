@@ -32,6 +32,7 @@ easy_admin:
 
             - { label: 'Security' }
             - { entity: 'Users', label: 'Users', icon: 'users' }
+            - { entity: 'Journal', label: 'Journal', icon: 'book' }
 
             - { label: 'Etc' }
             - { label: 'Home', url: 'http://taklimakan.io', rel: 'index' }
@@ -59,6 +60,10 @@ easy_admin:
             - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/js/froala_editor.pkgd.min.js'
             # - '/js/datepicker.js'
             - '/js/froala.js'
+            - '/js/image.min.js'
+            - 'https://cdn.embedly.com/widgets/platform.js'
+            - '/js/embedly.min.js'
+            - '/css/embedly.min.css'
 
     entities:
 
@@ -85,9 +90,9 @@ easy_admin:
                 - { type: 'group', label: 'Props', css_class: 'col-sm-4' }
                 #- { property: 'active', type: 'toggle', label: 'Publish on the frontpage' }
                 - active
-                # - date
+                - date
                 # - { property: 'date', css_class: 'datepicker', type: 'date' }
-                - { property: 'date', css_class: '', type: 'date' }
+                # - { property: 'date', css_class: '', type: 'date' }
                 - { type: 'divider' }
 
                 #- { property: 'image', template: '/easy-admin.image.html.twig', css_class: 'image-preview', attr: 'attr1' }                
@@ -203,14 +208,21 @@ easy_admin:
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
         Users:
-
             class: App\Entity\User
             list:
-                fields: ['id', 'email']
+                fields: ['id', 'email', 'erc20_token']
             form:
                 fields:
                     - { property: 'firstName', label: 'First Name' }
                     - { property: 'lastName', label: 'Last Name' }
+                    - { property: 'erc20Token', label: 'ERC-20 Wallet' }
+
+        # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Journal:
+            class: App\Entity\Journal
+            list:
+                fields: ['id', 'admin', 'user', 'action', 'data']
 
         # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 

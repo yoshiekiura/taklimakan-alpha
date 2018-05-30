@@ -1,0 +1,27 @@
+{% extends 'profile/base.html.twig' %}
+
+{% block profile_content %}
+    <style type="text/css">
+        form[name=profile] label {
+            font-size: 16px;
+            margin-top: 16px;
+        }
+    </style>
+
+    {{ form_start(form) }}
+    <div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.password) }}
+            {{ form_widget(form.password, {attr: {class: 'form-control', placeholder: form.password.vars.label}}) }}
+            <small class="form-text text-muted valid-error" {% if not invalidPassword %}style="display: none;"{% endif %}>
+                {% if invalidPassword %}Invalid password{% endif %}
+            </small>
+        </div>
+    </div>
+    <div class="col-lg-6" style="margin-top: 20px">
+        <div class="form-group">
+            <input type="submit" class="btn btn-buy btn-block" value="Submit">
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

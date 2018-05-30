@@ -41,7 +41,7 @@
 
     {# FIXME! REMOVE IN PRODUCTION - IT FOR DEMO ONLY !!!
 
-        <script>
+        <script nonce="{{ csp_nonce() }}">
         $(function(){
             'use strict'
 
@@ -71,6 +71,11 @@
         </script>
 
     #}
+
+    <!-- Go to www.addthis.com/dashboard to customize your tools -->
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5af1da250114ff78"></script>
+
+    <script id="dsq-count-scr" src="//taklimakan.disqus.com/count.js" async></script>
 
     </body>
 </html>

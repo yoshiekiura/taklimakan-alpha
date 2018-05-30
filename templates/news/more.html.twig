@@ -1,0 +1,8 @@
+
+    <!-- News Block {{page}} -->
+
+    <div class="row" data-page="{{page}}">
+    {% for el in news %}
+            {% include 'news/news-box.html.twig' %}
+    {% endfor %}
+    </div>
