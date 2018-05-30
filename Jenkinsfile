@@ -676,7 +676,7 @@ exit 0'''
       DEVELOP_PORT = '8022'
       RELEASE_HOST = '192.168.100.126'
       RELEASE_PORT = '8022'
-      PRODUCTION_HOST = '192.168.100.127'
+      PRODUCTION_HOST = '159.69.7.93'
       PRODUCTION_PORT = '8022'
       SSH_USER = 'tkln'
     }
