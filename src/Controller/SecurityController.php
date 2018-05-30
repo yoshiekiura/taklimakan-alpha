@@ -59,7 +59,12 @@ class SecurityController extends Controller
                     'success' => true,
                     // 'code' => $code,
                 ]);
+
+                // FIXME! If there exception during sending, we'll get success JSON with BIG HAIRY HTML body of an ERROR right after, like
+                // Warning: stream_socket_enable_crypto(): Peer certificate CN=`outlook.com' did not match expected CN=`mail.usetech.ru'
+
             }
+
             return $this->json([
                 'success' => false,
                 'exists_email' => true,
