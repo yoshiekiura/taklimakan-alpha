@@ -96,8 +96,8 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
                 println "files modified by commit (${git_commit_id}): ${git_commit_files}"
 
                 git_commit_files.trim().split().each {
-                  println(it)
-                  if (!it.contains("Jenkinsfile") && !it.contains("tests/")) {
+                  if (!it.contains("tests/")) {
+                    println(it)
                     deploy_is_needed = 1
                   }
                 }
