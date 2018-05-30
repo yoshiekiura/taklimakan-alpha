@@ -125,7 +125,7 @@ class EducationController extends Controller
         }
         $course->like = isset($like) && $like ? 1 : 0;
 */
-        $course->like = $this->getDoctrine()->getRepository(Likes::class)->getState('course', $id, $user);
+        $course->like = $this->getDoctrine()->getRepository(Likes::class)->getStatus('course', $id, $user);
 
         $lectures = $course->getActiveLectures();
 
@@ -182,12 +182,14 @@ class EducationController extends Controller
 
         $tags = array_map('trim', explode(',', $lecture->getTags()));
 
-        $lecture->like = $this->getDoctrine()->getRepository(Likes::class)->getState('lecture', $id, $user);
+        $lecture->like = $this->getDoctrine()->getRepository(Likes::class)->getStatus('lecture', $id, $user);
 
         // If there course and other lectures, get them all. Otherwise it's just a standalone lecture
         if ($lecture->getCourse()) {
             $courseRepo = $this->getDoctrine()->getRepository(Course::class);
             $course = $courseRepo->findOneBy([ 'id' => $lecture->getCourse() ]);
+            $course->like = $this->getDoctrine()->getRepository(Likes::class)->getStatus('course', $course->getId(), $user);
+            $course->type="course"; // NB! Is it possible to retrurn virtual property on FindByOne or Course Entity ?
             $lectures = $course->getLectures();
         }
         else {

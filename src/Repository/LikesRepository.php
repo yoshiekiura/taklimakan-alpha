@@ -38,7 +38,7 @@ class LikesRepository extends ServiceEntityRepository
         return intval($likes);
     }
 
-    public function getState($type, $id, $user)
+    public function getStatus($type, $id, $user)
     {
         if ($user === null)
             return 0;
@@ -47,7 +47,7 @@ class LikesRepository extends ServiceEntityRepository
             $user = $user->getId();
 
         $conn = $this->getEntityManager()->getConnection();
-        
+
         $like = $conn->fetchColumn(
             'SELECT status FROM likes WHERE content_type = ? AND content_id = ? AND user_id = ?',
             [$type, $id, $user],
