@@ -10,9 +10,9 @@ $db_pass = getenv('DB_PASSWORD');
 
 date_default_timezone_set("UTC"); // All data have to be stored in UTC time vs date_default_timezone_set("Europe/Moscow");
 
-$db = new PDO("mysql:host=localhost;dbname=crypto", $db_user, $db_pass);
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // We have to see ERRORS
-if (!$db) die("\n[ERROR] Can't connect to DB!");
+echo "\n--------------------------------------------------------------------\n";
+echo (new \DateTime())->format("Y-m-d H:i:s") . " Starting CryptoCompare Parsing. Please wait...";
+echo "\n--------------------------------------------------------------------\n";
 
 // --sync allows to get latest feed for 24H, and --max gets all historic data
 if (in_array("--sync", $argv)) $mode = "sync";
@@ -20,7 +20,11 @@ else if (in_array("--max", $argv)) $mode = "max";
 else die("[ERROR] Please use --sync or --max flags!");
 
 // 1 = two days vs. 3650 = 10 years = We'll get yesterday and one day before info with limit = 2
-$limit = $mode == "sync" ? 1 : 3650;
+$limit = ($mode == "sync") ? 1 : 3650;
+
+$db = new PDO("mysql:host=localhost;dbname=crypto", $db_user, $db_pass);
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // We have to see ERRORS
+if (!$db) die("\n[ERROR] Can't connect to DB!");
 
 $query = $db->prepare("INSERT IGNORE INTO rates (exchange, source, base, quote, period, date, price, open, high, low, close, quantity, volume, trades)
     VALUES (:exchange, :source, :base, :quote, :period, :date, :price, :open, :high, :low, :close, :quantity, :volume, :trades )");
@@ -107,7 +111,7 @@ foreach ($exchanges as $ex) {
     $ex = strtoupper($ex);
 
     // Does exchange alive and there fresh datd on CryptoCompare ?
-    if ($mode == 'sync' && in_array($dead, $ex)) continue;
+    if ($mode == 'sync' && in_array($ex, $dead)) continue;
 
     // We already gathered all information for CCCAGG earlier
     if ($ex == "CCCAGG") continue;
