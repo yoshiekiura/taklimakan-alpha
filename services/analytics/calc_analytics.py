@@ -1,6 +1,9 @@
 # sudo apt install python3-dev libpython3-dev
 # sudo apt install python3-mysqldb
 import MySQLdb
+
+# sudo apt-get install python3-matplotlib
+# sudo apt-get install python3-tk
 import matplotlib.pyplot as plt
 from pprint import pprint
 import os
@@ -10,8 +13,6 @@ import aformulas as af
 from config import *
 import operator
 
-# sudo pip install sshtunnel
-import sshtunnel
 import sys
 
 ######################################################################
@@ -47,6 +48,8 @@ if ('DB_HOST' in os.environ.keys()) and ('DB_USER' in os.environ.keys()) and ('D
     db = MySQLdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_name)
     print("Connected to DB (server)")
 else:
+    # sudo pip install sshtunnel
+    import sshtunnel
     # sudo pip install mysql-connector-python-rf
     import mysql.connector
     sys.path.insert(0, '../')
