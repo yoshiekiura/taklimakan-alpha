@@ -19,6 +19,8 @@ class CourseRepository extends ServiceEntityRepository
     public function getCourses($filter)
     {
 
+        // NB! Rewrite 3 queries into 1 join if performanse do not degrade - LATER
+
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
 
@@ -90,11 +92,30 @@ class CourseRepository extends ServiceEntityRepository
 
         }
 
+        // Select ratings
+        $sql =
+            'SELECT content_id as id, AVG(rating) as rating
+            FROM ratings
+            WHERE content_type = "course"
+            GROUP BY content_type, content_id';
+//            AND content_id in (' . $ids . ')'; // FIXME! Test and enable this condition
+
+        $query = $conn->prepare($sql);
+        $query->execute();
+        $ratings = $query->fetchAll();
+//var_dump($ratings);
+
         foreach ($courses as &$row) {
+
             $row['type'] = 'course';
             $row['like'] = $filterUser ? (in_array($row['id'], $likes) ? 1 : 0) : 0;
-        }
 
+            $row['rating'] = 0;
+            foreach ($ratings as $rating)
+                if ($rating['id'] == $row['id'])
+                    $row['rating'] = intval($rating['rating']);
+        }
+//var_dump($courses);die();
         return $courses;
     }
 
