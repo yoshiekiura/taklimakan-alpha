@@ -73,9 +73,29 @@ class LectureRepository extends ServiceEntityRepository
 
         }
 
+        // Select ratings
+        $sql =
+            'SELECT content_id as id, AVG(rating) as rating
+            FROM ratings
+            WHERE content_type = "lecture"
+            GROUP BY content_type, content_id';
+//            AND content_id in (' . $ids . ')'; // FIXME! Test and enable this condition
+
+        $query = $conn->prepare($sql);
+        $query->execute();
+        $ratings = $query->fetchAll();
+//var_dump($ratings);
+
+
         foreach ($lectures as &$row) {
             $row['type'] = 'lecture';
             $row['like'] = $filterUser ? (in_array($row['id'], $likes) ? 1 : 0) : 0;
+
+            $row['rating'] = 0;
+            foreach ($ratings as $rating)
+                if ($rating['id'] == $row['id'])
+                    $row['rating'] = intval($rating['rating']);
+            
         }
 
         return $lectures;
