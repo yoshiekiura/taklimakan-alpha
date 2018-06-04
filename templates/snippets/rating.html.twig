@@ -1,0 +1,62 @@
+
+    <!-- AJAX Ratings -->
+
+    <script nonce="{{ csp_nonce() }}">
+
+        document.addEventListener('DOMContentLoaded', function() {
+            applyRatings();
+        });
+
+        function applyRatings() {
+
+        $('.rating').barrating('show', {
+            theme: 'fontawesome-stars',
+            //inititalRating: this.$elem.data('rating'),
+            allowEmpty: true,
+            emptyValue: 0,
+            onSelect: function(value, text, event) {
+
+                // NB! Rating was selected programmatically by calling `set` method
+                if (typeof(event) === 'undefined') return;
+
+                var el = this;
+                var type = el.$elem.data('type');
+                var id = el.$elem.data('id');
+
+                // alert( event + ' | ' +  type + ' | ' + id);
+
+                $.ajax({
+                    url: '/ajax/rating',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({ 'type': type, 'id': id, 'rating': value }),
+                    processData: false,
+                    context: this, // NB!
+                    success:
+                        function(data, textStatus, jQxhr) {
+                            if (data.code == 200) {
+                            } else {
+                                console.log('[ERR] Some error while rating element | ' + data.error);
+                            }
+                        },
+                    error:
+                        function(jqXhr, textStatus, errorThrown) {
+                            console.log('[ERR] AJAX error!');
+                        }
+                });
+
+
+            }
+
+        });
+
+        $('.rating').each(function() {
+            var rating = $(this).data('rating');
+            $(this).barrating('set', rating);
+        });
+
+        } // applyRatings
+
+
+    </script>

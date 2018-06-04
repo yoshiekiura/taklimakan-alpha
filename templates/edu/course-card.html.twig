@@ -52,7 +52,7 @@
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-7 col-6 text-right">
 
-                                <select class="rating" data-rating={{course.rating}}>
+                                <select class="rating" data-rating="{{course.rating}}" data-type="{{course.type}}" data-id="{{course.id}}">
                                       <option value="1">1</option>
                                       <option value="2">2</option>
                                       <option value="3">3</option>
@@ -60,15 +60,6 @@
                                       <option value="5">5</option>
                                 </select>
 
-                            {# Hiding Stars Rating and adding 12 px margin for Price
-                                <ul class="list-inline rating">
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star-o.svg" alt=""></a></li>
-                                </ul>
-                            #}
                             </div>
                         </div>
                         <div class="row">
