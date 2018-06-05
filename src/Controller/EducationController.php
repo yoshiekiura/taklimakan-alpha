@@ -11,12 +11,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use App\Entity\Lecture;
 use App\Entity\Course;
-// use App\Entity\Joiner;
 use App\Entity\Tags;
 use App\Entity\Likes;
+use App\Entity\Rating;
 
-use App\Repository\LectureRepository;
-use App\Repository\CourseRepository;
+//use App\Repository\LectureRepository;
+//use App\Repository\CourseRepository;
 // use App\Repository\JoinerRepository;
 
 use Symfony\Component\Security\Core\User\UserInterface;

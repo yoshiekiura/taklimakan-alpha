@@ -37,15 +37,26 @@
                             <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                                 <span class="level-cource">Level: <strong>{{course.level|level}}</strong></span>
                             </div>
-                            {#
+
                             <div class="col-xl-6 col-lg-6 col-md-6 col-6 text-right">
-                                <ul class="list-inline rating list-rate">
+
+                                <select class="rating" data-rating="{{course.rating}}" data-type="{{course.type}}" data-id="{{course.id}}">
+                                      <option value="1">1</option>
+                                      <option value="2">2</option>
+                                      <option value="3">3</option>
+                                      <option value="4">4</option>
+                                      <option value="5">5</option>
+                                </select>
+
+
+                                {#<ul class="list-inline rating list-rate">
                                     <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
                                     <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
                                     <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
                                     <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
                                     <li class="list-inline-item"><a href="#"><img src="images/i/star-o.svg" alt=""></a></li>
                                 </ul>
+
                             </div> #}
                         </div>
 
