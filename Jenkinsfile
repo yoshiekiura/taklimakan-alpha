@@ -154,7 +154,7 @@ zip -r -q -m taklimakan-alpha.zip taklimakan-alpha
         steps {
           sh '''#!/bin/bash
 echo "create dummy symfony environment file"
-echo "" > ".env"'''
+echo "PUBLIC_ROOT=/var/www/public" > ".env"'''
           sh '''#!/bin/bash
 echo "install composer"
 composer install'''
