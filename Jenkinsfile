@@ -596,7 +596,6 @@ echo "echo \\"Deploy succeed. Used version: \\$versionId\\"" >> createSL.bash
             anyOf {
               branch 'master'
               branch 'release/**'
-              branch 'develop'
             }
 
           }
