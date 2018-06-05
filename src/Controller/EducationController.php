@@ -235,9 +235,6 @@ class EducationController extends Controller
         if ($user)
             $filter['user'] = $user->getId();
 
-        // We'll limit the list later, when combine courses and standalone lectures
-        // $filter['limit'] = 0;
-
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
         $courses = $courseRepo->getCourses($filter);
 
