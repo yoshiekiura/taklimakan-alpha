@@ -45,7 +45,8 @@
                             page++;
                             $('#more-courses').before(data.html);
                             scaleImages();
-                            $('.liker').on('click', like); // Re-enable Like AJAX for new items                           
+                            $('.liker').on('click', like); // Re-enable Like AJAX for new items
+                            applyRatings();
                         }
                     },
                 error:

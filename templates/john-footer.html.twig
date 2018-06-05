@@ -73,7 +73,11 @@
     <!-- Froala and Embedly -->
 
     <script src="https://cdn.embedly.com/widgets/platform.js"></script>
-    <script src="/js/embedly.min.js"></script> 
+
+    {# It seems that we do not need it anymore on frontend
+        https://github.com/froala/wysiwyg-editor/issues/2654
+        <script src="/js/embedly.min.js"></script>
+    #}
 
 {#
     <script src="/js/image-scale.min.js"></script>
@@ -222,6 +226,33 @@
 
 <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
 <script type="text/javascript" src="/js/security.js"></script>
+
+{#
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="jquery.barrating.min.js"></script>
+#}
+
+<!-- JQuery Bar Rating -->
+
+<script src="/js/jquery.barrating.js"></script>
+{#
+<script nonce="{{ csp_nonce() }}">
+   $(function() {
+      $('.rating').barrating({
+        //theme: 'fontawesome-stars'
+        //theme: 'css-stars'
+        theme: 'fontawesome-stars'
+      });
+      // rating =
+      //$('.rating').barrating('set', 3);
+      $('.rating').each(function() {
+        $(this).barrating('set', $(this).data('rating'));
+        //valu = $this.val();
+        //multiz = multiz + '&aid' + val + '=' + valu;
+    });
+   });
+</script>
+#}
 
 {#
 

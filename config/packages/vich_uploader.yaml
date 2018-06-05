@@ -11,18 +11,18 @@ vich_uploader:
 
         news:
             uri_prefix: /images/news
-            upload_destination: '%kernel.project_dir%/public/images/news'
+#            upload_destination: '%kernel.project_dir%/public/images/news'
+            upload_destination: '%env(PUBLIC_ROOT)%/images/news'
 #            delete_on_remove: true
 #            delete_on_update: true
             namer: vich_uploader.namer_uniqid
 
         courses:
             uri_prefix: /images/courses
-            upload_destination: '%kernel.project_dir%/public/images/courses'
+            upload_destination: '%env(PUBLIC_ROOT)%/images/courses'
             namer: vich_uploader.namer_uniqid
 
         lectures:
             uri_prefix: /images/lectures
-            upload_destination: '%kernel.project_dir%/public/images/lectures'
+            upload_destination: '%env(PUBLIC_ROOT)%/images/lectures'
             namer: vich_uploader.namer_uniqid
-

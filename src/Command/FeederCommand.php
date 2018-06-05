@@ -28,6 +28,8 @@ use Symfony\Component\CssSelector\CssSelectorConverter;
 
 use App\Entity\News;
 
+use Symfony\Component\Dotenv\Dotenv;
+
 // class FeederCommand extends Command
 class FeederCommand extends ContainerAwareCommand
 {
@@ -56,12 +58,17 @@ class FeederCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
+        $dotenv = new Dotenv();
+        $dotenv->load($this->getContainer()->get('kernel')->getProjectDir() . '/.env');
+        $publicRoot = getenv('PUBLIC_ROOT');
+
         $sinceTime = $input->getOption('since');
 
         // Genereate folder names for images and create them if necessary
 
         $monthDir = (new \DateTime())->format('Ym');
-        $imageDir = $this->getContainer()->get('kernel')->getProjectDir() . '/public/images/news/';
+        //$imageDir = $this->getContainer()->get('kernel')->getProjectDir() . '/public/images/news/';
+        $imageDir = $publicRoot . '/images/news/';
 
         if (!file_exists ($imageDir . $monthDir))
             if (!mkdir($imageDir . $monthDir, 0777, true))
@@ -124,6 +131,8 @@ class FeederCommand extends ContainerAwareCommand
 
                 $source = $item->getLink();
                 $date = $item->getLastModified();
+
+                echo "\n$source";
 
                 $tags = "";
                 foreach ($item->getCategories() as $tag)
@@ -336,13 +345,14 @@ class FeederCommand extends ContainerAwareCommand
                     if ($pos) $text = mb_substr($text, 0, $pos);
 
                     // Grep image from raw HTML
-                    $image_html = $crawler->filter('.article--image')->html();
-                    preg_match('/http\S*(jpg|jpeg|png|webp)/usi', $image_html, $matches);
-                    $image = count($matches) ? $matches[0] : '';
-
-//var_dump($image); die();
-//var_dump($html); die();
-//var_dump($image_html); die();
+                    try {
+                        $image_html = $crawler->filter('.article--image')->html();
+                        preg_match('/http\S*(jpg|jpeg|png|webp)/usi', $image_html, $matches);
+                        $image = count($matches) ? $matches[0] : '';
+                    } catch (\Exception $e) {
+                        echo " [ERROR|NO-IMAGE|SKIPPED]";
+                        continue;
+                    }
 
                 }
 
@@ -387,7 +397,7 @@ class FeederCommand extends ContainerAwareCommand
                 // Replace HTTP links to HTTPS to avoid 'broken' images, etc
                 $text = preg_replace('/(http:\/\/)/usi', 'https://', $text);
 
-                echo "\n$source";
+                //echo "\n$source";
 
 // DEBUG
 /*
@@ -396,8 +406,13 @@ echo "\n\n" . "[TITLE] " . $title . "\n" . "[TAGS] " . $tags .
        "\n" . "[IMAGE] " . $image ;
 */
                 // Some dumb checks to avoid EMPTY news / NB! Log that with WARNING message later
-                if (strlen($image) <= 10 || strlen($text) <= 100) {
-                    echo " [SKIPPED]";
+                if (strlen($image) <= 10) {
+                    echo " [ERROR|NO-IMAGE|SKIPPED]";
+                    continue;
+                }
+
+                if (strlen($text) <= 10) {
+                    echo " [ERROR|NO-TEXT|SKIPPED]";
                     continue;
                 }
 

@@ -51,15 +51,15 @@
                                 <span class="level-cource">Level: <strong>{{course.level|level}}</strong></span>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-7 col-6 text-right">
-                            {# Hiding Stars Rating and adding 12 px margin for Price
-                                <ul class="list-inline rating">
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star.svg" alt=""></a></li>
-                                    <li class="list-inline-item"><a href="#"><img src="images/i/star-o.svg" alt=""></a></li>
-                                </ul>
-                            #}
+
+                                <select class="rating" data-rating="{{course.rating}}" data-type="{{course.type}}" data-id="{{course.id}}">
+                                      <option value="1">1</option>
+                                      <option value="2">2</option>
+                                      <option value="3">3</option>
+                                      <option value="4">4</option>
+                                      <option value="5">5</option>
+                                </select>
+
                             </div>
                         </div>
                         <div class="row">
@@ -71,6 +71,7 @@
                             <div class="col-xl-8 col-lg-8 col-8 col-md-8 col-sm-8 col-8 text-right"  style="padding-top: 20px; padding-right: 28px;">
                                 <!-- <a href="#" class="btn btn-buy btn-buy-sm"><img src="images/i/cart.svg" alt=""> Buy</a> -->
 
+                                {# Tags #}
                                 <ul class="list-inline news-tags">
 
                                 {% for tag in course.tags|split(',') %}
@@ -78,6 +79,9 @@
                                 {% endfor %}
 
                                 </ul>
+                                {# #}
+
+
                             </div>
                         </div>
 
