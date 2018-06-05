@@ -86,9 +86,10 @@ nelmio_security:
                 - www.google-analytics.com
                 - cdn.embedly.com
                 
-            #font-src:
+            font-src:
             #    - self
             #    - cdn.embedly.com
+            #    - maxcdn.bootstrapcdn.com
 
 
             #style-src:

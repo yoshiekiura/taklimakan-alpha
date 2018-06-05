@@ -11,12 +11,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use App\Entity\Lecture;
 use App\Entity\Course;
-// use App\Entity\Joiner;
 use App\Entity\Tags;
 use App\Entity\Likes;
+use App\Entity\Rating;
 
-use App\Repository\LectureRepository;
-use App\Repository\CourseRepository;
+//use App\Repository\LectureRepository;
+//use App\Repository\CourseRepository;
 // use App\Repository\JoinerRepository;
 
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -184,12 +184,14 @@ class EducationController extends Controller
         $tags = array_map('trim', explode(',', $lecture->getTags()));
 
         $lecture->like = $this->getDoctrine()->getRepository(Likes::class)->getStatus('lecture', $id, $user);
+        $lecture->rating = $this->getDoctrine()->getRepository(Rating::class)->getRating('lecture', $id);
 
         // If there course and other lectures, get them all. Otherwise it's just a standalone lecture
         if ($lecture->getCourse()) {
             $courseRepo = $this->getDoctrine()->getRepository(Course::class);
             $course = $courseRepo->findOneBy([ 'id' => $lecture->getCourse() ]);
             $course->like = $this->getDoctrine()->getRepository(Likes::class)->getStatus('course', $course->getId(), $user);
+            $course->rating = $this->getDoctrine()->getRepository(Rating::class)->getRating('course', $course->getId());
             $course->type="course"; // NB! Is it possible to retrurn virtual property on FindByOne or Course Entity ?
             $lectures = $course->getLectures();
         }
