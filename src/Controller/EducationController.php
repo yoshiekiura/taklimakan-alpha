@@ -15,10 +15,6 @@ use App\Entity\Tags;
 use App\Entity\Likes;
 use App\Entity\Rating;
 
-//use App\Repository\LectureRepository;
-//use App\Repository\CourseRepository;
-// use App\Repository\JoinerRepository;
-
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class EducationController extends Controller
