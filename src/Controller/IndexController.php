@@ -71,6 +71,21 @@ class IndexController extends Controller
     // foreach ($courses as &$course)
     //     $course['type'] = 'course';
 
+    $lectureRepo = $this->getDoctrine()->getRepository(Lecture::class);
+    $filter['course'] = null; // We interesten in standalone lectures aka Articles or Materials here
+    $standaloneLectures = $lectureRepo->getLectures($filter);
+
+    foreach ($standaloneLectures as $lecture)
+        $courses[] = $lecture;
+
+    // Sort by date and trim by limit
+    usort($courses, "self::twoDates");
+    $courses = array_slice($courses, 0, 3);
+
+    //$tagsRepo = $this->getDoctrine()->getRepository(Tags::class);
+    //$allTags = $tagsRepo->findAll();
+
+
     // Show only FULL courses on the Home page
 
 /*
@@ -195,5 +210,11 @@ class IndexController extends Controller
 
     }
 */
+
+    private static function twoDates($a, $b)
+    {
+        return $a["date"] < $b["date"];
+    }
+
 
 }

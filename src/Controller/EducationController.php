@@ -64,8 +64,8 @@ class EducationController extends Controller
         $filter['course'] = null; // We interesten in standalone lectures aka Articles or Materials here
         $standaloneLectures = $lectureRepo->getLectures($filter);
 
-//        foreach ($standaloneLectures as $lecture)
-//            $courses[] = $lecture;
+        foreach ($standaloneLectures as $lecture)
+            $courses[] = $lecture;
 
         // Sort by date and trim by limit
         usort($courses, "self::twoDates");
