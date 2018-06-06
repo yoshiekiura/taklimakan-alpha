@@ -56,7 +56,7 @@ class User implements UserInterface, \Serializable
     /**
      * @var string
      *
-     * @ORM\Column(type="string", nullable=false, unique=true, options={"charset"="utf8", "collation"="utf8_unicode_ci"})
+     * @ORM\Column(type="string", nullable=false, unique=true)
      */
     protected $email;
 
@@ -312,7 +312,7 @@ class User implements UserInterface, \Serializable
             ) = unserialize($serialized, ['allowed_classes' => false]);
     }
 
-    public function __toString() 
+    public function __toString()
     {
        return $this->email;
     }

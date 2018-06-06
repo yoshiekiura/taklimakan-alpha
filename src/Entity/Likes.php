@@ -69,7 +69,7 @@ class Likes
 
 
     /**
-     * @ORM\Column(type="boolean", nullable=true, options={"unsigned": true})
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $status;
     public function getStatus()
