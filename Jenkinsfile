@@ -517,6 +517,7 @@ echo "" >> createSL.bash
 echo "find /var/www/DEPLOY/\\$versionId/var/cache -type d -exec chmod 777 {} \\;" >> createSL.bash
 echo "mkdir -p /var/www/DEPLOY/\\$versionId/var/log" >> createSL.bash
 echo "find /var/www/DEPLOY/\\$versionId/var/log -type d -exec chmod 777 {} \\;" >> createSL.bash
+echo "rm -rf /var/nginx/cache/*" >> createSL.bash
 echo "" >> createSL.bash
 echo "cd DEPLOY" >> createSL.bash
 echo "#zip previous version of deploy" >> createSL.bash
