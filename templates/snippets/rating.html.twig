@@ -14,6 +14,12 @@
             //inititalRating: this.$elem.data('rating'),
             allowEmpty: true,
             emptyValue: 0,
+            fastClicks: true,
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            readonly: false,
+            {% else %}
+            readonly: true,
+            {% endif %}
             onSelect: function(value, text, event) {
 
                 // NB! Rating was selected programmatically by calling `set` method
