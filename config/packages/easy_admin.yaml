@@ -44,8 +44,8 @@ easy_admin:
             # Froala Editor CSS / https://www.froala.com/wysiwyg-editor/docs/overview
             - 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css'
             - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css'
-            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/css/froala_editor.pkgd.min.css'
-            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/css/froala_style.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.1/css/froala_editor.pkgd.min.css'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.1/css/froala_style.min.css'
             # - 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css'
             - '/css/easy-admin-styling.css'
             js:
@@ -57,7 +57,7 @@ easy_admin:
             #- 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js'
             - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js'
             - 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/xml/xml.min.js'
-            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.0/js/froala_editor.pkgd.min.js'
+            - 'https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.8.1/js/froala_editor.pkgd.min.js'
             # - '/js/datepicker.js'
             - '/js/froala.js'
             - '/js/image.min.js'

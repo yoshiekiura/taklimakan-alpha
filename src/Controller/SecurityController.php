@@ -36,7 +36,8 @@ class SecurityController extends Controller
                     $code = mt_rand(100000, 999999);
                 }
 
-                $message = (new \Swift_Message('Hello Email'))
+                // NB! Include the Plain Text message later: https://symfony.com/doc/3.0/email.html
+                $message = (new \Swift_Message('Registration on Taklimakan Network'))
                     ->setFrom($this->getParameter('sender_email'))
                     ->setTo($email)
                     ->setBody(

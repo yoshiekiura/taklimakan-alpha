@@ -11,13 +11,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use App\Entity\Lecture;
 use App\Entity\Course;
-// use App\Entity\Joiner;
 use App\Entity\Tags;
 use App\Entity\Likes;
-
-use App\Repository\LectureRepository;
-use App\Repository\CourseRepository;
-// use App\Repository\JoinerRepository;
+use App\Entity\Rating;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -68,8 +64,8 @@ class EducationController extends Controller
         $filter['course'] = null; // We interesten in standalone lectures aka Articles or Materials here
         $standaloneLectures = $lectureRepo->getLectures($filter);
 
-        foreach ($standaloneLectures as $lecture)
-            $courses[] = $lecture;
+//        foreach ($standaloneLectures as $lecture)
+//            $courses[] = $lecture;
 
         // Sort by date and trim by limit
         usort($courses, "self::twoDates");
@@ -126,6 +122,7 @@ class EducationController extends Controller
         $course->like = isset($like) && $like ? 1 : 0;
 */
         $course->like = $this->getDoctrine()->getRepository(Likes::class)->getStatus('course', $id, $user);
+        $course->rating = $this->getDoctrine()->getRepository(Rating::class)->getRating('course', $id);
 
         $lectures = $course->getActiveLectures();
 
@@ -183,12 +180,14 @@ class EducationController extends Controller
         $tags = array_map('trim', explode(',', $lecture->getTags()));
 
         $lecture->like = $this->getDoctrine()->getRepository(Likes::class)->getStatus('lecture', $id, $user);
+        $lecture->rating = $this->getDoctrine()->getRepository(Rating::class)->getRating('lecture', $id);
 
         // If there course and other lectures, get them all. Otherwise it's just a standalone lecture
         if ($lecture->getCourse()) {
             $courseRepo = $this->getDoctrine()->getRepository(Course::class);
             $course = $courseRepo->findOneBy([ 'id' => $lecture->getCourse() ]);
             $course->like = $this->getDoctrine()->getRepository(Likes::class)->getStatus('course', $course->getId(), $user);
+            $course->rating = $this->getDoctrine()->getRepository(Rating::class)->getRating('course', $course->getId());
             $course->type="course"; // NB! Is it possible to retrurn virtual property on FindByOne or Course Entity ?
             $lectures = $course->getLectures();
         }
@@ -231,9 +230,6 @@ class EducationController extends Controller
 
         if ($user)
             $filter['user'] = $user->getId();
-
-        // We'll limit the list later, when combine courses and standalone lectures
-        // $filter['limit'] = 0;
 
         $courseRepo = $this->getDoctrine()->getRepository(Course::class);
         $courses = $courseRepo->getCourses($filter);
